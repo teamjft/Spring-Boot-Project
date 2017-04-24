@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.format.support.FormattingConversionService;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -69,16 +67,5 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         configurer.setCustomEditors(customEditors);
         return configurer;
     }
-
-/*    @Bean(name = "messageSource")
-    public MessageSource messageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
-    }*/
- /*   <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-    <property name="validationMessageSource" ref="messageSource" />
-</bean>*/
 
 }

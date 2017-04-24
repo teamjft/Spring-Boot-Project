@@ -1,4 +1,4 @@
-package com.lms.services.mailservice;
+package com.lms.services.notification;
 
 import javax.mail.internet.MimeMessage;
 
@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lms.models.Mail;
+import com.lms.models.MailContent;
 import com.lms.services.mail.MailService;
 import com.lms.utils.notification.Notification;
 
@@ -51,31 +51,30 @@ public class MailNotificationServiceImpl implements NotificationService {
     }
 
     private void send(Notification<String, String, String> notification, Long retryNotificationId)  {
-        Mail mail;
+        MailContent mailContent;
         try {
             final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
             final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
             message.setTo(notification.to());
             message.setFrom(supportEmail);
             message.setSubject(notification.subject());
-            message.setText(notification.subject(), true);
+            message.setText(notification.content());
             javaMailSender.send(message.getMimeMessage());
             if (retryNotificationId != null) {
-                mail = mailService.get(retryNotificationId);
-                mail.setDeleted(true);
-                mailService.save(mail);
+                mailContent = mailService.get(retryNotificationId);
+                mailContent.setDeleted(true);
+                mailService.save(mailContent);
             }
         } catch (Exception e) {
             log.error("Exception occur during send email: {}, error: ",notification.to());
             if(retryNotificationId == null) {
-                mail = new Mail(notification);
+                mailContent = new MailContent(notification);
             } else {
-                mail = mailService.get(retryNotificationId);
+                mailContent = mailService.get(retryNotificationId);
             }
-            mail.setAttemptsCount(mail.getAttemptsCount() + 1);
-            System.out.println("Exception:============="+e);
-            mail.setError(e.getMessage());
-            mailService.save(mail);
+            mailContent.setAttemptsCount(mailContent.getAttemptsCount() + 1);
+            mailContent.setError(e.getMessage());
+            mailService.save(mailContent);
         }
 
     }

@@ -18,7 +18,6 @@ public class LocalStorageServiceImpl implements ImageService {
     private String filePath;
     @Override
     public String uploadImage(MultipartFile sourceFile) throws Exception {
-        //filePath
         byte[] bytes = sourceFile.getBytes();
         String originalName = sourceFile.getOriginalFilename();
 
@@ -28,7 +27,6 @@ public class LocalStorageServiceImpl implements ImageService {
         }
         String fileName =String.format("%s%s", UUID.randomUUID().toString(), originalName);
         File temp=new File(file,fileName);
-        System.out.println("Path : "+fileName);
         FileOutputStream fos= new FileOutputStream(temp);
         fos.write(bytes);
         fos.close();

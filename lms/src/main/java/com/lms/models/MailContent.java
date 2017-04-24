@@ -21,15 +21,17 @@ import com.lms.utils.notification.Notification;
  */
 @Entity
 @Getter @Setter
-public class Mail extends AbstractEntity implements Serializable {
-    public Mail() {
+public class MailContent extends AbstractEntity implements Serializable {
+    private static final long serialVersionUID = -5815280582242687925L;
+
+    public MailContent() {
         super();
     }
 
     @Column(nullable = false)
-    private String to;
+    private String toEmail;
 
-    @Column(nullable = false, length = 2040)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String text;
 
     private String subject;
@@ -57,9 +59,9 @@ public class Mail extends AbstractEntity implements Serializable {
 
     private Integer attemptsCount = 0;
 
-    public Mail(Notification<String, String, String> notification) {
+    public MailContent(Notification<String, String, String> notification) {
         super();
-        this.setTo(notification.to());
+        this.setToEmail(notification.to());
         this.setNotificationType(notification.getNotificationType());
         this.setSubject(notification.subject());
         this.setText(notification.content());

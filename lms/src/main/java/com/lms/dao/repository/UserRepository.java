@@ -10,4 +10,6 @@ import com.lms.models.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
     User findByUuid(String uuid);
+    User findByEmail(String email);
+    User findByToken(String email);
 }

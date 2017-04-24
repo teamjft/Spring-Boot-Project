@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -25,6 +26,7 @@ import com.lms.utils.beans.CategoryBean;
  * Created by bhushan on 18/4/17.
  */
 @Controller
+@PreAuthorize("isAuthenticated()")
 @RequestMapping(value = "/category")
 public class CategoryController {
     @Autowired

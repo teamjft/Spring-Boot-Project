@@ -16,12 +16,8 @@ public class HomeController {
     @RequestMapping("/")
     public ModelAndView index() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Welcome................");
         if (!(auth instanceof AnonymousAuthenticationToken)) {
-            System.out.println("aaa gya");
             return new ModelAndView("redirect:/user/home");
-        } else {
-            System.out.println("ni aaya");
         }
         ModelAndView modelAndView = new ModelAndView("index");
         return modelAndView;

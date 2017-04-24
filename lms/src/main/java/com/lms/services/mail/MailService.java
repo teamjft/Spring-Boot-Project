@@ -1,12 +1,12 @@
 package com.lms.services.mail;
 
-import com.lms.models.Mail;
+import com.lms.models.MailContent;
 
 /**
  * Created by bhushan on 20/4/17.
  */
 public interface MailService {
-    Mail get(Long id);
-    Mail save(Mail mail);
+    MailContent get(Long id);
+    MailContent save(MailContent mailContent);
 
 }

@@ -19,7 +19,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 @ComponentScan(basePackages = {"com.lms"})
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -36,8 +36,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/","/index*","/static*//**").permitAll()
-                .anyRequest().authenticated()
-                .antMatchers("/hi").hasAnyRole("UL", "PG")
                 .and()
                 .formLogin().loginPage("/index")
                 .defaultSuccessUrl("/user/home")
@@ -52,14 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        System.out.println("fffffffffffffffffffffffff");
         authenticationManagerBuilder.userDetailsService(secUserService).passwordEncoder(passwordEncoder());
     }
 
-    /*@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
-    }*/
 }

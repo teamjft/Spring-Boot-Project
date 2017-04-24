@@ -1,6 +1,8 @@
 package com.lms.utils.notification;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import com.lms.utils.enums.NotificationType;
@@ -8,7 +10,7 @@ import com.lms.utils.enums.NotificationType;
 /**
  * Created by bhushan on 20/4/17.
  */
-@Setter @Builder
+@Setter @Builder @NoArgsConstructor @AllArgsConstructor
 public class EmailNotification implements Notification<String, String, String> {
     private String to;
     private String subject;
@@ -32,7 +34,7 @@ public class EmailNotification implements Notification<String, String, String> {
 
     @Override
     public NotificationType getNotificationType() {
-        return null;
+        return notificationType;
     }
 
 }

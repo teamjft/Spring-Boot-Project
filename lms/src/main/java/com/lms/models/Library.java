@@ -19,6 +19,7 @@ import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.lms.utils.enums.NotificationServiceType;
 import com.lms.utils.enums.SaveImageServiceType;
 import com.lms.utils.modelutil.AbstractEntity;
 
@@ -47,4 +48,6 @@ public class Library extends AbstractEntity implements Serializable {
     private List<Issue> issues = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private SaveImageServiceType saveImageServiceType = LOCALSTROGE;
+    @Enumerated(EnumType.STRING)
+    private NotificationServiceType notificationServiceType = NotificationServiceType.EMAIL;
 }

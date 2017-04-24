@@ -29,13 +29,11 @@ public class SecUserServiceImpl  implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        System.out.println("cadcdcdcccccccccccccccccccccccccccccccccccc");
         User user = userService.loadByUsername(userName);
         if(user == null) {
             throw new UsernameNotFoundException("User not found");
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-       // Set<Role> roles = user.getUserRoles();
         if(user.isSuperAdmin()) {
             grantedAuthorities.add(new SimpleGrantedAuthority("SUPER_ADMIN"));
         }

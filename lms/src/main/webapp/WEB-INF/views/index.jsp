@@ -11,12 +11,40 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <link href="<c:url value="../../static/bootstrap/css/bootstrap.css" />" rel="stylesheet">
+    <link href="<c:url value="../../static/bootstrap/css/bootstrap.css" />"  rel="stylesheet">
+    <script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.js"/>" ></script>
+    <script src="<c:url value="../../static/bootstrap/js/bootstrap.js" />" ></script>
     <style>
         .well{
             background-color: #4267b2;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $("#button1").click(function () {
+                console.log("----------------------")
+                var email = $('#recovery-email').val();
+                var forgetPassword="http://localhost:8080/user/forgetPassword/" + email
+                $.ajax({
+                    url: forgetPassword,
+                    contentType : "application/json",
+                    success: function (resp) {
+                        // we have the response
+                        console.log(resp.type+"========================"+resp.message)
+                        if(resp.type == "SUCCESS" ) {
+                        $("#div1").html(' <div class="alert alert-success"> <strong>Success!  </strong> '+resp.message +'. </div>');
+                        }else {
+                            $("#div1").html(' <div class="alert alert-danger"> <strong>Error!  </strong>'+ resp.message +'. </div>');
+                        }
+                    },
+                    error: function (e) {
+                        $("#div1").append('<div class="alert alert-danger"> <strong>Error!  </strong>Some thing went wrong please try again </div>');
+                    }
+                })
+
+            })
+        });
+    </script>
 <body class="well">
 <sec:authorize access="isAuthenticated()">
     <% response.sendRedirect(""); %>
@@ -60,8 +88,32 @@
                             <input type="hidden" name="${_csrf.parameterName}"
                                    value="${_csrf.token}" />
                         </div>
+                        <a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a>
                     </form>
                 </div>
+                <div class="modal fade forget-modal" tabindex="-1" role="dialog" aria-labelledby="myForgetModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">×</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title">Recovery password</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div id="div1"></div>
+                                <p>Type your email account</p>
+                                <input type="email" name="recovery-email" id="recovery-email" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="button" id="button1" class="btn btn-custom">Recovery</button>
+                            </div>
+                        </div> <!-- /.modal-content -->
+                    </div> <!-- /.modal-dialog -->
+                </div> <!-- /.modal -->
+
             </div>
         </div>
     </div>

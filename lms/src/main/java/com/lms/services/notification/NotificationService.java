@@ -1,8 +1,5 @@
-package com.lms.services.mailservice;
+package com.lms.services.notification;
 
-import javax.mail.MessagingException;
-
-import com.lms.models.Mail;
 import com.lms.utils.notification.Notification;
 
 /**

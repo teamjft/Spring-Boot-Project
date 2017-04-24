@@ -1,15 +1,12 @@
 package com.lms.models;
 
 import java.io.Serializable;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.Size;
@@ -72,6 +69,7 @@ public class User extends AbstractEntity implements Serializable {
     @Type(type = "yes_no")
     @Column(nullable = false, columnDefinition = "char(1) default 'N'")
     private boolean superAdmin;
+    private String token;
 
     @PrePersist
     protected void onPrePersist() {

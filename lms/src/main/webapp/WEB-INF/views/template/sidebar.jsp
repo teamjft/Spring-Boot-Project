@@ -56,9 +56,8 @@
                     </div>
                     <div id="collapseThree" class="panel-collapse collapse">
                         <ul class="list-group">
-                            <li><a href="<c:url value="/library/imageconfiguration"/>" class="navlink">Image Configuration</a></li>
-                            <li><a href="" class="navlink">Email Configuration</a></li>
-                            <li><a href="" class="navlink">Notification Template</a></li>
+                            <li><a href="<c:url value="/configuration/imageconfiguration"/>" class="navlink">Image Configuration</a></li>
+                            <li><a href="<c:url value="/configuration/template"/>" class="navlink">Email Templates</a></li>
                         </ul>
                     </div>
                 </div>

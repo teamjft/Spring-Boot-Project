@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -38,13 +39,13 @@ import com.lms.utils.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.CategoryBean;
-import com.lms.utils.enums.SaveImageServiceType;
 
 /**
  * Created by bhushan on 17/4/17.
  */
 @Controller
 @RequestMapping(value = "/book")
+@PreAuthorize("isAuthenticated()")
 @Slf4j
 public class BookController {
     @Autowired
@@ -69,17 +70,14 @@ public class BookController {
                 Long id = null;
 
                 if(element instanceof String && !((String)element).equals("")){
-                    //From the JSP 'element' will be a String
                     try{
                         id = Long.parseLong((String) element);
                     }
                     catch (NumberFormatException e) {
-                        System.out.println("Element was " + ((String) element));
                         e.printStackTrace();
                     }
                 }
                 else if(element instanceof Long) {
-                    //From the database 'element' will be a Long
                     id = (Long) element;
                 }
 
@@ -172,7 +170,6 @@ public class BookController {
         } catch (Exception e) {
 
             createViewModel.addObject("error", e.getMessage());
-            System.out.println("Error occure:"+e);
             return createViewModel;
         }
         return new ModelAndView("redirect:/book/index");

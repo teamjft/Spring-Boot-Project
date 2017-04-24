@@ -9,12 +9,15 @@ import org.springframework.stereotype.Component;
 
 import com.lms.models.Book;
 import com.lms.models.Category;
+import com.lms.models.EmailTemplate;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.User;
 import com.lms.dao.LibraryDao;
 import com.lms.services.book.BookService;
 import com.lms.services.category.CategoryService;
+import com.lms.services.emailtemplate.EmailTemplateService;
+import com.lms.utils.enums.NotificationType;
 import com.lms.utils.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
@@ -42,6 +45,8 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
     private CategoryService categoryService;
     @Autowired
     private ImageFactory imageFactory;
+    @Autowired
+    private EmailTemplateService emailTemplateService;
 
    /* @Autowired
     private ConversionService conversionService;*/
@@ -53,7 +58,7 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
         if (userService.count() == 0) {
             log.info("Bootstrap application with default users and roles");
             User user = new User();
-            user.setEmail("a@b.com");
+            user.setEmail("bhushan@jellyfishtechnologies.com");
             user.setFirstName("Admin");
             user.setUsername("admin");
             user.setPassword("password");
@@ -91,6 +96,15 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
             category1.setName("Chap boot");
             categoryService.create(category);
             categoryService.create(category1);
+
+            if(emailTemplateService.findEmailTemplateByNotificationType(NotificationType.FORGETPASSWORD) == null) {
+                EmailTemplate emailTemplate = new EmailTemplate();
+                emailTemplate.setContent("Hi %USERNAME%, Please reset your password %FORGETPASSWORDURL%");
+                emailTemplate.setSubject("Reset Forget Password");
+                emailTemplate.setDefaultEmailTemplates(true);
+                emailTemplate.setNotificationType(NotificationType.FORGETPASSWORD);
+                emailTemplateService.create(emailTemplate);
+            }
         }
     }
 

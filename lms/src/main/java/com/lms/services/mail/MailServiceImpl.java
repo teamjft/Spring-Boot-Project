@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lms.dao.repository.MailRepository;
-import com.lms.models.Mail;
+import com.lms.models.MailContent;
 
 /**
  * Created by bhushan on 20/4/17.
@@ -17,13 +17,13 @@ public class MailServiceImpl implements MailService {
 
     @Override
     @Transactional(readOnly = true)
-    public Mail get(Long id) {
+    public MailContent get(Long id) {
         return mailRepository.getOne(id);
     }
 
     @Override
     @Transactional
-    public Mail save(Mail mail) {
-        return mailRepository.save(mail);
+    public MailContent save(MailContent mailContent) {
+        return mailRepository.save(mailContent);
     }
 }
