@@ -1,6 +1,12 @@
 package com.lms.controller;
 
+import static com.lms.models.QEmailTemplate.emailTemplate;
+
+import java.util.List;
 import java.util.Map;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,13 +14,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lms.config.security.SecUser;
 import com.lms.models.Category;
@@ -22,13 +32,16 @@ import com.lms.models.EmailTemplate;
 import com.lms.models.Library;
 import com.lms.services.emailtemplate.EmailTemplateService;
 import com.lms.services.library.LibraryService;
+import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.EmailTemplateBean;
 import com.lms.utils.beans.LibraryBean;
+import com.lms.utils.converter.NotificationTypeConverter;
 import com.lms.utils.converter.SaveImageServiceTypeConverter;
 import com.lms.utils.enums.NotificationServiceType;
 import com.lms.utils.enums.NotificationType;
 import com.lms.utils.enums.SaveImageServiceType;
 import com.lms.utils.factory.NotificationFactory;
+import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.notification.EmailNotification;
 import com.lms.utils.notification.Notification;
 
@@ -53,6 +66,7 @@ public class ConfigurationController {
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         dataBinder.registerCustomEditor(SaveImageServiceType.class, new SaveImageServiceTypeConverter());
+        dataBinder.registerCustomEditor(NotificationType.class, new NotificationTypeConverter());
     }
 
     @RequestMapping("/imageconfiguration")
@@ -119,35 +133,65 @@ public class ConfigurationController {
         return modelAndView;
     }
 
-    /*@RequestMapping("/editTemplate/{id}")
+    @RequestMapping("/editTemplate/{id}")
     public ModelAndView editTemplate(@PathVariable(value="id", required = true) String id) {
         EmailTemplate emailTemplate = emailTemplateService.findByUuid(id);
         if(emailTemplate != null) {
-            CategoryBean categoryBean = CategoryBean.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .build();
-            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, "edit");
+            EmailTemplateBean emailTemplateBean = buildEmailTemplateBean(emailTemplate);
+            ModelAndView modelAndView = getEmailTemplateModelAndView("edittemplate", emailTemplateBean);
+            emailTemplateBean.setAvailableField(NotificationUtil.getParametersListByNotificationType(emailTemplate.getNotificationType()));
             return modelAndView;
         }
-        return new ModelAndView("redirect:/category/index");
-    }*/
+        return new ModelAndView("redirect:/configuration/template");
+    }
+
     @RequestMapping("/viewTemplate/{id}")
     public ModelAndView viewTemplate(@PathVariable(value="id", required = true) String id) {
         EmailTemplate emailTemplate = emailTemplateService.findByUuid(id);
         if(emailTemplate != null) {
-            EmailTemplateBean emailTemplateBean = EmailTemplateBean.builder()
-                    .uuid(emailTemplate.getUuid())
-                    .subject(emailTemplate.getSubject())
-                    .content(emailTemplate.getContent())
-                    .notificationType(emailTemplate.getNotificationType())
-                    .build();
-            ModelAndView modelAndView = new ModelAndView("configuration/templateview");
-            modelAndView.addObject("emailTemplate", emailTemplateBean);
+            EmailTemplateBean emailTemplateBean = buildEmailTemplateBean(emailTemplate);
+            ModelAndView modelAndView = getEmailTemplateModelAndView("templateview", emailTemplateBean);
             return modelAndView;
         }
-        return new ModelAndView("redirect:/category/index");
+        return new ModelAndView("redirect:/configuration/templateview");
     }
 
+    @RequestMapping("/updateTemplate")
+    public ModelAndView updateTemplate(@Valid @ModelAttribute("emailTemplate")EmailTemplateBean emailTemplateBean, BindingResult result, final RedirectAttributes redirectAttributes) {
+        EmailTemplate emailTemplate = emailTemplateService.findByUuid(emailTemplateBean.getUuid());
+        if (emailTemplate == null) {
+            return new ModelAndView("redirect:/");
+        }
+        if (result.hasErrors()) {
+            List<ObjectError> errors = result.getAllErrors();
+            emailTemplateBean.setAvailableField(NotificationUtil.getParametersListByNotificationType(emailTemplate.getNotificationType()));
+            ModelAndView modelAndView = getEmailTemplateModelAndView("edittemplate", emailTemplateBean);
+            modelAndView.addObject("errors", errors);
+            return modelAndView;
+        }
+        emailTemplate.setContent(emailTemplateBean.getContent());
+        emailTemplate.setSubject(emailTemplateBean.getSubject());
+        emailTemplateService.update(emailTemplate);
+        emailTemplateBean = buildEmailTemplateBean(emailTemplate);
+        ModelAndView modelAndView = getEmailTemplateModelAndView("templateview", emailTemplateBean);
+        redirectAttributes.addFlashAttribute("success", "Successfully edited.");
+        return modelAndView;
+    }
+
+    private EmailTemplateBean buildEmailTemplateBean(@NotNull EmailTemplate emailTemplate) {
+       return EmailTemplateBean.builder()
+                .uuid(emailTemplate.getUuid())
+                .subject(emailTemplate.getSubject())
+                .content(emailTemplate.getContent())
+                .notificationType(emailTemplate.getNotificationType())
+                .uuid(emailTemplate.getUuid())
+                .build();
+    }
+
+    private ModelAndView getEmailTemplateModelAndView(String view, EmailTemplateBean emailTemplateBean) {
+        ModelAndView modelAndView = new ModelAndView(String.format("configuration/%s", view));
+        modelAndView.addObject("emailTemplate", emailTemplateBean);
+        return modelAndView;
+    }
 
 }

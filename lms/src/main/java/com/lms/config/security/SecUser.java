@@ -19,9 +19,10 @@ public class SecUser implements UserDetails, Serializable {
     private final boolean accountNonExpired;
     private final boolean accountNonLocked;
     private final java.util.Set<org.springframework.security.core.GrantedAuthority> authorities;
-    private final String libraryId   ;
+    private final String libraryId;
+    private final String memberShipId;
 
-    public SecUser(String username, String password, boolean enabled, boolean credentialsNonExpired, boolean accountNonExpired, boolean accountNonLocked, Set<GrantedAuthority> authorities, String libraryId) {
+    public SecUser(String username, String password, boolean enabled, boolean credentialsNonExpired, boolean accountNonExpired, boolean accountNonLocked, Set<GrantedAuthority> authorities, String libraryId, String memberShipId) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -30,6 +31,7 @@ public class SecUser implements UserDetails, Serializable {
         this.accountNonLocked = accountNonLocked;
         this.authorities = authorities;
         this.libraryId = libraryId;
+        this.memberShipId = memberShipId;
     }
 
     public void setPassword(String password) {
@@ -73,5 +75,9 @@ public class SecUser implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getMemberShipId() {
+        return memberShipId;
     }
 }

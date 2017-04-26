@@ -2,6 +2,8 @@ package com.lms.utils.helper;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.lms.utils.enums.NotificationType;
 import com.lms.utils.notification.mapper.ForgetMapPassword;
 import com.lms.utils.notification.mapper.InviteUserMapMapper;
@@ -18,5 +20,13 @@ public class NotificationUtil {
                 return InviteUserMapMapper.TARGET_PARAMETERS;
             default:return null;
         }
+    }
+
+    public static String getBaseUrl(HttpServletRequest request) {
+        String scheme = request.getScheme() + "://";
+        String serverName = request.getServerName();
+        String serverPort = (request.getServerPort() == 80) ? "" : ":" + request.getServerPort();
+        String contextPath = request.getContextPath();
+        return scheme + serverName + serverPort + contextPath;
     }
 }

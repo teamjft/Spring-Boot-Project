@@ -29,7 +29,7 @@ public class AbstractEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date updateOn = new Date();;
+    private Date updateOn = new Date();
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)

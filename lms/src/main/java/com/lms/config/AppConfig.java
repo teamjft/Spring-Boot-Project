@@ -7,8 +7,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -17,7 +19,9 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.lms.utils.converter.NotificationTypeConverter;
 import com.lms.utils.converter.SaveImageServiceTypeConverter;
+import com.lms.utils.enums.NotificationType;
 import com.lms.utils.enums.SaveImageServiceType;
 
 /**
@@ -26,9 +30,11 @@ import com.lms.utils.enums.SaveImageServiceType;
 @Configuration
 @EnableWebMvc
 @EnableAsync
+@ComponentScan(basePackages = {"com.lms"})
 public class AppConfig extends WebMvcConfigurerAdapter {
     @Value("${localstroge.path}")
     private String filePath;
+
     @Bean
     protected ViewResolver InternalResourceViewResolver() {
         InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
@@ -52,9 +58,9 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        super.addResourceHandlers(registry);
-       registry .addResourceHandler(String.format("%s**", filePath))
-                .addResourceLocations(String.format("file:%s",filePath));
+       super.addResourceHandlers(registry);
+       registry .addResourceHandler("/opt/img/*")
+                .addResourceLocations("file:/opt/img/");
     }
 
     @Bean
@@ -62,7 +68,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         Map<Class<?>, Class<? extends PropertyEditor>> customEditors =
                 new HashMap<Class<?>, Class<? extends PropertyEditor>>(1);
         customEditors.put(SaveImageServiceType.class, SaveImageServiceTypeConverter.class);
-
+        customEditors.put(NotificationType.class, NotificationTypeConverter.class);
         CustomEditorConfigurer configurer = new CustomEditorConfigurer();
         configurer.setCustomEditors(customEditors);
         return configurer;

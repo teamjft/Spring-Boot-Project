@@ -24,8 +24,12 @@
                         <div class="well well-sm">
                             <form class="form-horizontal" action="" method="post">
                                 <fieldset>
-                                    <legend class="text-center">Email Template Details:</legend>
-
+                                    <c:if test="${success ne null}">
+                                        <p class="alert alert-success">${success}</p>
+                                    </c:if>
+                                    <legend class="text-center">Email Template Details:
+                                        <a  class="btn bg-primary" href="/configuration/editTemplate/${emailTemplate.uuid}">Edit</a>
+                                    </legend>
                                     <!-- Name input-->
                                     <div class="form-group">
                                         <label class="col-md-3 control-label" for="name">Notification Type</label>

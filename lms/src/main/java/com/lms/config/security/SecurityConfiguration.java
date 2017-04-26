@@ -1,6 +1,7 @@
 package com.lms.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 @ComponentScan(basePackages = {"com.lms"})
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
+    @Value("${localstroge.path}")
+    private String filePath;
     @Autowired
     private SecUserServiceImpl secUserService;
 
@@ -35,13 +37,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","/index*","/static*//**").permitAll()
+                .antMatchers("/","/index*","/static*//**", String.format("%s*", filePath)).permitAll()
                 .and()
                 .formLogin().loginPage("/index")
                 .defaultSuccessUrl("/user/home")
                 .usernameParameter("username").passwordParameter("password")
                 .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout")
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/index")
                 .and()
                 .exceptionHandling().accessDeniedPage("/403")
                 .and()

@@ -31,11 +31,7 @@ import com.lms.utils.beans.CategoryBean;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
-    private PageRequest gotoPage(int page) {
 
-        PageRequest request = new PageRequest(page,1);
-        return request;
-    }
     @RequestMapping("/index")
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
         if (currentPageNumber == null) {

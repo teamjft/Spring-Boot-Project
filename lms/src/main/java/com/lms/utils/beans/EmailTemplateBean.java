@@ -19,11 +19,10 @@ import com.lms.utils.enums.NotificationType;
 public class EmailTemplateBean {
     private long id;
     private String uuid;
-    @NotEmpty(message = "{notificationType.name.notempty}")
     private NotificationType notificationType;
     @NotEmpty(message = "{subject.notempty}")
     private String subject;
     @NotEmpty(message = "{content.notempty}")
     private String content;
-    private List aviableField;
+    private List availableField;
 }

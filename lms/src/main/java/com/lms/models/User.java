@@ -43,7 +43,7 @@ public class User extends AbstractEntity implements Serializable {
     private String lastName;
     @NotEmpty
     @Email(message = "please enter valid '${validatedValue}")
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     @Size(min = 2, max = 200, message = "The license plate '${validatedValue}' must be between {min} and {max} characters long")
     private String email;
     @NotEmpty

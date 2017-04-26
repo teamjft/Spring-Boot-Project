@@ -34,6 +34,7 @@ import com.lms.utils.beans.UserBean;
 import com.lms.utils.enums.NotificationServiceType;
 import com.lms.utils.enums.NotificationType;
 import com.lms.utils.factory.NotificationFactory;
+import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.StringUtil;
 import com.lms.utils.notification.EmailNotification;
 import com.lms.utils.notification.Notification;
@@ -88,7 +89,7 @@ public class UserController {
         if(user == null) {
             return new ResponseMessage("Not a valid email register with system", ResponseMessage.MessageType.ERROR, "email");
         }
-        String forgetPasswordUrl = String.format("%s/%s/%s", getBaseUrl(httpServletRequest), "user/resetpassword", token);
+        String forgetPasswordUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "user/resetpassword", token);
         if (!StringUtil.isValidEmail(email)) {
             return new ResponseMessage("invalid email", ResponseMessage.MessageType.ERROR, "email");
         }
@@ -152,11 +153,4 @@ public class UserController {
         return modelAndView;
     }
 
-    public String getBaseUrl(HttpServletRequest request) {
-        String scheme = request.getScheme() + "://";
-        String serverName = request.getServerName();
-        String serverPort = (request.getServerPort() == 80) ? "" : ":" + request.getServerPort();
-        String contextPath = request.getContextPath();
-        return scheme + serverName + serverPort + contextPath;
-    }
 }

@@ -58,7 +58,7 @@ public class MailNotificationServiceImpl implements NotificationService {
             message.setTo(notification.to());
             message.setFrom(supportEmail);
             message.setSubject(notification.subject());
-            message.setText(notification.content());
+            message.setText(notification.content(), true);
             javaMailSender.send(message.getMimeMessage());
             if (retryNotificationId != null) {
                 mailContent = mailService.get(retryNotificationId);

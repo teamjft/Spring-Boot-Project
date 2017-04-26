@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.jws.soap.SOAPBinding;
 
+import org.springframework.data.domain.Page;
+
+import com.lms.models.Category;
 import com.lms.models.MemberShip;
 import com.lms.models.User;
 
@@ -18,4 +21,5 @@ import com.lms.models.User;
      void update(MemberShip memberShip);
      MemberShip getLastUserMembership(User user);
      MemberShip findByUuid(String uuid);
+    Page<MemberShip> getPageRequest(Integer pageNumber);
 }

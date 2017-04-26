@@ -11,6 +11,7 @@ import com.lms.utils.enums.NotificationType;
 public interface EmailTemplateService {
     EmailTemplate findEmailTemplateByNotificationType(NotificationType notificationType);
     EmailTemplate create(EmailTemplate emailTemplate);
+    EmailTemplate update(EmailTemplate emailTemplate);
     Page<EmailTemplate> getPageRequest(Integer pageNumber);
     EmailTemplate findByUuid(String uuid);
 }

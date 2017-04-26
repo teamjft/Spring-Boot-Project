@@ -26,10 +26,9 @@
                             <a class="pull-left" href="#">
                                     <c:choose>
                                         <c:when test="${book.imageUrl ne null}">
-                                            <img src="http://res.cloudinary.com/jellyfish-technologies/image/upload/${book.imageUrl}" class="img-responsive" alt="Cinque Terre" width="150" height="150">
+                                            <img src="<c:url value="${book.imageUrl}"/>" class="img-responsive" alt="Cinque Terre" width="150" height="150">
                                         </c:when>
                                         <c:otherwise>
-                                            /opt/img/${book.imageUrl}
                                             <img src="<c:url value="../../../static/custom/img/10546i3DAC5A5993C8BC8C.jpg"/>" class="img-responsive" alt="Cinque Terre" width="150" height="150">
                                         </c:otherwise>
                                     </c:choose>

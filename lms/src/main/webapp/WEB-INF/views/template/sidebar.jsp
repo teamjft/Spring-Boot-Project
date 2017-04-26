@@ -45,8 +45,8 @@
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse">
                         <ul class="list-group">
-                            <li><a href="" class="navlink">Members</a></li>
-                            <li><a href="" class="navlink">Add Member</a></li>
+                            <li><a href="<c:url value="/membership/index"></c:url>" class="navlink">Members</a></li>
+                            <li><a href="<c:url value="/invite/inviteUser"></c:url>" class="navlink">Add Member</a></li>
                         </ul>
                     </div>
                 </div>

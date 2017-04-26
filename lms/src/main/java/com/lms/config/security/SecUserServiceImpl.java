@@ -48,7 +48,7 @@ public class SecUserServiceImpl  implements UserDetailsService {
             }
         }
         SecUser secUser = new SecUser(user.getUsername(),
-                user.getPassword(), user.isEnabled(), !user.isAccountExpired(),! user.isPasswordExpired(), !user.isAccountLocked(), grantedAuthorities,memberShip.getLibrary().getUuid());
+                user.getPassword(), user.isEnabled(), !user.isAccountExpired(),! user.isPasswordExpired(), !user.isAccountLocked(), grantedAuthorities,memberShip.getLibrary().getUuid(), memberShip.getUuid());
         return secUser;
     }
 }
