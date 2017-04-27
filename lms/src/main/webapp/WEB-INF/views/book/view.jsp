@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
@@ -38,19 +39,17 @@
                                 <p class="text-right">By ${book.authorName}</p>
                                 <p>${book.description}</p>
                                 <ul class="list-inline list-unstyled">
-                                    <li><span><i class="glyphicon glyphicon-tags"></i> Edition : ${book.edition} </span></li>
+                                    <li><span><i class="glyphicon glyphicon-tags"></i> <spring:message code="edition"></spring:message>  : ${book.edition} </span></li>
                                     <li>|</li>
-                                    <span><i class="glyphicon glyphicon-barcode"></i> Publication Year : ${book.publicationYear}</span>
+                                    <span><i class="glyphicon glyphicon-barcode"></i> <spring:message code="publication.year"></spring:message>  : ${book.publicationYear}</span>
                                     <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> Publisher : ${book.publisher}</span>
+                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="publisher"></spring:message>  : ${book.publisher}</span>
                                     <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> Number Of Available Copies : ${book.numberOfAvailableCopies}</span>
+                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="number.of.copies.available"></spring:message> : ${book.numberOfAvailableCopies}</span>
                                     <li>|</li>
-                                    <span><i class="glyphicon glyphicon-bitcoin"></i> price : ${book.price}</span>
+                                    <span><i class="glyphicon glyphicon-bitcoin"></i> <spring:message code="price"></spring:message>  : ${book.price}</span>
                                     <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> Number Of Available Copies : ${book.numberOfAvailableCopies}</span>
-                                    <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> Total Number Of Copies : ${book.totalNumberOfCopies}</span>
+                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="number.of.copies.available"></spring:message> : ${book.totalNumberOfCopies}</span>
                                     <li>|</li>
                                     <c:forEach items="${categories}" var="categoty">
                                     <span>
@@ -67,4 +66,5 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

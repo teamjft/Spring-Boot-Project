@@ -10,18 +10,12 @@ import com.lms.utils.notification.parameterprovider.ForgetPasswordParameter;
 /**
  * Created by bhushan on 21/4/17.
  */
-public class ForgetMapPassword implements EmailMapMapper<ForgetPasswordParameter> {
+public class ForgetMapPassword extends EmailMapMapper {
     private static final String FORGET_PASSWORD =  "%FORGETPASSWORDURL%";
     private static final String USERNAME   ="%USERNAME%";
     public static final List<String> TARGET_PARAMETERS = Arrays.asList(FORGET_PASSWORD, USERNAME);
-    private Map<String, String> map;
-    @Override
-    public Map<String, String> getMap() {
-        return map;
-    }
 
-    @Override
-    public void setMap(ForgetPasswordParameter forgetPasswordParameter) {
+    public ForgetMapPassword(ForgetPasswordParameter forgetPasswordParameter) {
         map = new HashMap<String, String>();
         map.put(FORGET_PASSWORD, forgetPasswordParameter.getForgetPasswordUrl());
         map.put(USERNAME, forgetPasswordParameter.getUserName());

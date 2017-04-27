@@ -105,6 +105,14 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
                 emailTemplate.setNotificationType(NotificationType.FORGETPASSWORD);
                 emailTemplateService.create(emailTemplate);
             }
+            if(emailTemplateService.findEmailTemplateByNotificationType(NotificationType.INVITEUSER) == null) {
+                EmailTemplate emailTemplate = new EmailTemplate();
+                emailTemplate.setContent("Hi %FIRSTNAME%  %LASTNAME%, You are invited by %LIBRARYNAME% Library , to join %LIBRARYNAME% please create your account here %USERACTIVATIONURL");
+                emailTemplate.setSubject("Join Library Invitation");
+                emailTemplate.setDefaultEmailTemplates(true);
+                emailTemplate.setNotificationType(NotificationType.INVITEUSER);
+                emailTemplateService.create(emailTemplate);
+            }
         }
     }
 

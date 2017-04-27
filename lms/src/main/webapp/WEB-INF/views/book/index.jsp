@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -23,19 +24,19 @@
                                         <div class="form-group">
                                             <c:if test="${error ne null}">
                                                 <div class="alert alert-danger">
-                                                    <strong>Error!</strong> ${error}.
+                                                    <strong><spring:message code="error"></spring:message> </strong> ${error}.
                                                 </div>
                                             </c:if>
                                             <c:if test="${success ne null}">
                                                 <div class="alert alert-danger">
-                                                    <strong>Success Message!</strong> ${success}.
+                                                    <strong><spring:message code="success.message"></spring:message> </strong> ${success}.
                                                 </div>
                                             </c:if>
 
                                         </div>
 
                                         <div class="col-md-12">
-                                            <h4>Books:</h4>
+                                            <h4><spring:message code="books"></spring:message>:</h4>
                                             <div class="table-responsive">
 
 
@@ -43,12 +44,12 @@
 
                                                     <thead>
 
-                                                    <th>Name</th>
-                                                    <th>Isbn</th>
-                                                    <th>Created On</th>
-                                                    <th>Total Number Of copies</th>
-                                                    <th>Edit</th>
-                                                    <th>View</th>
+                                                    <th><spring:message code="name"></spring:message> </th>
+                                                    <th><spring:message code="isbn"></spring:message></th>
+                                                    <th><spring:message code="created.on"></spring:message> </th>
+                                                    <th><spring:message code="total.number.of.copies"></spring:message></th>
+                                                    <th><spring:message code="edit"></spring:message> </th>
+                                                    <th><spring:message code="view"></spring:message> </th>
 
                                                     </thead>
                                                     <tbody>
@@ -93,4 +94,5 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

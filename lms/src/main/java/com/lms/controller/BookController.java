@@ -39,6 +39,7 @@ import com.lms.utils.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.CategoryBean;
+import com.lms.utils.helper.SecurityUtil;
 
 /**
  * Created by bhushan on 17/4/17.
@@ -137,8 +138,7 @@ public class BookController {
             modelAndView.addObject("errors", errors);
             return modelAndView;
         }
-        SecUser secUser =
-                (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
         ModelAndView createViewModel = getCreateModel();
         if (bookService.countBYLibraryAndIsbn(library, bookBean.getIsbn()) != 0) {

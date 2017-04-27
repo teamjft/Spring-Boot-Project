@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
@@ -23,60 +24,70 @@
                         <div class="col-md-6 col-md-offset-2">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Add Book</h3>
+                                    <h3 class="panel-title"><spring:message code="add.book"></spring:message> </h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
-                                                <strong>Error!</strong> ${error}.
+                                                <strong><strong> <spring:message code="error"></spring:message></strong> ${error}.
                                             </div>
                                         </c:if>
                                         <c:if test="${errors != null}">
                                             <div  class="well">
                                                 <c:forEach items="${errors}" var="error">
                                                     <div class="alert alert-danger">
-                                                        <strong>Errror!</strong> ${error.getDefaultMessage()}.
+                                                        <strong> <spring:message code="error"></spring:message></strong> ${error.getDefaultMessage()}.
                                                     </div>
                                                 </c:forEach>
                                             </div>
                                         </c:if>
                                     </div>
+                                    <spring:message code="name" var="name"></spring:message>
+                                    <spring:message code="isbn" var="isbn"></spring:message>
+                                    <spring:message code="edition" var="edition"></spring:message>
+                                    <spring:message code="description" var="description"></spring:message>
+                                    <spring:message code="price" var="price"></spring:message>
+                                    <spring:message code="publisher" var="publisher"></spring:message>
+                                    <spring:message code="author.name" var="authorName"></spring:message>
+                                    <spring:message code="publication.year" var="publisherYear"></spring:message>
+                                    <spring:message code="total.number.of.copies" var="totalNumberOfCopies"></spring:message>
+                                    <spring:message code="add.book" var="addBook"></spring:message>
                                     <form:form  role="form" commandName="book" method="post" action="/book/save" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <input type="file" class="form-control" name="image"/>
                                         </div>
                                         <div class="form-group">
-                                            <form:input path="name" class="form-control" placeholder="Name" type="text"/>
+                                            <form:input path="name" class="form-control" placeholder="${name}" type="text"/>
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="isbn" path="isbn" />
+                                            <form:input class="form-control" placeholder="${isbn}" path="isbn" />
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="Edition" path="edition" />
+                                            <form:input class="form-control" placeholder="${edition}" path="edition" />
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="Description" path="description"/>
+                                            <form:input class="form-control" placeholder="${description}" path="description"/>
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="Price" path="price" />
+                                            <form:input class="form-control" placeholder="${price}" path="price" />
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="publisher" path="publisher" />
+                                            <form:input class="form-control" placeholder="${publisher}" path="publisher" />
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="Author Name" path="authorName" />
+                                            <form:input class="form-control" placeholder="${authorName}" path="authorName" />
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="Publication Year" path="publicationYear"/>
+                                            <form:input class="form-control" placeholder="${publisherYear}" path="publicationYear"/>
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="Total Number Of Copies" path="totalNumberOfCopies" type="number"/>
+                                            <form:input class="form-control" placeholder="${totalNumberOfCopies}" path="totalNumberOfCopies" type="number"/>
                                         </div>
                                         <form:select class="form-control"  multiple="true"  path="categoryBeens">
                                             <form:options items="${categories}" itemValue="id" itemLabel="name"/>
                                         </form:select>
-                                        <input class="btn btn-lg btn-success btn-block" type="submit" value="Add Book">
+                                        <input class="btn btn-lg btn-success btn-block" type="submit" value="${addBook}">
 
                                         </fieldset>
 
@@ -93,4 +104,5 @@
 </div>
 
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

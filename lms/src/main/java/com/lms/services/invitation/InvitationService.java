@@ -15,4 +15,6 @@ public interface InvitationService {
     void update(Invitation invitation);
     Page<Invitation> getPageRequest(Integer pageNumber);
     Invitation findByUuid(String uuid);
+    Invitation findByTokenAndNotDeleted(String token);
+    void inviteUser(Invitation invitation, String invitationUrl);
 }

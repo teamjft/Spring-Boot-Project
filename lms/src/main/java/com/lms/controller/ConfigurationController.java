@@ -42,6 +42,7 @@ import com.lms.utils.enums.NotificationType;
 import com.lms.utils.enums.SaveImageServiceType;
 import com.lms.utils.factory.NotificationFactory;
 import com.lms.utils.helper.NotificationUtil;
+import com.lms.utils.helper.SecurityUtil;
 import com.lms.utils.notification.EmailNotification;
 import com.lms.utils.notification.Notification;
 
@@ -71,8 +72,7 @@ public class ConfigurationController {
 
     @RequestMapping("/imageconfiguration")
     public ModelAndView imageConfiguration() {
-        SecUser secUser =
-                (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
         ModelAndView modelAndView = new ModelAndView("configuration/imageconfiguration");
         LibraryBean libraryBean = new LibraryBean();
@@ -87,8 +87,7 @@ public class ConfigurationController {
 
     @RequestMapping("/updatestrogetype")
     public ModelAndView updateStrogeType(@RequestParam(value = "saveImageServiceType") SaveImageServiceType saveImageServiceType, Object command) {
-        SecUser secUser =
-                (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
         library.setSaveImageServiceType(saveImageServiceType);
         libraryService.update(library);
@@ -98,8 +97,7 @@ public class ConfigurationController {
 
     @RequestMapping("/email")
     public ModelAndView emailConfiguration() {
-        SecUser secUser =
-                (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecUser secUser = SecurityUtil.getCurrentUser();
         ModelAndView modelAndView = new ModelAndView("configuration/emailconfiguration");
         return modelAndView;
     }

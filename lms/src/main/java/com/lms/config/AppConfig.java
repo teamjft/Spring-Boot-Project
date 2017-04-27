@@ -2,21 +2,28 @@ package com.lms.config;
 
 import java.beans.PropertyEditor;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.lms.utils.converter.NotificationTypeConverter;
@@ -35,6 +42,27 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Value("${localstroge.path}")
     private String filePath;
 
+  /*  @Bean
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("messages");
+        return messageSource;
+    }*/
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+        sessionLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+        return sessionLocaleResolver;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry interceptorRegistry) {
+        super.addInterceptors(interceptorRegistry);
+        LocaleChangeInterceptor changeInterceptor = new LocaleChangeInterceptor();
+        changeInterceptor.setParamName("ln");
+        interceptorRegistry.addInterceptor(changeInterceptor);
+    }
     @Bean
     protected ViewResolver InternalResourceViewResolver() {
         InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
@@ -50,6 +78,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/404").setViewName("404");
         registry.addViewController("/500").setViewName("500");
     }
+
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

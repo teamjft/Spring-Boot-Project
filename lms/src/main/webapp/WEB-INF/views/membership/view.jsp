@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
@@ -34,33 +35,30 @@
                                         <table class="table table-user-information">
                                             <tbody>
                                             <tr>
-                                                <td>Created On:</td>
+                                                <td><spring:message code="created.on"></spring:message> </td>
                                                 <td><fmt:formatDate type="both" dateStyle="short" timeStyle="short" value="${membership.createdOn}" /></td>
                                             </tr>
                                             <tr>
-                                                <td>User Name</td>
+                                                <td><spring:message code="user.name"></spring:message> </td>
                                                 <td>${membership.user.username}</td>
                                             </tr>
                                             <tr>
-                                                <td>Email</td>
+                                                <td><spring:message code="email"></spring:message> </td>
                                                 <td><a href="mailto:${membership.user.email}">${membership.user.email}</a></td>
                                             </tr>
                                             <tr>
-                                                <td>Membership Status:</td>
+                                                <td><spring:message code="membership.status"></spring:message> </td>
                                                 <td>${membership.membershipStatus}</td>
                                             </tr>
                                             <tr>
-                                                <td>Expired Date</td>
+                                                <td><spring:message code="expired.date"></spring:message> </td>
                                                 <c:if test="${membership.expiredDate ne null}">
-                                                <td><fmt:formatDate type="both" dateStyle="short" timeStyle="short" value="${membership.expiredDate}" /></td>
+                                                    <td><fmt:formatDate type="both" dateStyle="short" timeStyle="short" value="${membership.expiredDate}" /></td>
                                                 </c:if>
                                                 <c:if test="${membership.expiredDate eq null}">
-                                                    <td>Sorry! no expired date available.</td>
+                                                    <td><spring:message code="no.available"></spring:message></td>
                                                 </c:if>
                                             </tr>
-                                            <%--<td>Phone Number</td>
-                                            <td>123-4567-890(Landline)<br><br>555-4567-890(Mobile)
-                                            </td>--%>
 
                                             </tr>
 
@@ -72,9 +70,9 @@
                             <div class="panel-footer">
                                 <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" href="mailto:${membership.user.email}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-envelope"></i></a>
                                 <span class="pull-right">
-                       <%--     <a href="edit.html" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                    <%--     <a href="edit.html" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
                             <a data-original-title="Remove this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>--%>
-                        </span>
+                                </span>
                             </div>
 
                         </div>
@@ -86,4 +84,5 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

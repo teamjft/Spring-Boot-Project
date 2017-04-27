@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.User;
 import com.lms.dao.repository.MemberShipRepository;
@@ -66,5 +67,10 @@ public class MembershipServiceImpl implements MembershipService {
         PageRequest request =
                 new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "id");
         return memberShipRepository.findAll(request);
+    }
+
+    @Override
+    public MemberShip findByLibraryAndUser(Library library, User user) {
+        return memberShipRepository.findByLibraryAndUser(library, user);
     }
 }

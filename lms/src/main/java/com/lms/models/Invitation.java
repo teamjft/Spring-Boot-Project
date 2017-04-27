@@ -41,4 +41,5 @@ public class Invitation extends AbstractEntity implements Serializable {
     @Type(type = "yes_no")
     @Column(name = "is_deleted", nullable = false, columnDefinition = "char(1) default 'N'")
     private boolean deleted;
+    private String token;
 }

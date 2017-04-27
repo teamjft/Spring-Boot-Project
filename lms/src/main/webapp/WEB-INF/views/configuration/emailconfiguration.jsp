@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -28,30 +29,30 @@
                                 <div class="form-group">
                                     <c:if test="${error ne null}">
                                         <div class="alert alert-danger">
-                                            <strong>Error!</strong> ${error}.
+                                            <strong><spring:message code="error"></spring:message> </strong> ${error}.
                                         </div>
                                     </c:if>
                                     <c:if test="${success ne null}">
                                         <div class="alert alert-danger">
-                                            <strong>Success Message!</strong> ${success}.
+                                            <strong><spring:message code="success.message"></spring:message> </strong> ${success}.
                                         </div>
                                     </c:if>
                                 </div>
-
+                                <spring:message code="submit" var="submit"></spring:message>
                                 <form:form action="/configuration/save" method="POST">
                                     <div align="center">
                                         <table>
                                             <tr>
-                                                <td>User Name</td>
+                                                <td><spring:message code="user.name"></spring:message>: </td>
                                                 <td><input type="text" name="userName" /></td>
                                             </tr>
                                             <tr>
-                                                <td>Password</td>
+                                                <td><spring:message code="new.password"></spring:message> </td>
                                                 <td><input type="password" name="password" /></td>
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td><input type="submit" value="Submit" /></td>
+                                                <td><input type="submit" value="${submit}" /></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -63,4 +64,5 @@
             </div>
         </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

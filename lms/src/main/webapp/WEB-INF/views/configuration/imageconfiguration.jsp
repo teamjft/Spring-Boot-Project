@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -25,41 +26,42 @@
                         <div class="col-md-6 col-md-offset-2">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Image Configuration</h3>
+                                    <h3 class="panel-title"><spring:message code="image.configuration"></spring:message> </h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="panel-body">
-                                       Local Storage Path : ${local}
+                                       <spring:message code="local.storage.path"></spring:message> : ${local}
                                     </div>
                                     <div class="panel-body">
-                                        Cloudinary Storage Path : ${cloudinary}
+                                        <spring:message code="cloudinary.storage.path"></spring:message> : ${cloudinary}
                                     </div>
                                     <div class="panel-body">
-                                        Activated Storage Type : ${currentStorageType}
+                                        <spring:message code="activated.storage.type"></spring:message> : ${currentStorageType}
                                     </div>
                                 </div>
                             </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Update Configuration Storage Type</h3>
+                                    <h3 class="panel-title"><spring:message code="update.configuration.storage.type"></spring:message></h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
-                                                <strong>Error!</strong> ${error}.
+                                                <strong><spring:message code="error"></spring:message> </strong> ${error}.
                                             </div>
                                         </c:if>
                                         <c:if test="${errors != null}">
                                             <div  class="well">
                                                 <c:forEach items="${errors}" var="error">
                                                     <div class="alert alert-danger">
-                                                        <strong>Error!</strong> ${error.getDefaultMessage()}.
+                                                        <strong><spring:message code="error"></spring:message> </strong> ${error.getDefaultMessage()}.
                                                     </div>
                                                 </c:forEach>
                                             </div>
                                         </c:if>
                                     </div>
+                                    <spring:message code="update.storage" var="uploadStroge"></spring:message>
                                     <form  role="form" action="/configuration/updatestrogetype">
                                         <fieldset>
                                             <div class="form-group">
@@ -69,7 +71,7 @@
                                                     </label>
                                                 </c:forEach>
                                             </div>
-                                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Update Storage">
+                                            <input class="btn btn-lg btn-success btn-block" type="submit" value="${uploadStroge}">
                                         </fieldset>
 
                                     </form>
@@ -84,4 +86,5 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

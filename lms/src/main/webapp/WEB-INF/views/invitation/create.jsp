@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -25,10 +26,16 @@
                         <div class="col-md-6 col-md-offset-2">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Invite User </h3>
+                                    <spring:message code="send.invitation" var="sendInvitation"></spring:message>
+                                    <h3 class="panel-title"><spring:message code="invite.user"></spring:message> </h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
+                                        <c:if test="${success ne null}">
+                                            <div class="alert alert-success">
+                                            ${success}
+                                            </div>
+                                        </c:if>
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
                                                 <strong>Error!</strong> ${error}.
@@ -38,13 +45,13 @@
                                             <div  class="well">
                                                 <c:forEach items="${errors}" var="error">
                                                     <div class="alert alert-danger">
-                                                        <strong>Error!</strong> ${error.getDefaultMessage()}.
+                                                        <strong><spring:message code="error"></spring:message></strong> ${error.getDefaultMessage()}.
                                                     </div>
                                                 </c:forEach>
                                             </div>
                                         </c:if>
                                     </div>
-                                    <form:form  role="form" commandName="category" method="post" action="/invite/inviteUser">
+                                    <form:form  role="form" commandName="invitation" method="post" action="/invite/inviteUser">
                                         <fieldset>
                                             <div class="form-group">
                                                 <form:input path="email" class="form-control" placeholder="email" type="email"/>
@@ -53,7 +60,7 @@
                                                 <div class="form-group">
                                                     <label class="radio-inline">
                                                         <form:radiobutton path="admin"  value="True"/>
-                                                       Library Admin
+                                                       <spring:message code="librarian.admin"></spring:message>
                                                     </label>
 
                                                 </div>
@@ -62,7 +69,7 @@
                                                  <div class="form-group">
                                                      <label class="radio-inline">
                                                          <form:radiobutton path="librarian"  value="True"/>
-                                                         Librarian
+                                                         <spring:message code="librarian"></spring:message>
                                                      </label>
 
                                                  </div>
@@ -71,13 +78,13 @@
                                                 < <div class="form-group">
                                                  <label class="radio-inline">
                                                      <form:radiobutton path="superAdmin"  value="True"/>
-                                                     Super Admin
+                                                     <spring:message code="super.admin"></spring:message>
                                                  </label>
 
                                              </div>
                                             </c:if>
 
-                                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Send Invitation">
+                                            <input class="btn btn-lg btn-success btn-block" type="submit" value="${sendInvitation}">
                                         </fieldset>
 
                                     </form:form>
@@ -92,5 +99,6 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>
 

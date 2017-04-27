@@ -25,23 +25,13 @@ import com.lms.config.security.SecUser;
 import com.lms.models.Library;
 import com.lms.models.User;
 import com.lms.services.library.LibraryService;
-import com.lms.services.notification.NotificationBuilder;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.DataCount;
 import com.lms.utils.beans.PasswordConfirmationBean;
 import com.lms.utils.beans.ResponseMessage;
 import com.lms.utils.beans.UserBean;
-import com.lms.utils.enums.NotificationServiceType;
-import com.lms.utils.enums.NotificationType;
-import com.lms.utils.factory.NotificationFactory;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.StringUtil;
-import com.lms.utils.notification.EmailNotification;
-import com.lms.utils.notification.Notification;
-import com.lms.utils.notification.mapper.EmailMapMapper;
-import com.lms.utils.notification.mapper.ForgetMapPassword;
-import com.lms.utils.notification.parameterprovider.ForgetPasswordParameter;
-
 /**
  * Created by bhushan on 11/4/17.
  */
@@ -51,10 +41,6 @@ import com.lms.utils.notification.parameterprovider.ForgetPasswordParameter;
 public class UserController {
     @Autowired
     private LibraryService libraryService;
-    @Autowired
-    private NotificationBuilder notificationBuilder;
-    @Autowired
-    private NotificationFactory notificationFactory;
     @Autowired
     private UserService userService;
 
@@ -89,29 +75,11 @@ public class UserController {
         if(user == null) {
             return new ResponseMessage("Not a valid email register with system", ResponseMessage.MessageType.ERROR, "email");
         }
-        String forgetPasswordUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "user/resetpassword", token);
+        String forgetPasswordUrl = String.format("%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "user/resetpassword");
         if (!StringUtil.isValidEmail(email)) {
             return new ResponseMessage("invalid email", ResponseMessage.MessageType.ERROR, "email");
         }
-        ForgetPasswordParameter passwordParameter = ForgetPasswordParameter.builder()
-                .forgetPasswordUrl(forgetPasswordUrl)
-                .userName(user.getEmail())
-                .build();
-
-        EmailMapMapper emailMapMapper = new ForgetMapPassword();
-        emailMapMapper.setMap(passwordParameter);
-        Pair<String, String> pair = notificationBuilder.getNotificationContentAndSubject(NotificationType.FORGETPASSWORD, emailMapMapper);
-        if (pair == null) {
-            return new ResponseMessage("Something went wrong please contact to service provider", ResponseMessage.MessageType.ERROR, "email");
-        }
-        user.setToken(token);
-        userService.updateUser(user);
-        Notification notification = EmailNotification.builder()
-                .subject(pair.getLeft())
-                .content(pair.getRight())
-                .to(email).build();
-
-        notificationFactory.getSendContentService(NotificationServiceType.EMAIL). sendNotification(notification);
+        userService.requestForgetPassword(forgetPasswordUrl, user);
         return new ResponseMessage("Please verify your forget password link.", ResponseMessage.MessageType.SUCCESS, "email");
     }
 

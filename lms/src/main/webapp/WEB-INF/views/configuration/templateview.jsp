@@ -7,6 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -27,12 +28,12 @@
                                     <c:if test="${success ne null}">
                                         <p class="alert alert-success">${success}</p>
                                     </c:if>
-                                    <legend class="text-center">Email Template Details:
-                                        <a  class="btn bg-primary" href="/configuration/editTemplate/${emailTemplate.uuid}">Edit</a>
+                                    <legend class="text-center">
+                                        <a  class="btn bg-primary" href="/configuration/editTemplate/${emailTemplate.uuid}"><spring:message code="edit"></spring:message></a>
                                     </legend>
                                     <!-- Name input-->
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label" for="name">Notification Type</label>
+                                        <label class="col-md-3 control-label" for="name"><spring:message code="notification.type"></spring:message> </label>
                                         <div class="col-md-9">
                                             <input id="name" readonly type="text" value="${emailTemplate.notificationType}" class="form-control">
                                         </div>
@@ -40,7 +41,7 @@
 
                                     <!-- Email input-->
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label" for="email">Subject</label>
+                                        <label class="col-md-3 control-label" for="email"><spring:message code="subject"></spring:message> </label>
                                         <div class="col-md-9">
                                             <input id="email" readonly  type="text" value="${emailTemplate.subject}" class="form-control">
                                         </div>
@@ -48,7 +49,7 @@
 
                                     <!-- Message body -->
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label" for="message">Content</label>
+                                        <label class="col-md-3 control-label" for="message"><spring:message code="content"></spring:message> </label>
                                         <div class="col-md-9">
                                             <textarea class="form-control" id="message" readonly rows="5">"${emailTemplate.content}" </textarea>
                                         </div>
@@ -66,4 +67,5 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -25,32 +26,34 @@
                         <div class="col-md-6 col-md-offset-2">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Edit Category</h3>
+                                    <h3 class="panel-title"><spring:message code="category.edit"></spring:message> </h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
-                                                <strong>Error!</strong> ${error}.
+                                                <strong><spring:message code="error"></spring:message> </strong> ${error}.
                                             </div>
                                         </c:if>
                                         <c:if test="${errors != null}">
                                             <div  class="well">
                                                 <c:forEach items="${errors}" var="error">
                                                     <div class="alert alert-danger">
-                                                        <strong>Error!</strong> ${error.getDefaultMessage()}.
+                                                        <strong><spring:message code="error"></spring:message> </strong> ${error.getDefaultMessage()}.
                                                     </div>
                                                 </c:forEach>
                                             </div>
                                         </c:if>
                                     </div>
+                                    <spring:message code="update.edit" var="updateCategory"></spring:message>
+                                    <spring:message code="name" var="name"></spring:message>
                                     <form:form  role="form" commandName="category" method="post" action="/category/update">
                                         <fieldset>
                                             <div class="form-group">
-                                                <form:input path="name" class="form-control" placeholder="Name" type="text"/>
+                                                <form:input path="name" class="form-control" placeholder="${name}" type="text"/>
                                             </div>
                                             <form:hidden path="uuid"/>
-                                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Update Category">
+                                            <input class="btn btn-lg btn-success btn-block" type="submit" value="${updateCategory}">
 
                                         </fieldset>
 
@@ -66,4 +69,5 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>

@@ -9,4 +9,5 @@ import com.lms.models.Invitation;
  */
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     Invitation findByUuid(String uuid);
+    Invitation findByTokenAndDeletedFalse(String uuid);
 }

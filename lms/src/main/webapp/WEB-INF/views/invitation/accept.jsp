@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
-  Date: 24/4/17
-  Time: 4:44 PM
+  Date: 26/4/17
+  Time: 4:25 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -25,20 +25,20 @@
                         <div class="col-md-6 col-md-offset-2">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Reset Password</h3>
+                                    <h3 class="panel-title"><spring:message code="recover.password"></spring:message> </h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
-                                                <strong><spring:message code="error"></spring:message></strong> ${error}.
+                                                <strong>Error!</strong> ${error}.
                                             </div>
                                         </c:if>
                                         <c:if test="${errors != null}">
                                             <div  class="well">
                                                 <c:forEach items="${errors}" var="error">
                                                     <div class="alert alert-danger">
-                                                        <strong><spring:message code="error"></spring:message></strong> ${error.getDefaultMessage()}.
+                                                        <strong><spring:message code="error"></spring:message> </strong> ${error.getDefaultMessage()}.
                                                     </div>
                                                 </c:forEach>
                                             </div>
@@ -46,21 +46,30 @@
                                     </div>
                                     <c:choose>
                                         <c:when test="${success eq null}">
-                                            <form:form  role="form" commandName="passwordConfirmation" method="post" action="/user/resetpassword">
+                                            <spring:message code="required.user.name" var="requiredUserName"/>
+                                            <spring:message code="first.name" var="firstName"/>
+                                            <spring:message code="last.name" var="lastName"/>
+                                            <spring:message code="new.password" var="newPassword"/>
+                                            <spring:message code="confirm.password" var="confirmPassword"></spring:message>
+                                            <spring:message code="create.account" var="createAccount"></spring:message>
+                                            <form:form  role="form" commandName="user" method="post" action="/invitation/accept">
                                                 <fieldset>
                                                     <div class="form-group">
-                                                        <form:input path="password" class="form-control" placeholder="New Password" type="password"/>
-                                                        <form:input path="confirmPassword" class="form-control" placeholder="Confirm Password" type="password"/>
-                                                        <form:hidden path="token" />
+                                                        <form:input path="username" class="form-control" placeholder="${requiredUserName}"/>
+                                                        <form:input path="firstName" class="form-control" placeholder="${firstName}"/>
+                                                        <form:input path="lastName" class="form-control" placeholder="${lastName}"/>
+                                                        <form:input path="passwordConfirmationBean.password" class="form-control" placeholder="${newPassword}" type="password"/>
+                                                        <form:input path="passwordConfirmationBean.confirmPassword" class="form-control" placeholder="${confirmPassword}" type="password"/>
+                                                        <form:hidden path="passwordConfirmationBean.token" />
                                                     </div>
-                                                    <input class="btn btn-lg btn-success btn-block" type="submit" value="Update password">
+                                                    <input class="btn btn-lg btn-success btn-block" type="submit" value="${createAccount}">
                                                 </fieldset>
 
                                             </form:form>
                                         </c:when>
                                         <c:when test="${success ne null}">
                                             <p class="alert alert-success">${success}</p>
-                                            <button class="btn btn-block"><a href="/"><spring:message code="take.me.home"></spring:message> </a></button>
+                                            <button class="btn btn-block"><a href="/"><spring:message code="take.me.home"></spring:message></a></button>
                                         </c:when>
                                     </c:choose>
 
@@ -76,6 +85,5 @@
 </div>
 </div>
 </body>
-<c:import url="../template/footer.jsp"></c:import>
 </html>
 
