@@ -16,12 +16,12 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Setter @Getter @Builder @AllArgsConstructor @NoArgsConstructor
 public class PasswordConfirmationBean {
-    @NotEmpty(message = "{password.not.empty}")
-    @Size(max = 255, message = "{isbn.max}")
+    @NotEmpty
+    @Size(max = 255)
     private String password;
-    @Size(max = 255, message = "{isbn.max}")
-    @NotEmpty(message = "{confirmPassword.not.empty}")
+    @Size(max = 255)
+    @NotEmpty
     private String confirmPassword;
-    @NotEmpty(message = "{token.not.empty}")
+    @NotEmpty
     private String token;
 }

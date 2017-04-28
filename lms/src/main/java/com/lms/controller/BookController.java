@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
@@ -130,7 +131,7 @@ public class BookController {
     }
 
     @RequestMapping("/save")
-    public ModelAndView save(@RequestParam(value = "image", required = false) MultipartFile image, @Valid @ModelAttribute("book")BookBean bookBean, BindingResult result, Map model) {
+    public ModelAndView save(@RequestParam(value = "image", required = false) MultipartFile image, @Valid @ModelAttribute("book")BookBean bookBean, BindingResult result) {
 
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();

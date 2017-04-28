@@ -52,14 +52,19 @@
                                             <spring:message code="new.password" var="newPassword"/>
                                             <spring:message code="confirm.password" var="confirmPassword"></spring:message>
                                             <spring:message code="create.account" var="createAccount"></spring:message>
-                                            <form:form  role="form" commandName="user" method="post" action="/invitation/accept">
+                                            <form:form  role="form" commandName="user" method="post" action="/invite/accept">
                                                 <fieldset>
                                                     <div class="form-group">
                                                         <form:input path="username" class="form-control" placeholder="${requiredUserName}"/>
+                                                        <form:errors path="username" cssClass="alert-danger"/>
                                                         <form:input path="firstName" class="form-control" placeholder="${firstName}"/>
+                                                        <form:errors path="firstName" cssClass= "alert-danger"/>
                                                         <form:input path="lastName" class="form-control" placeholder="${lastName}"/>
+                                                        <form:errors path="lastName" cssClass="alert-danger"/>
                                                         <form:input path="passwordConfirmationBean.password" class="form-control" placeholder="${newPassword}" type="password"/>
+                                                        <form:errors path="passwordConfirmationBean.password" cssClass="alert-danger"/>
                                                         <form:input path="passwordConfirmationBean.confirmPassword" class="form-control" placeholder="${confirmPassword}" type="password"/>
+                                                        <form:errors path="passwordConfirmationBean.confirmPassword" cssClass="alert-danger"/>
                                                         <form:hidden path="passwordConfirmationBean.token" />
                                                     </div>
                                                     <input class="btn btn-lg btn-success btn-block" type="submit" value="${createAccount}">
@@ -85,5 +90,6 @@
 </div>
 </div>
 </body>
+<c:import url="../template/footer.jsp"></c:import>
 </html>
 

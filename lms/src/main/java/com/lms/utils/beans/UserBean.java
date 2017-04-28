@@ -16,14 +16,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Builder @AllArgsConstructor @NoArgsConstructor @Getter @Setter
 public class UserBean {
     private Long id;
-    @Size(max = 255, message = "{isbn.max}")
-    @NotEmpty(message = "{firstname.notempty}" )
+    @Size(max = 255)
+    @NotEmpty
     private String firstName;
     @Size(max = 255)
     private String lastName;
     @Size(max = 255)
     private String email;
-    @NotEmpty(message = "{username.notempty}")
+    @NotEmpty
     @Size(max = 255)
     private String username;
     private String password;

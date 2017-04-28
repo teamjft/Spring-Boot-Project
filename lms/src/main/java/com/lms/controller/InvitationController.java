@@ -27,6 +27,7 @@ import com.lms.services.invitation.InvitationService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.InvitationBean;
+import com.lms.utils.beans.PasswordConfirmationBean;
 import com.lms.utils.beans.UserBean;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.SecurityUtil;
@@ -66,7 +67,7 @@ public class InvitationController {
 
 
     @RequestMapping(value = "/inviteUser", method = RequestMethod.POST)
-    public ModelAndView invitation(@Valid @ModelAttribute InvitationBean invitationBean, BindingResult result, HttpServletRequest httpServletRequest) {
+    public ModelAndView invitation(@Valid @ModelAttribute("invitation") InvitationBean invitationBean, BindingResult result, HttpServletRequest httpServletRequest) {
         if(result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "create");
@@ -105,26 +106,44 @@ public class InvitationController {
                 .inviteLibrary(memberShip.getLibrary())
                 .token(UUID.randomUUID().toString())
                 .build();
-        String invitationUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "inviteUser/resetpassword", invitation.getToken());
+        String invitationUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "inviteUser/accept", invitation.getToken());
         invitationService.inviteUser(invitation, invitationUrl);
         ModelAndView modelAndView = getCreateOrEditModel(new InvitationBean(), "create");
         modelAndView.addObject("success", "Successfully send invitations");
         return  modelAndView;
     }
 
-    @RequestMapping(value = "/accept", method = RequestMethod.GET)
-    public ModelAndView create(@PathVariable String token) {
+    @PreAuthorize("permitAll")
+    @RequestMapping(value = "/accept/{token}")
+    public ModelAndView accept(@PathVariable String token) {
         Invitation invitation = invitationService.findByTokenAndNotDeleted(token);
         if(invitation == null) {
             return new ModelAndView("redirect:/");
         }
         UserBean userBean = new UserBean();
+        userBean.setPasswordConfirmationBean(new PasswordConfirmationBean());
         userBean.getPasswordConfirmationBean().setToken(invitation.getToken());
         ModelAndView modelAndView =  new ModelAndView("invitation/accept");
         modelAndView.addObject("user", userBean);
         return modelAndView;
     }
 
+    @PreAuthorize("permitAll")
+    @RequestMapping(value = "/accept", method = RequestMethod.POST)
+    public ModelAndView accept(@Valid @ModelAttribute("user") UserBean userBean, BindingResult result) {
+        if(result.hasErrors()) {
+            List<ObjectError> errors = result.getAllErrors();
+            ModelAndView modelAndView =  new ModelAndView("invitation/accept");
+            modelAndView.addObject("user", userBean);
+            return modelAndView;
+        }
+       /* UserBean userBean = new UserBean();
+        userBean.setPasswordConfirmationBean(new PasswordConfirmationBean());
+        userBean.getPasswordConfirmationBean().setToken(invitation.getToken());
+        ModelAndView modelAndView =  new ModelAndView("invitation/accept");
+        modelAndView.addObject("user", userBean);*/
+        return  new ModelAndView("invitation/accept");
+    }
 
     private ModelAndView getCreateOrEditModel(InvitationBean invitationBean, String action) {
         ModelAndView modelAndView = new ModelAndView(String.format("invitation/%s", action));

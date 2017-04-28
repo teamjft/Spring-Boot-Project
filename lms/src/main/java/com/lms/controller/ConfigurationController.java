@@ -95,7 +95,7 @@ public class ConfigurationController {
     }
 
 
-    @RequestMapping("/email")
+  /*  @RequestMapping("/email")
     public ModelAndView emailConfiguration() {
         SecUser secUser = SecurityUtil.getCurrentUser();
         ModelAndView modelAndView = new ModelAndView("configuration/emailconfiguration");
@@ -112,7 +112,7 @@ public class ConfigurationController {
 
         notificationFactory.getSendContentService(NotificationServiceType.EMAIL).sendNotification(notification);
         return new ModelAndView("redirect:/configuration/email");
-    }
+    }*/
 
     @RequestMapping("/template")
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {

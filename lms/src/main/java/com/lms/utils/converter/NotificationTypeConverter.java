@@ -10,7 +10,6 @@ public class NotificationTypeConverter extends PropertyEditorSupport {
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
-
         String capitalized = text.toUpperCase();
         NotificationType notificationType = NotificationType.valueOf(capitalized);
         setValue(notificationType);

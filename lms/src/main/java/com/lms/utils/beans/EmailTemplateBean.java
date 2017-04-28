@@ -20,9 +20,9 @@ public class EmailTemplateBean {
     private long id;
     private String uuid;
     private NotificationType notificationType;
-    @NotEmpty(message = "{subject.notempty}")
+    @NotEmpty
     private String subject;
-    @NotEmpty(message = "{content.notempty}")
+    @NotEmpty
     private String content;
     private List availableField;
 }

@@ -38,16 +38,7 @@
                                         </c:if>
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
-                                                <strong>Error!</strong> ${error}.
-                                            </div>
-                                        </c:if>
-                                        <c:if test="${errors != null}">
-                                            <div  class="well">
-                                                <c:forEach items="${errors}" var="error">
-                                                    <div class="alert alert-danger">
-                                                        <strong><spring:message code="error"></spring:message></strong> ${error.getDefaultMessage()}.
-                                                    </div>
-                                                </c:forEach>
+                                                <strong><spring:message code="error"></spring:message> </strong> ${error}.
                                             </div>
                                         </c:if>
                                     </div>
@@ -55,6 +46,7 @@
                                         <fieldset>
                                             <div class="form-group">
                                                 <form:input path="email" class="form-control" placeholder="email" type="email"/>
+                                                <form:errors path="email" cssClass="alert-danger"/>
                                             </div>
                                             <c:if test="${admin ne null}">
                                                 <div class="form-group">

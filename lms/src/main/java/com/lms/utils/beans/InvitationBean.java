@@ -8,16 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import com.lms.utils.customannotation.NotEmptyAndNull;
 
 /**
  * Created by bhushan on 25/4/17.
  */
 @Builder @Setter @Getter @NoArgsConstructor @AllArgsConstructor
 public class InvitationBean {
-    @NotEmpty(message = "{email.not.empty}")
-    @Email(message = "{email.not.valid}")
+
+    @NotEmptyAndNull(fieldName = "Email")
     private String email;
     private Long invitedById;
     private Long inviteLibraryId;

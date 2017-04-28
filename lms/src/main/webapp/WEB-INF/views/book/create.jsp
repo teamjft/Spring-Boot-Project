@@ -59,6 +59,7 @@
                                         </div>
                                         <div class="form-group">
                                             <form:input path="name" class="form-control" placeholder="${name}" type="text"/>
+                                            <form:errors path="name" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${isbn}" path="isbn" />

@@ -22,27 +22,27 @@ import com.lms.models.Book;
 public class BookBean {
     private Long id;
 
-    @Size(max = 255, message = "{isbn.max}")
-    @NotEmpty(message = "{isbn.not.empty}")
+    @Size(max = 255)
+    @NotEmpty
     private String isbn;
 
-    @Size(max = 255, message = "{name.max}")
-    @NotEmpty(message = "{name.not.empty}")
+    @Size(max = 255)
+    @NotEmpty
     private String name;
 
-    @Size(max = 255, message = "{edition.max}")
+    @Size(max = 255)
     private String edition;
 
-    @Size(max = 2044, message = "{description.max}")
+    @Size(max = 2044)
     private String description;
 
-    @Digits(integer = 6, fraction = 6, message ="{price.digits}")
+    @Digits(integer = 6, fraction = 6)
     private Double price;
 
-    @Size(max = 255, message = "{publisher.max}")
+    @Size(max = 255)
     private String publisher;
 
-    @Size(max = 255, message = "{authorname.max}")
+    @Size(max = 255)
     private String authorName;
 
     private String imageUrl;
@@ -52,7 +52,7 @@ public class BookBean {
 
     private Integer numberOfAvailableCopies;
 
-    @NotNull(message = "{totalnumberofcopies.not.empty}")
+    @NotNull
     private Integer totalNumberOfCopies;
 
     private Set<CategoryBean> categoryBeens = new HashSet<>();

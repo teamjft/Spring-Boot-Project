@@ -35,15 +35,6 @@
                                                 <strong><spring:message code="error"></spring:message> </strong> ${error}.
                                             </div>
                                         </c:if>
-                                        <c:if test="${errors != null}">
-                                            <div  class="well">
-                                                <c:forEach items="${errors}" var="error">
-                                                    <div class="alert alert-danger">
-                                                        <strong><spring:message code="error"></spring:message> </strong> ${error.getDefaultMessage()}.
-                                                    </div>
-                                                </c:forEach>
-                                            </div>
-                                        </c:if>
                                     </div>
                                     <spring:message code="update.edit" var="updateCategory"></spring:message>
                                     <spring:message code="name" var="name"></spring:message>
@@ -51,6 +42,7 @@
                                         <fieldset>
                                             <div class="form-group">
                                                 <form:input path="name" class="form-control" placeholder="${name}" type="text"/>
+                                                <form:errors path="name" cssClass="alert-danger"/>
                                             </div>
                                             <form:hidden path="uuid"/>
                                             <input class="btn btn-lg btn-success btn-block" type="submit" value="${updateCategory}">

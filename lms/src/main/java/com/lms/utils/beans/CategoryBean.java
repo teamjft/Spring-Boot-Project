@@ -16,8 +16,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Setter @Getter @Builder @NoArgsConstructor @AllArgsConstructor
 public class CategoryBean {
     private Long id;
-    @NotEmpty(message = "{category.name.notempty}")
-    @Size(max = 255, message = "{category.name.max}")
+    @NotEmpty
+    @Size(max = 225)
     private String name;
     private String uuid;
 }
