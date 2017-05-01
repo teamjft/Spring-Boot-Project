@@ -13,6 +13,9 @@
 <head>
     <c:import url="../template/header.jsp"></c:import>
     <link href="<c:url value="../../../static/bootstrap/css/font-awesome.min.css" />" rel="stylesheet">
+    <link href="<c:url value="../../../static/bootstrap/css/bootstrap-datepicker.css" />" rel="stylesheet">
+    <script src="../../../static/bootstrap/js/bootstrap-datepicker.min.js"></script>
+
 </head>
 <body  class="wellBody">
 <div class="container col-md-12">
@@ -48,11 +51,20 @@
                                                 <form:input path="email" class="form-control" placeholder="email" type="email"/>
                                                 <form:errors path="email" cssClass="alert-danger"/>
                                             </div>
+                                            <div>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    <input type="text" class="form-control" placeholder="Expired date">
+                                                    <div class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-th"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
                                             <c:if test="${admin ne null}">
                                                 <div class="form-group">
                                                     <label class="radio-inline">
                                                         <form:radiobutton path="admin"  value="True"/>
-                                                       <spring:message code="librarian.admin"></spring:message>
+                                                        <spring:message code="librarian.admin"></spring:message>
                                                     </label>
 
                                                 </div>

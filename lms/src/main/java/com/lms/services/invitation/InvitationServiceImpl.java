@@ -9,12 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lms.dao.repository.InvitationRepository;
 import com.lms.models.Invitation;
+import com.lms.models.MemberShip;
+import com.lms.models.User;
+import com.lms.services.membership.MembershipService;
 import com.lms.services.notification.NotificationBuilder;
+import com.lms.services.user.UserService;
+import com.lms.utils.beans.UserBean;
 import com.lms.utils.enums.NotificationServiceType;
 import com.lms.utils.enums.NotificationType;
 import com.lms.utils.factory.NotificationFactory;
@@ -35,6 +41,10 @@ public class InvitationServiceImpl implements InvitationService {
     private NotificationBuilder notificationBuilder;
     @Autowired
     private NotificationFactory notificationFactory;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private MembershipService membershipService;
 
     @Override
     @Transactional(readOnly = true)
@@ -90,7 +100,27 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Invitation findByTokenAndNotDeleted(String token) {
         return invitationRepository.findByTokenAndDeletedFalse(token);
+    }
+
+    @Override
+    @Transactional
+    public void createUser(Invitation invitation, UserBean userBean) {
+        User user = new User();
+        user.setPassword(new BCryptPasswordEncoder().encode(userBean.getPassword()));
+        user.setFirstName(userBean.getFirstName());
+        user.setLastName(userBean.getLastName());
+        user.setUsername(userBean.getUsername());
+        user.setEmail(invitation.getEmail());
+        user.setSuperAdmin(invitation.isSuperAdmin());
+        user = userService.createUser(user);
+        MemberShip memberShip = new MemberShip();
+        memberShip.setLibrary(invitation.getInviteLibrary());
+        memberShip.setUser(user);
+        memberShip.setLibrarian(invitation.isLibrarian());
+        memberShip.setAdmin(invitation.isAdmin());
+        membershipService.create(memberShip);
     }
 }

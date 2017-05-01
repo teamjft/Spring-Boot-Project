@@ -6,9 +6,7 @@ import java.util.Map;
 /**
  * Created by bhushan on 21/4/17.
  */
-public abstract class EmailMapMapper {
-
- public abstract List getTargetParameters();
+public abstract class EmailMapMapper implements IEmailMapMapper {
 
  Map<String, String> map;
 

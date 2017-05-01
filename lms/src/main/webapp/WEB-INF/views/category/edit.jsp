@@ -44,7 +44,7 @@
                                                 <form:input path="name" class="form-control" placeholder="${name}" type="text"/>
                                                 <form:errors path="name" cssClass="alert-danger"/>
                                             </div>
-                                            <form:hidden path="uuid"/>
+                                            <form:hidden path="uuid" />
                                             <input class="btn btn-lg btn-success btn-block" type="submit" value="${updateCategory}">
 
                                         </fieldset>

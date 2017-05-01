@@ -41,6 +41,7 @@ import com.lms.services.library.LibraryService;
 import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.CategoryBean;
 import com.lms.utils.helper.SecurityUtil;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 /**
  * Created by bhushan on 17/4/17.
@@ -127,21 +128,21 @@ public class BookController {
 
     @RequestMapping("/create")
     public ModelAndView create() {
-        return getCreateModel();
+        return getCreateModel(new BookBean());
     }
 
     @RequestMapping("/save")
-    public ModelAndView save(@RequestParam(value = "image", required = false) MultipartFile image, @Valid @ModelAttribute("book")BookBean bookBean, BindingResult result) {
+    public ModelAndView save(@RequestParam(value = "image", required = false) MultipartFile image, @Valid @ModelAttribute("book")BookBean bookBean, BindingResult result, Map map) {
 
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
-            ModelAndView modelAndView = getCreateModel();
+            ModelAndView modelAndView = getCreateModel(bookBean);
             modelAndView.addObject("errors", errors);
             return modelAndView;
         }
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
-        ModelAndView createViewModel = getCreateModel();
+        ModelAndView createViewModel = getCreateModel(bookBean);
         if (bookService.countBYLibraryAndIsbn(library, bookBean.getIsbn()) != 0) {
             createViewModel.addObject("error", String.format("book already exist with isbn: %s", bookBean.getIsbn()));
             return createViewModel;
@@ -176,9 +177,9 @@ public class BookController {
         return new ModelAndView("redirect:/book/index");
     }
 
-    private ModelAndView getCreateModel() {
+    private ModelAndView getCreateModel(BookBean bookBean) {
         ModelAndView modelAndView = new  ModelAndView("book/create");
-        modelAndView.addObject("book", new BookBean());
+        modelAndView.addObject("book", bookBean);
         List<Category> categories = categoryService.getAll();
         modelAndView.addObject("categories", categories);
         return modelAndView;

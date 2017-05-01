@@ -15,7 +15,7 @@ public class InviteUserMapMapper extends EmailMapMapper {
     private final static String FIRST_NAME = "%FIRSTNAME%";
     private final static String LAST_NAME = "%LASTNAME%";
     private final static String LIBRARY_NAME = "%LIBRARYNAME%";
-    private final static String USER_ACTIVATION_URL = "%USERACTIVATIONURL";
+    private final static String USER_ACTIVATION_URL = "%USERACTIVATIONURL%";
     public static final List<String> TARGET_PARAMETERS = Arrays.asList(FIRST_NAME, LAST_NAME, LIBRARY_NAME, USER_ACTIVATION_URL );
 
     public InviteUserMapMapper(InviteUserParameter inviteUserParameter) {

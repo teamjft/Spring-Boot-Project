@@ -13,6 +13,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.lms.models.Book;
+import com.lms.utils.customannotation.annotaion.FieldSize;
+import com.lms.utils.customannotation.annotaion.NotEmptyAndNull;
 
 
 /**
@@ -22,27 +24,25 @@ import com.lms.models.Book;
 public class BookBean {
     private Long id;
 
-    @Size(max = 255)
-    @NotEmpty
+    @FieldSize(nullable = false, fieldName = "ISBN")
     private String isbn;
 
-    @Size(max = 255)
-    @NotEmpty
+    @FieldSize(nullable = false, fieldName ="Name")
     private String name;
 
-    @Size(max = 255)
+    @FieldSize(fieldName = "Edition")
     private String edition;
 
-    @Size(max = 2044)
+    @FieldSize(max = 2044, fieldName = "Description")
     private String description;
 
     @Digits(integer = 6, fraction = 6)
     private Double price;
 
-    @Size(max = 255)
+    @FieldSize(fieldName = "Publisher")
     private String publisher;
 
-    @Size(max = 255)
+    @FieldSize(fieldName = "Author Name")
     private String authorName;
 
     private String imageUrl;
@@ -52,7 +52,7 @@ public class BookBean {
 
     private Integer numberOfAvailableCopies;
 
-    @NotNull
+    @FieldSize(fieldName = "Total number of copies",max =1000000, nullable = false)
     private Integer totalNumberOfCopies;
 
     private Set<CategoryBean> categoryBeens = new HashSet<>();

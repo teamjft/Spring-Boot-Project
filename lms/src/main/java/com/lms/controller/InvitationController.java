@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -51,31 +52,26 @@ public class InvitationController {
         InvitationBean invitationBean = new InvitationBean();
         SecUser secUser = SecurityUtil.getCurrentUser();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
-        User user = memberShip.getUser();
         ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "create");
-        if(memberShip.isAdmin()) {
-            modelAndView.addObject("admin", true);
-        }
-        if (memberShip.isLibrarian()) {
-            modelAndView.addObject("librarian", true);
-        }
-        if (user.isSuperAdmin()) {
-            modelAndView.addObject("librarian", true);
-        }
+        modelAndView = addRoles(memberShip, modelAndView);
         return modelAndView;
     }
 
 
     @RequestMapping(value = "/inviteUser", method = RequestMethod.POST)
     public ModelAndView invitation(@Valid @ModelAttribute("invitation") InvitationBean invitationBean, BindingResult result, HttpServletRequest httpServletRequest) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        User invitedBy = memberShip.getUser();
         if(result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "create");
             modelAndView.addObject("errors", errors);
+            modelAndView = addRoles(memberShip, modelAndView);
             return modelAndView;
         }
-        SecUser secUser = SecurityUtil.getCurrentUser();
-        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+
+
         Library library = memberShip.getLibrary();
 
         User inviteUser  = userService.findByEmail(invitationBean.getEmail());
@@ -87,7 +83,7 @@ public class InvitationController {
                 return modelAndView;
             }
         }
-        User invitedBy = memberShip.getUser();
+
         if(!memberShip.isAdmin()) {
             invitationBean.setAdmin(false);
         }
@@ -106,10 +102,11 @@ public class InvitationController {
                 .inviteLibrary(memberShip.getLibrary())
                 .token(UUID.randomUUID().toString())
                 .build();
-        String invitationUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "inviteUser/accept", invitation.getToken());
+        String invitationUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "invite/accept", invitation.getToken());
         invitationService.inviteUser(invitation, invitationUrl);
         ModelAndView modelAndView = getCreateOrEditModel(new InvitationBean(), "create");
         modelAndView.addObject("success", "Successfully send invitations");
+        modelAndView = addRoles(memberShip, modelAndView);
         return  modelAndView;
     }
 
@@ -121,8 +118,7 @@ public class InvitationController {
             return new ModelAndView("redirect:/");
         }
         UserBean userBean = new UserBean();
-        userBean.setPasswordConfirmationBean(new PasswordConfirmationBean());
-        userBean.getPasswordConfirmationBean().setToken(invitation.getToken());
+        userBean.setToken(invitation.getToken());
         ModelAndView modelAndView =  new ModelAndView("invitation/accept");
         modelAndView.addObject("user", userBean);
         return modelAndView;
@@ -137,17 +133,40 @@ public class InvitationController {
             modelAndView.addObject("user", userBean);
             return modelAndView;
         }
-       /* UserBean userBean = new UserBean();
-        userBean.setPasswordConfirmationBean(new PasswordConfirmationBean());
-        userBean.getPasswordConfirmationBean().setToken(invitation.getToken());
-        ModelAndView modelAndView =  new ModelAndView("invitation/accept");
-        modelAndView.addObject("user", userBean);*/
-        return  new ModelAndView("invitation/accept");
+        User user1 = userService.loadByUsername(userBean.getUsername());
+        if(user1 != null) {
+            ModelAndView modelAndView =  new ModelAndView("invitation/accept");
+            modelAndView.addObject("user", userBean);
+            modelAndView.addObject("error", "username is already register please choose another user name.");
+            return modelAndView;
+        }
+        Invitation invitation = invitationService.findByTokenAndNotDeleted(userBean.getToken());
+        if(invitation == null) {
+            return new ModelAndView("redirect:/");
+        }
+
+        invitationService.createUser(invitation, userBean);
+        ModelAndView modelAndView = new ModelAndView("invitation/accept");
+        modelAndView.addObject("success", "successfully created account");
+        return  modelAndView;
     }
 
     private ModelAndView getCreateOrEditModel(InvitationBean invitationBean, String action) {
         ModelAndView modelAndView = new ModelAndView(String.format("invitation/%s", action));
         modelAndView.addObject("invitation", invitationBean );
+        return modelAndView;
+    }
+
+    private ModelAndView addRoles(MemberShip memberShip, ModelAndView modelAndView) {
+        if(memberShip.isAdmin()) {
+            modelAndView.addObject("admin", true);
+        }
+        if (memberShip.isLibrarian()) {
+            modelAndView.addObject("librarian", true);
+        }
+        if (memberShip.getUser().isSuperAdmin()) {
+            modelAndView.addObject("librarian", true);
+        }
         return modelAndView;
     }
 }

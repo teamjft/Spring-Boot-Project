@@ -56,6 +56,7 @@ public class CategoryController {
             CategoryBean categoryBean = CategoryBean.builder()
                     .id(category.getId())
                     .name(category.getName())
+                    .uuid(category.getUuid())
                     .build();
             ModelAndView modelAndView = getCreateOrEditModel(categoryBean, "edit");
             return modelAndView;

@@ -1,8 +1,9 @@
-package com.lms.utils.customannotation;
+package com.lms.utils.customannotation.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import com.lms.utils.customannotation.annotaion.Email;
 import com.lms.utils.helper.StringUtil;
 
 /**
@@ -15,7 +16,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(value != null || value.length() > 0) {
+        if(value != null && value.length() > 0) {
             return StringUtil.isValidEmail(value);
         }
         return false;

@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.lms.utils.customannotation.annotaion.NotEmptyAndNull;
 import com.lms.utils.enums.NotificationType;
 
 /**
@@ -20,9 +21,9 @@ public class EmailTemplateBean {
     private long id;
     private String uuid;
     private NotificationType notificationType;
-    @NotEmpty
+    @NotEmptyAndNull(fieldName = "Subject")
     private String subject;
-    @NotEmpty
+    @NotEmptyAndNull(fieldName = "Content")
     private String content;
     private List availableField;
 }

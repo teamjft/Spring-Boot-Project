@@ -1,7 +1,9 @@
-package com.lms.utils.customannotation;
+package com.lms.utils.customannotation.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import com.lms.utils.customannotation.annotaion.NotEmptyAndNull;
 
 /**
  * Created by bhushan on 28/4/17.
