@@ -33,16 +33,8 @@
                                                 <strong><strong> <spring:message code="error"></spring:message></strong> ${error}.
                                             </div>
                                         </c:if>
-                                        <c:if test="${errors != null}">
-                                            <div  class="well">
-                                                <c:forEach items="${errors}" var="error">
-                                                    <div class="alert alert-danger">
-                                                        <strong> <spring:message code="error"></spring:message></strong> ${error.getDefaultMessage()}.
-                                                    </div>
-                                                </c:forEach>
-                                            </div>
-                                        </c:if>
                                     </div>
+
                                     <spring:message code="name" var="name"></spring:message>
                                     <spring:message code="isbn" var="isbn"></spring:message>
                                     <spring:message code="edition" var="edition"></spring:message>
@@ -63,27 +55,35 @@
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${isbn}" path="isbn" />
+                                            <form:errors path="isbn" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${edition}" path="edition" />
+                                            <form:errors path="edition" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${description}" path="description"/>
+                                            <form:errors path="description" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${price}" path="price" />
+                                            <form:errors path="price" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${publisher}" path="publisher" />
+                                            <form:errors path="publisher" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${authorName}" path="authorName" />
+                                            <form:errors path="authorName" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
-                                            <form:input class="form-control" placeholder="${publisherYear}" path="publicationYear"/>
+                                            <form:input class="form-control" placeholder="${publisherYear}" path="publicationYear" type="number" />
+                                            <form:errors path="publicationYear" cssClass="alert-danger"/>
                                         </div>
                                         <div class="form-group">
                                             <form:input class="form-control" placeholder="${totalNumberOfCopies}" path="totalNumberOfCopies" type="number"/>
+                                            <form:errors path="totalNumberOfCopies" cssClass="alert-danger"/>
                                         </div>
                                         <form:select class="form-control"  multiple="true"  path="categoryBeens">
                                             <form:options items="${categories}" itemValue="id" itemLabel="name"/>

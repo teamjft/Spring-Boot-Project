@@ -25,22 +25,13 @@
                         <div class="col-md-6 col-md-offset-2">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title"><spring:message code="recover.password"></spring:message> </h3>
+                                    <h3 class="panel-title"><spring:message code="add.account"></spring:message> </h3>
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <c:if test="${error ne null}">
                                             <div class="alert alert-danger">
                                                 <strong>Error!</strong> ${error}.
-                                            </div>
-                                        </c:if>
-                                        <c:if test="${errors != null}">
-                                            <div  class="well">
-                                                <c:forEach items="${errors}" var="error">
-                                                    <div class="alert alert-danger">
-                                                        <strong><spring:message code="error"></spring:message> </strong> ${error.getDefaultMessage()}.
-                                                    </div>
-                                                </c:forEach>
                                             </div>
                                         </c:if>
                                     </div>
@@ -61,11 +52,9 @@
                                                         <form:errors path="firstName" cssClass= "alert-danger"/>
                                                         <form:input path="lastName" class="form-control" placeholder="${lastName}"/>
                                                         <form:errors path="lastName" cssClass="alert-danger"/>
-                                                        <form:input path="passwordConfirmationBean.password" class="form-control" placeholder="${newPassword}" type="password"/>
-                                                        <form:errors path="passwordConfirmationBean.password" cssClass="alert-danger"/>
-                                                        <form:input path="passwordConfirmationBean.confirmPassword" class="form-control" placeholder="${confirmPassword}" type="password"/>
-                                                        <form:errors path="passwordConfirmationBean.confirmPassword" cssClass="alert-danger"/>
-                                                        <form:hidden path="passwordConfirmationBean.token" />
+                                                        <form:input path="password" class="form-control" placeholder="${newPassword}" type="password"/>
+                                                        <form:errors path="password" cssClass="alert-danger"/>
+                                                        <form:hidden path="token" />
                                                     </div>
                                                     <input class="btn btn-lg btn-success btn-block" type="submit" value="${createAccount}">
                                                 </fieldset>

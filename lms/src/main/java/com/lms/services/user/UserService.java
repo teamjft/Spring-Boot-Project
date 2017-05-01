@@ -18,5 +18,6 @@ import com.lms.models.User;
     User findByUuid(String uuid);
     User findByToken(String uuid);
     User findByEmail(String email);
+    User findByEmailOrUsername(String email, String username);
     void requestForgetPassword(String forgetPasswordUrl, User user);
 }

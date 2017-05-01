@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUser(Long id) {
-
+        userRepository.delete(id);
     }
 
     @Transactional
@@ -112,5 +112,10 @@ public class UserServiceImpl implements UserService {
                 .to(user.getEmail()).build();
 
         notificationFactory.getSendContentService(NotificationServiceType.EMAIL). sendNotification(notification);
+    }
+
+    @Override
+    public User findByEmailOrUsername(String email, String username) {
+        return userRepository.findByEmailOrUsername(email, username);
     }
 }

@@ -11,17 +11,23 @@ import lombok.Setter;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.lms.utils.customannotation.annotaion.FieldSize;
+import com.lms.utils.customannotation.annotaion.ValidBoolean;
+
 /**
  * Created by bhushan on 24/4/17.
  */
 @Setter @Getter @Builder @AllArgsConstructor @NoArgsConstructor
 public class PasswordConfirmationBean {
-    @NotEmpty
-    @Size(max = 255)
+    @FieldSize(nullable = false)
     private String password;
-    @Size(max = 255)
-    @NotEmpty
+    @FieldSize(nullable = false)
     private String confirmPassword;
-    @NotEmpty
+    @FieldSize(nullable = false)
     private String token;
+
+    @ValidBoolean(message = "confirm password and password must be same.")
+    public boolean valid() {
+       return password != null && password.equals(confirmPassword);
+    }
 }

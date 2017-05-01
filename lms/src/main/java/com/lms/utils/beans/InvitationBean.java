@@ -1,14 +1,12 @@
 package com.lms.utils.beans;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import com.lms.utils.customannotation.NotEmptyAndNull;
+import com.lms.utils.customannotation.annotaion.NotEmptyAndNull;
 
 /**
  * Created by bhushan on 25/4/17.

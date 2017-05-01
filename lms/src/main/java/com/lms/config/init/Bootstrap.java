@@ -107,7 +107,7 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
             }
             if(emailTemplateService.findEmailTemplateByNotificationType(NotificationType.INVITEUSER) == null) {
                 EmailTemplate emailTemplate = new EmailTemplate();
-                emailTemplate.setContent("Hi %FIRSTNAME%  %LASTNAME%, You are invited by %LIBRARYNAME% Library , to join %LIBRARYNAME% please create your account here %USERACTIVATIONURL");
+                emailTemplate.setContent("Hi %FIRSTNAME%  %LASTNAME%, You are invited by %LIBRARYNAME% Library , to join %LIBRARYNAME% please create your account here %USERACTIVATIONURL%");
                 emailTemplate.setSubject("Join Library Invitation");
                 emailTemplate.setDefaultEmailTemplates(true);
                 emailTemplate.setNotificationType(NotificationType.INVITEUSER);
