@@ -63,6 +63,9 @@
                     <c:if test="${param.logout ne null}">
                         <div class="alert-normal"><spring:message code="logout.info"></spring:message> </div>
                     </c:if>
+                    <c:if test="${info ne null}">
+                        <div class="alert-info">${info}</div>
+                    </c:if>
                 </div>
                 <div style="padding-top:30px" class="panel-body" >
 

@@ -62,6 +62,7 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
             user.setFirstName("Admin");
             user.setUsername("admin");
             user.setPassword("password");
+            user.setSuperAdmin(true);
             user = userService.createUser(user);
 
             Library library = new Library();
@@ -72,6 +73,7 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
 
             MemberShip memberShip = new MemberShip();
             memberShip.setAdmin(true);
+            memberShip.setLibrarian(true);
             memberShip.setLastUsed(true);
             memberShip.setMembershipStatus(MembershipStatus.ACTIVE);
             memberShip.setUser(user);

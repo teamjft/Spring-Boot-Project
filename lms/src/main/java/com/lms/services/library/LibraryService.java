@@ -3,7 +3,7 @@ package com.lms.services.library;
 import java.util.List;
 
 import com.lms.models.Library;
-import com.lms.utils.beans.DataCount;
+import com.lms.utils.beans.LibraryDataCount;
 
 
 /**
@@ -16,5 +16,5 @@ public interface LibraryService {
     void delete(Long id);
     void update(Library library);
     Library findByUuid(String uuid);
-    DataCount basicCountInfoOfLibrary(String libraryUuid);
+    LibraryDataCount basicCountInfoOfLibrary(String libraryUuid);
 }
