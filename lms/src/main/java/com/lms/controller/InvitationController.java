@@ -6,10 +6,11 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -28,7 +29,6 @@ import com.lms.services.invitation.InvitationService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.InvitationBean;
-import com.lms.utils.beans.PasswordConfirmationBean;
 import com.lms.utils.beans.UserBean;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.SecurityUtil;
@@ -39,6 +39,7 @@ import com.lms.utils.helper.SecurityUtil;
 @Controller
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("invite")
+@Slf4j
 public class InvitationController {
     @Autowired
     private InvitationService invitationService;
@@ -46,6 +47,8 @@ public class InvitationController {
     private MembershipService membershipService;
     @Autowired
     private UserService userService;
+    @Value("${lcm.customer.support.email}")
+    private String supportEmail;
 
     @RequestMapping(value = "/inviteUser", method = RequestMethod.GET)
     public ModelAndView inviteUser() {
@@ -70,7 +73,6 @@ public class InvitationController {
             modelAndView = addRoles(memberShip, modelAndView);
             return modelAndView;
         }
-
 
         Library library = memberShip.getLibrary();
 
@@ -119,8 +121,8 @@ public class InvitationController {
         }
         UserBean userBean = new UserBean();
         userBean.setToken(invitation.getToken());
-        ModelAndView modelAndView =  new ModelAndView("invitation/accept");
-        modelAndView.addObject("user", userBean);
+        userBean.setEmail(invitation.getEmail());
+        ModelAndView modelAndView =  getAcceptModel(userBean);
         return modelAndView;
     }
 
@@ -128,15 +130,18 @@ public class InvitationController {
     @RequestMapping(value = "/accept", method = RequestMethod.POST)
     public ModelAndView accept(@Valid @ModelAttribute("user") UserBean userBean, BindingResult result) {
         if(result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            ModelAndView modelAndView =  new ModelAndView("invitation/accept");
-            modelAndView.addObject("user", userBean);
+            ModelAndView modelAndView =  getAcceptModel(userBean);
             return modelAndView;
         }
-        User user1 = userService.loadByUsername(userBean.getUsername());
-        if(user1 != null) {
-            ModelAndView modelAndView =  new ModelAndView("invitation/accept");
-            modelAndView.addObject("user", userBean);
+        User userInstanceByEmail = userService.findByEmail(userBean.getEmail());
+        if(userInstanceByEmail != null) {
+            ModelAndView modelAndView = new ModelAndView("index");
+            modelAndView.addObject("info", "Please account is registered with system, please login and accept the invitation");
+            return modelAndView;
+        }
+        User userInstanceByUserName = userService.loadByUsername(userBean.getUsername());
+        if(userInstanceByUserName != null) {
+            ModelAndView modelAndView =  getAcceptModel(userBean);
             modelAndView.addObject("error", "username is already register please choose another user name.");
             return modelAndView;
         }
@@ -144,10 +149,17 @@ public class InvitationController {
         if(invitation == null) {
             return new ModelAndView("redirect:/");
         }
+        try {
+            invitationService.createUser(invitation, userBean);
+        } catch (Exception e) {
+            log.error("Error occur during save the invitation, invitation token: {}", invitation.getToken());
+            ModelAndView modelAndView =  getAcceptModel(userBean);
+            modelAndView.addObject("error", String.format("Something went wrong please try again or contact to application provider, email: {}", supportEmail));
+            return modelAndView;
+        }
 
-        invitationService.createUser(invitation, userBean);
         ModelAndView modelAndView = new ModelAndView("invitation/accept");
-        modelAndView.addObject("success", "successfully created account");
+        modelAndView.addObject("success", "successfully created account, please login with account. Thanks");
         return  modelAndView;
     }
 
@@ -167,6 +179,12 @@ public class InvitationController {
         if (memberShip.getUser().isSuperAdmin()) {
             modelAndView.addObject("librarian", true);
         }
+        return modelAndView;
+    }
+
+    private ModelAndView getAcceptModel(UserBean userBean) {
+        ModelAndView modelAndView =  new ModelAndView("invitation/accept");
+        modelAndView.addObject("user", userBean);
         return modelAndView;
     }
 }

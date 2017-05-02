@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lms.dao.LibraryDao;
 import com.lms.models.Library;
 import com.lms.dao.repository.LibraryRepository;
-import com.lms.utils.beans.DataCount;
+import com.lms.utils.beans.LibraryDataCount;
 
 /**
  * Created by bhushan on 9/4/17.
@@ -61,7 +61,7 @@ public class LibraryServiceImpl  implements LibraryService {
     }
 
     @Override
-    public DataCount basicCountInfoOfLibrary(String libraryUuid) {
+    public LibraryDataCount basicCountInfoOfLibrary(String libraryUuid) {
         return libraryDao.basicCountInfoOfLibrary(libraryUuid);
     }
 }

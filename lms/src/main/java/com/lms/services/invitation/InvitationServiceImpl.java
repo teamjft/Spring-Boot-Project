@@ -109,7 +109,7 @@ public class InvitationServiceImpl implements InvitationService {
     @Transactional
     public void createUser(Invitation invitation, UserBean userBean) {
         User user = new User();
-        user.setPassword(new BCryptPasswordEncoder().encode(userBean.getPassword()));
+        user.setPassword(userBean.getPassword());
         user.setFirstName(userBean.getFirstName());
         user.setLastName(userBean.getLastName());
         user.setUsername(userBean.getUsername());
@@ -121,6 +121,8 @@ public class InvitationServiceImpl implements InvitationService {
         memberShip.setUser(user);
         memberShip.setLibrarian(invitation.isLibrarian());
         memberShip.setAdmin(invitation.isAdmin());
+        memberShip.setLastUsed(true);
         membershipService.create(memberShip);
+        invitation.setToken(null);
     }
 }

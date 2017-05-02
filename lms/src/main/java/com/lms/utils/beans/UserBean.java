@@ -23,6 +23,7 @@ public class UserBean {
     private String firstName;
     @FieldSize(fieldName = "Last Name")
     private String lastName;
+    @Email
     private String email;
     @FieldSize(nullable = false, fieldName = "Username")
     private String username;

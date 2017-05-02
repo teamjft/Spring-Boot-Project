@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
@@ -25,51 +26,57 @@
                         <h4 class="panel-title"><a href="<c:url value="/logout"/>"> <span class="glyphicon glyphicon-off"></span><spring:message code="logout"></spring:message> </a> </h4>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-book"> </span><spring:message code="book"></spring:message><span class="caret"></span></a> </h4>
+                <sec:authorize access="hasAnyRole('LIBRARY_ADMIN', 'LIBRARIAN')">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-book"> </span><spring:message code="book"></spring:message><span class="caret"></span></a> </h4>
+                        </div>
+                        <!-- Note: By adding "in" after "collapse", it starts with that particular panel open by default; remove if you want them all collapsed by default -->
+                            <%-- in in class--%>
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <ul class="list-group">
+                                <li><a href="<c:url value="/book/create"/>" class="navlink"><spring:message code="add.book"></spring:message></a></li>
+                                <li><a href="<c:url value="/book/index"/>" class="navlink"><spring:message code="books"></spring:message></a></li>
+                                <li><a href="<c:url value="/category/index"/>" class="navlink"><spring:message code="categories"></spring:message></a></li>
+                                <li><a href="<c:url value="/category/create"/>" class="navlink"><spring:message code="add.category"></spring:message></a></li>
+                            </ul>
+                        </div>
                     </div>
-                    <!-- Note: By adding "in" after "collapse", it starts with that particular panel open by default; remove if you want them all collapsed by default -->
-                   <%-- in in class--%>
-                    <div id="collapseOne" class="panel-collapse collapse">
-                        <ul class="list-group">
-                            <li><a href="<c:url value="/book/create"/>" class="navlink"><spring:message code="add.book"></spring:message></a></li>
-                            <li><a href="<c:url value="/book/index"/>" class="navlink"><spring:message code="books"></spring:message></a></li>
-                            <li><a href="<c:url value="/category/index"/>" class="navlink"><spring:message code="categories"></spring:message></a></li>
-                            <li><a href="<c:url value="/category/create"/>" class="navlink"><spring:message code="add.category"></spring:message></a></li>
-                        </ul>
+                </sec:authorize>
+                <sec:authorize access="hasRole('LIBRARY_ADMIN')">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-cog"> </span><spring:message code="membership"></spring:message><span class="caret"></span></a> </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <ul class="list-group">
+                                <li><a href="<c:url value="/membership/index"></c:url>" class="navlink"><spring:message code="members"></spring:message></a></li>
+                                <li><a href="<c:url value="/invite/inviteUser"></c:url>" class="navlink"><spring:message code="add.member"></spring:message></a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-cog"> </span><spring:message code="membership"></spring:message><span class="caret"></span></a> </h4>
+                </sec:authorize>
+                <sec:authorize access="hasRole('SUPER_ADMIN')">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-calendar"> </span><spring:message code="configuration"></spring:message><span class="caret"></span></a> </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <ul class="list-group">
+                                <li><a href="<c:url value="/configuration/imageconfiguration"/>" class="navlink"><spring:message code="image.configuration"></spring:message></a></li>
+                                <li><a href="<c:url value="/configuration/template"/>" class="navlink"><spring:message code="email.templates.config"></spring:message></a></li>
+                            </ul>
+                        </div>
                     </div>
-                    <div id="collapseTwo" class="panel-collapse collapse">
-                        <ul class="list-group">
-                            <li><a href="<c:url value="/membership/index"></c:url>" class="navlink"><spring:message code="members"></spring:message></a></li>
-                            <li><a href="<c:url value="/invite/inviteUser"></c:url>" class="navlink"><spring:message code="add.member"></spring:message></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-calendar"> </span><spring:message code="configuration"></spring:message><span class="caret"></span></a> </h4>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse">
-                        <ul class="list-group">
-                            <li><a href="<c:url value="/configuration/imageconfiguration"/>" class="navlink"><spring:message code="image.configuration"></spring:message></a></li>
-                            <li><a href="<c:url value="/configuration/template"/>" class="navlink"><spring:message code="email.templates.config"></spring:message></a></li>
-                        </ul>
-                    </div>
-                </div>
+                </sec:authorize>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="glyphicon glyphicon-user"></span> <spring:message code="about.us"></spring:message><span class="caret"></span></a></h4>
                     </div>
                     <div id="collapseFour" class="panel-collapse collapse">
                         <ul class="list-group">
-                            <li><a href="" class="navlink">Link 1</a></li>
-                            <li><a href="" class="navlink">Link 2</a></li>
+                            <li><a href="https://www.jellyfishtechnologies.com" class="navlink">Our web side</a></li>
+                            <li><a href="https://github.com/teamjft/Spring-Boot-Project" class="navlink">Source code</a></li>
                         </ul>
                     </div>
                 </div>

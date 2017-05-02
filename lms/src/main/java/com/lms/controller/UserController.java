@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,15 +22,21 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.lms.config.security.SecUser;
 import com.lms.models.Library;
+import com.lms.models.MemberShip;
 import com.lms.models.User;
+import com.lms.services.issue.IssueService;
 import com.lms.services.library.LibraryService;
+import com.lms.services.membership.MembershipService;
 import com.lms.services.user.UserService;
-import com.lms.utils.beans.DataCount;
+import com.lms.utils.beans.LibraryDataCount;
 import com.lms.utils.beans.PasswordConfirmationBean;
 import com.lms.utils.beans.ResponseMessage;
 import com.lms.utils.beans.UserBean;
+import com.lms.utils.helper.LibraryUtil;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.StringUtil;
+import com.lms.utils.modelutil.MembershipStatus;
+
 /**
  * Created by bhushan on 11/4/17.
  */
@@ -43,17 +48,30 @@ public class UserController {
     private LibraryService libraryService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MembershipService membershipService;
+    @Autowired
+    private IssueService issueService;
 
     @RequestMapping("/home")
     public ModelAndView home() {
         SecUser secUser =
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Library library = libraryService.findByUuid(secUser.getLibraryId());
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         ModelAndView modelAndView = new ModelAndView("user/home");
-        DataCount dataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
-        modelAndView.addObject("dataCount", dataCount);
-        return modelAndView;
+        if (LibraryUtil.isLibraryAdminOrLibrarian(memberShip) || memberShip.getUser().isSuperAdmin()) {
+            Library library = memberShip.getLibrary();
+            LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
+            modelAndView.addObject("dataCount", libraryDataCount);
+            return modelAndView;
+        } else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
+
+            return null;
+        } else {
+            return null;
+        }
     }
+
     @RequestMapping("/create")
     public ModelAndView create() {
         UserBean userBean = new UserBean();
@@ -61,8 +79,8 @@ public class UserController {
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
         ModelAndView modelAndView = new ModelAndView("user/home");
-        DataCount dataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
-        modelAndView.addObject("dataCount", dataCount);
+        LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
+        modelAndView.addObject("dataCount", libraryDataCount);
         return modelAndView;
     }
 

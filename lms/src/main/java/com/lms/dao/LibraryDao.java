@@ -6,14 +6,12 @@ import static com.lms.models.QIssueBook.issueBook;
 import static com.lms.models.QLibrary.library;
 import static com.lms.models.QMemberShip.memberShip;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import com.lms.utils.beans.DataCount;
+import com.lms.utils.beans.LibraryDataCount;
 import com.lms.utils.modelutil.IssueBookStatus;
 import com.lms.utils.modelutil.MembershipStatus;
 import com.mysema.query.jpa.impl.JPAQuery;
@@ -26,7 +24,7 @@ import com.mysema.query.types.ConstructorExpression;
 public class LibraryDao {
     @PersistenceContext
     private EntityManager entityManager;
-    public DataCount basicCountInfoOfLibrary(String uuid) {
+    public LibraryDataCount basicCountInfoOfLibrary(String uuid) {
         JPAQuery query = new JPAQuery(entityManager);
         return query.from(library)
                 .leftJoin(library.books, book)
@@ -34,7 +32,7 @@ public class LibraryDao {
                 .leftJoin(library.issues, issue)
                 .leftJoin(issue.issueBooks, issueBook).on(issueBook.issueBookStatus.eq(IssueBookStatus.ASSIGNED))
                 .where(library.uuid.eq(uuid))
-                .list(ConstructorExpression.create(DataCount.class, book.id.count(),
+                .list(ConstructorExpression.create(LibraryDataCount.class, book.id.count(),
                         memberShip.id.count(), book.totalNumberOfCopies.coalesce(0).asNumber().sum(), issueBook.id.count())).get(0);
 
 

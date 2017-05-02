@@ -28,8 +28,8 @@ public class MailNotificationServiceImpl implements NotificationService {
     private MailService mailService;
 
 
-    @Value("${support.email}")
-    String supportEmail;
+    @Value("${from.email}")
+    String emailFrom;
 
     @Override
     @Transactional
@@ -56,7 +56,7 @@ public class MailNotificationServiceImpl implements NotificationService {
             final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
             final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
             message.setTo(notification.to());
-            message.setFrom(supportEmail);
+            message.setFrom(emailFrom);
             message.setSubject(notification.subject());
             message.setText(notification.content(), true);
             javaMailSender.send(message.getMimeMessage());

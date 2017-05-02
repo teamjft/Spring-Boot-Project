@@ -48,13 +48,17 @@
                                                     <div class="form-group">
                                                         <form:input path="username" class="form-control" placeholder="${requiredUserName}"/>
                                                         <form:errors path="username" cssClass="alert-danger"/>
+                                                        <br>
                                                         <form:input path="firstName" class="form-control" placeholder="${firstName}"/>
                                                         <form:errors path="firstName" cssClass= "alert-danger"/>
+                                                        <br>
                                                         <form:input path="lastName" class="form-control" placeholder="${lastName}"/>
                                                         <form:errors path="lastName" cssClass="alert-danger"/>
+                                                        <br>
                                                         <form:input path="password" class="form-control" placeholder="${newPassword}" type="password"/>
                                                         <form:errors path="password" cssClass="alert-danger"/>
                                                         <form:hidden path="token" />
+                                                        <form:hidden path="email" />
                                                     </div>
                                                     <input class="btn btn-lg btn-success btn-block" type="submit" value="${createAccount}">
                                                 </fieldset>

@@ -9,19 +9,19 @@ import lombok.Setter;
  * Created by bhushan on 16/4/17.
  */
 @Getter
-public class DataCount {
+public class LibraryDataCount {
     private Long numberOFBook;
     private Long numberOFActiveUser;
     private Long totalNumberOfCopies;
     private Long numberOFIssuedBook;
 
-    public DataCount(Long numberOFBook, Long numberOFActiveUser, Long totalNumberOfCopies,Long numberOFIssuedBook) {
+    public LibraryDataCount(Long numberOFBook, Long numberOFActiveUser, Long totalNumberOfCopies, Long numberOFIssuedBook) {
         this.numberOFBook = numberOFBook;
         this.numberOFActiveUser = numberOFActiveUser;
         this.totalNumberOfCopies = totalNumberOfCopies;
         this.numberOFIssuedBook = numberOFIssuedBook;
     }
-    public DataCount(Long numberOFBook, Long numberOFActiveUser, Integer totalNumberOfCopies,Long numberOFIssuedBook) {
+    public LibraryDataCount(Long numberOFBook, Long numberOFActiveUser, Integer totalNumberOfCopies, Long numberOFIssuedBook) {
         this.numberOFBook = numberOFBook;
         this.numberOFActiveUser = numberOFActiveUser;
         this.totalNumberOfCopies = new Long(totalNumberOfCopies);
