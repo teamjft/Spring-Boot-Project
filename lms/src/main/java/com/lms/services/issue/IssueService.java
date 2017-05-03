@@ -7,5 +7,4 @@ import com.lms.models.Issue;
  */
 public interface IssueService {
     Issue findByUuid(String uuid);
-
 }

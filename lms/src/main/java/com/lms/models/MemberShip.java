@@ -2,6 +2,8 @@ package com.lms.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -43,5 +46,7 @@ public class MemberShip extends AbstractEntity implements Serializable {
     @Column(nullable = false, columnDefinition = "char(1) default 'N'")
     private boolean lastUsed;
     private Date expiredDate;
+    @OneToMany(mappedBy = "memberShip")
+    private Set<MembershipSubscription> membershipSubscriptions = new HashSet<>();
 
 }
