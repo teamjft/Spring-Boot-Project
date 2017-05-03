@@ -59,17 +59,17 @@ public class UserController {
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         ModelAndView modelAndView = new ModelAndView("user/home");
-        if (LibraryUtil.isLibraryAdminOrLibrarian(memberShip) || memberShip.getUser().isSuperAdmin()) {
+       /* if (LibraryUtil.isLibraryAdminOrLibrarian(memberShip) || memberShip.getUser().isSuperAdmin()) {*/
             Library library = memberShip.getLibrary();
             LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
             modelAndView.addObject("dataCount", libraryDataCount);
             return modelAndView;
-        } else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
+        /*} else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
 
             return null;
         } else {
             return null;
-        }
+        }*/
     }
 
     @RequestMapping("/create")

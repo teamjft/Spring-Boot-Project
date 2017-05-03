@@ -50,4 +50,6 @@ public class Library extends AbstractEntity implements Serializable {
     private SaveImageServiceType saveImageServiceType = LOCALSTROGE;
     @Enumerated(EnumType.STRING)
     private NotificationServiceType notificationServiceType = NotificationServiceType.EMAIL;
+    @OneToMany(mappedBy = "library")
+    private Set<MembershipPlan> membershipPlans = new HashSet<>();
 }
