@@ -35,25 +35,25 @@
                                     </c:choose>
                             </a>
                             <div class="media-body">
-                                <h4 class="media-heading">${book.name}</h4>
-                                <p class="text-right">By ${book.authorName}</p>
-                                <p>${book.description}</p>
+                                <h4 class="media-heading"><c:out value="${book.name}"></c:out></h4>
+                                <p class="text-right">By <c:out value="${book.authorName}"></c:out></p>
+                                <p><c:out value="${book.description}"></c:out></p>
                                 <ul class="list-inline list-unstyled">
-                                    <li><span><i class="glyphicon glyphicon-tags"></i> <spring:message code="edition"></spring:message>  : ${book.edition} </span></li>
+                                    <li><span><i class="glyphicon glyphicon-tags"></i> <spring:message code="edition"></spring:message>  : <c:out value="${book.edition}"></c:out> </span></li>
                                     <li>|</li>
-                                    <span><i class="glyphicon glyphicon-barcode"></i> <spring:message code="publication.year"></spring:message>  : ${book.publicationYear}</span>
+                                    <span><i class="glyphicon glyphicon-barcode"></i> <spring:message code="publication.year"></spring:message>  : <c:out value="${book.publicationYear}"></c:out></span>
                                     <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="publisher"></spring:message>  : ${book.publisher}</span>
+                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="publisher"></spring:message>  : <c:out value="${book.publisher}"></c:out></span>
                                     <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="number.of.copies.available"></spring:message> : ${book.numberOfAvailableCopies}</span>
+                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="number.of.copies.available"></spring:message> : <c:out value="${book.numberOfAvailableCopies}"></c:out></span>
                                     <li>|</li>
-                                    <span><i class="glyphicon glyphicon-bitcoin"></i> <spring:message code="price"></spring:message>  : ${book.price}</span>
+                                    <span><i class="glyphicon glyphicon-bitcoin"></i> <spring:message code="price"></spring:message>  : <c:out value="${book.price}"></c:out></span>
                                     <li>|</li>
-                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="number.of.copies.available"></spring:message> : ${book.totalNumberOfCopies}</span>
+                                    <span><i class="glyphicon  glyphicon-tasks"></i> <spring:message code="number.of.copies.available"></spring:message> : <c:out value="${book.totalNumberOfCopies}"></c:out></span>
                                     <li>|</li>
                                     <c:forEach items="${categories}" var="categoty">
                                     <span>
-                                        <button class="btn-sm btn-success">${categoty.name}</button></span>
+                                        <button class="btn-sm btn-success"><c:out value="${categoty.name}"></c:out></button></span>
                                         </c:forEach>
                                 </ul>
                             </div>

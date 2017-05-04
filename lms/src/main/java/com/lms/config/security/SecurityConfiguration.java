@@ -55,4 +55,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         authenticationManagerBuilder.userDetailsService(secUserService).passwordEncoder(passwordEncoder());
     }
 
+
 }

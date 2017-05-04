@@ -59,7 +59,8 @@ public class BookController {
     private LibraryService libraryService;
     @Autowired
     private ImageFactory imageFactory;
-
+    @Value("${lcm.customer.support.email}")
+    private String supportEmail;
     @Value("${localstroge.path}")
     private String filePath;
 
@@ -94,10 +95,7 @@ public class BookController {
 
     @RequestMapping("/index")
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
-        List<Book> books = bookService.getAll();
         ModelAndView modelAndView = new ModelAndView("book/index");
-        modelAndView.addObject("books", books);
-
         if (currentPageNumber == null) {
             currentPageNumber =1;
         }
@@ -154,7 +152,7 @@ public class BookController {
 
             } catch (Exception e) {
                 log.error("Exception during upload image:"+e);
-                createViewModel.addObject("error", "Something went wrong during upload image");
+                createViewModel.addObject("error", String.format("Something went wrong during upload image, please try again or contact to our support: %s", supportEmail));
             }
         }
         try {

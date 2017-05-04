@@ -8,6 +8,9 @@
   Time: 2:57 PM
   To change this template use File | Settings | File Templates.
 --%>
+<sec:authorize access="hasAnyRole('LIBRARY_ADMIN','LIBRARIAN')" var="isLibraryAdminOrlibrarian"></sec:authorize>
+<sec:authorize access="hasAnyRole('LIBRARY_ADMIN')" var="isLibraryAdmin"></sec:authorize>
+<sec:authorize access="hasAnyRole('LIBRARY_ADMIN')" var="isSuperAdmin"></sec:authorize>
 
 <div class="col-md-3">
     <div id="sidenav1">
@@ -26,7 +29,7 @@
                         <h4 class="panel-title"><a href="<c:url value="/logout"/>"> <span class="glyphicon glyphicon-off"></span><spring:message code="logout"></spring:message> </a> </h4>
                     </div>
                 </div>
-                <sec:authorize access="hasAnyRole('LIBRARY_ADMIN', 'LIBRARIAN')">
+                <c:if test="${isLibraryAdminOrlibrarian ne null}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-book"> </span><spring:message code="book"></spring:message><span class="caret"></span></a> </h4>
@@ -37,13 +40,38 @@
                             <ul class="list-group">
                                 <li><a href="<c:url value="/book/create"/>" class="navlink"><spring:message code="add.book"></spring:message></a></li>
                                 <li><a href="<c:url value="/book/index"/>" class="navlink"><spring:message code="books"></spring:message></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </c:if>
+                <c:if test="${isLibraryAdmin ne null}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseX"><span class="glyphicon glyphicon-book"> </span><spring:message code="categories"></spring:message><span class="caret"></span></a> </h4>
+                        </div>
+                        <!-- Note: By adding "in" after "collapse", it starts with that particular panel open by default; remove if you want them all collapsed by default -->
+                            <%-- in in class--%>
+                        <div id="collapseX" class="panel-collapse collapse">
+                            <ul class="list-group">
                                 <li><a href="<c:url value="/category/index"/>" class="navlink"><spring:message code="categories"></spring:message></a></li>
                                 <li><a href="<c:url value="/category/create"/>" class="navlink"><spring:message code="add.category"></spring:message></a></li>
                             </ul>
                         </div>
                     </div>
-                </sec:authorize>
-                <sec:authorize access="hasRole('LIBRARY_ADMIN')">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseZ"><span class="glyphicon glyphicon-book"> </span><spring:message code="membership.plan"></spring:message><span class="caret"></span></a> </h4>
+                        </div>
+                        <!-- Note: By adding "in" after "collapse", it starts with that particular panel open by default; remove if you want them all collapsed by default -->
+                            <%-- in in class--%>
+                        <div id="collapseZ" class="panel-collapse collapse">
+                            <ul class="list-group">
+                                <li><a href="<c:url value="/plan/index"/>" class="navlink"><spring:message code="membership.plan"></spring:message></a></li>
+                                <li><a href="<c:url value="/plan/create"/>" class="navlink"><spring:message code="add.plan"></spring:message></a></li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-cog"> </span><spring:message code="membership"></spring:message><span class="caret"></span></a> </h4>
@@ -55,8 +83,8 @@
                             </ul>
                         </div>
                     </div>
-                </sec:authorize>
-                <sec:authorize access="hasRole('SUPER_ADMIN')">
+                </c:if>
+                <c:if test="${isSuperAdmin ne null}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-calendar"> </span><spring:message code="configuration"></spring:message><span class="caret"></span></a> </h4>
@@ -68,7 +96,7 @@
                             </ul>
                         </div>
                     </div>
-                </sec:authorize>
+                </c:if>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="glyphicon glyphicon-user"></span> <spring:message code="about.us"></spring:message><span class="caret"></span></a></h4>

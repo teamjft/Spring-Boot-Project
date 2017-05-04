@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.MessageSource;
@@ -15,6 +18,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -25,8 +29,11 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.lms.config.interceptor.CustomXssHandlerInterceptor;
 import com.lms.utils.converter.NotificationTypeConverter;
 import com.lms.utils.converter.SaveImageServiceTypeConverter;
 import com.lms.utils.enums.NotificationType;
@@ -49,6 +56,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         messageSource.setBasename("messages");
         return messageSource;
     }*/
+
 
     @Bean
     public MessageSource messageSource() {

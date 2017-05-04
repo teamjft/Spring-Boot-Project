@@ -58,7 +58,7 @@
                                             <tbody>
                                             <c:forEach items="${memberships}" var="membership">
                                                 <tr>
-                                                    <td>${membership.user.firstName} ${membership.user.lastName}</td>
+                                                    <td><c:out value="${membership.user.firstName} ${membership.user.lastName}"></c:out></td>
                                                     <td>${membership.createdOn}</td>
                                                     <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" href="/membership/edit/${membership.uuid}" ><span class="glyphicon glyphicon-pencil"></span></a></p></td>
                                                     <td><p data-placement="top" data-toggle="tooltip" title="View"><a class="btn btn-primary btn-xs" data-title="View" data-toggle="modal" href="/membership/view/${membership.uuid}" ><span class="glyphicon glyphicon-eye-open"></span></a></p></td>

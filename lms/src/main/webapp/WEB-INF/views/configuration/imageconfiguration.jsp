@@ -30,13 +30,13 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="panel-body">
-                                       <spring:message code="local.storage.path"></spring:message> : ${local}
+                                       <spring:message code="local.storage.path"></spring:message> : <c:out value="${local}"></c:out>
                                     </div>
                                     <div class="panel-body">
-                                        <spring:message code="cloudinary.storage.path"></spring:message> : ${cloudinary}
+                                        <spring:message code="cloudinary.storage.path"></spring:message> : <c:out value="${cloudinary}"></c:out>
                                     </div>
                                     <div class="panel-body">
-                                        <spring:message code="activated.storage.type"></spring:message> : ${currentStorageType}
+                                        <spring:message code="activated.storage.type"></spring:message> : <c:out value="${currentStorageType}"></c:out>
                                     </div>
                                 </div>
                             </div>
