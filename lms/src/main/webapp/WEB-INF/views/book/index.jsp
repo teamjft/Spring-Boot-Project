@@ -55,10 +55,10 @@
                                                     <tbody>
                                                     <c:forEach items="${books}" var="categoty">
                                                         <tr>
-                                                            <td>${categoty.name}</td>
-                                                            <td>${categoty.isbn}</td>
-                                                            <td>${categoty.createdOn}</td>
-                                                            <td>${categoty.totalNumberOfCopies}</td>
+                                                            <td><c:out value="${categoty.name}"></c:out></td>
+                                                            <td><c:out value="${categoty.isbn}"></c:out></td>
+                                                            <td><c:out value="${categoty.createdOn}"></c:out></td>
+                                                            <td><c:out value="${categoty.totalNumberOfCopies}"></c:out></td>
                                                             <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" href="/book/edit/${categoty.uuid}" ><span class="glyphicon glyphicon-pencil"></span></a></p></td>
                                                             <td><p data-placement="top" data-toggle="tooltip" title="View"><a class="btn btn-primary btn-xs" data-title="View" data-toggle="modal" href="/book/view/${categoty.uuid}" ><span class="glyphicon glyphicon-eye-open"></span></a></p></td>
                                                         </tr>

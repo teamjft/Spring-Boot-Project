@@ -27,7 +27,7 @@
 
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <h3 class="panel-title">${membership.user.firstName} ${membership.user.lastName}</h3>
+                                <h3 class="panel-title"><c:out value="${membership.user.firstName} ${membership.user.lastName}"></c:out></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -40,15 +40,15 @@
                                             </tr>
                                             <tr>
                                                 <td><spring:message code="user.name"></spring:message> </td>
-                                                <td>${membership.user.username}</td>
+                                                <td><c:out value="${membership.user.username}"></c:out></td>
                                             </tr>
                                             <tr>
                                                 <td><spring:message code="email"></spring:message> </td>
-                                                <td><a href="mailto:${membership.user.email}">${membership.user.email}</a></td>
+                                                <td><a href="mailto:<c:out value='${membership.user.email}'></c:out>"><c:out value="${membership.user.email}"></c:out></a></td>
                                             </tr>
                                             <tr>
                                                 <td><spring:message code="membership.status"></spring:message> </td>
-                                                <td>${membership.membershipStatus}</td>
+                                                <td><c:out value="${membership.membershipStatus}"></c:out></td>
                                             </tr>
                                             <tr>
                                                 <td><spring:message code="expired.date"></spring:message> </td>

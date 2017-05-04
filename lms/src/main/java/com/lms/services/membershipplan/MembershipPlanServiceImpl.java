@@ -1,12 +1,18 @@
 package com.lms.services.membershipplan;
 
+import static com.lms.utils.Constant.PAGE_SIZE;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lms.dao.repository.MembershipPlanRepository;
+import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 
@@ -52,9 +58,22 @@ public class MembershipPlanServiceImpl implements MembershipPlanService {
     public MembershipPlan findByUuid(String uuid) {
         return membershipPlanRepository.findByUuid(uuid);
     }
+
     @Override
-    public List<MembershipPlan> findByMembership(MemberShip memberShip) {
-        return membershipPlanRepository.findByMembership(memberShip);
+    public List<MembershipPlan> findByLibrary(Library library) {
+        return membershipPlanRepository.findByLibrary(library);
     }
 
+    @Override
+    public Page<MembershipPlan> getPageRequest(Integer pageNumber) {
+        //TODO currently shorting is DESC direction and short by id(need to replace in all controller), need to make it user input flexible
+        PageRequest request =
+                new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "id");
+        return membershipPlanRepository.findAll(request);
+    }
+
+    @Override
+    public MembershipPlan findByName(String name) {
+        return membershipPlanRepository.findByName(name);
+    }
 }

@@ -57,7 +57,7 @@
                                             <tbody>
                                             <c:forEach items="${categories}" var="categoty">
                                                 <tr>
-                                                    <td>${categoty.name}</td>
+                                                    <td><c:out value="${categoty.name}"></c:out></td>
                                                     <td>${categoty.createdOn}</td>
                                                     <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" href="/category/edit/${categoty.uuid}" ><span class="glyphicon glyphicon-pencil"></span></a></p></td>
                                                 </tr>

@@ -58,8 +58,8 @@
                                             <tbody>
                                             <c:forEach items="${templates}" var="template">
                                                 <tr>
-                                                    <td>${template.subject}</td>
-                                                    <td>${template.createdOn}</td>
+                                                    <td><c:out value="${template.subject}"></c:out></td>
+                                                    <td><c:out value="${template.createdOn}"></c:out></td>
                                                     <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" href="/configuration/editTemplate/${template.uuid}" ><span class="glyphicon glyphicon-pencil"></span></a></p></td>
                                                     <td><p data-placement="top" data-toggle="tooltip" title="View"><a class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" href="/configuration/viewTemplate/${template.uuid}" ><span class="glyphicon glyphicon-eye-open"></span></a></p></td>
                                                 </tr>

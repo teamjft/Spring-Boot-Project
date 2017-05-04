@@ -9,7 +9,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import com.lms.utils.enums.PeriodType;
@@ -29,6 +32,7 @@ public class MembershipPlan extends AbstractEntity implements Serializable {
     private String name;
     @Column(nullable = false)
     private BigDecimal price;
+    @Column(nullable = false, length = 2044)
     private String description;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -36,4 +40,5 @@ public class MembershipPlan extends AbstractEntity implements Serializable {
     private Integer unit = 1;
     @Column(nullable = false)
     private Integer maxNumberOfBookAllow;
+
 }
