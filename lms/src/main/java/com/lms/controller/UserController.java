@@ -23,10 +23,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.lms.config.security.SecUser;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
+import com.lms.models.MembershipPlan;
 import com.lms.models.User;
 import com.lms.services.issue.IssueService;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
+import com.lms.services.membershipplan.MembershipPlanService;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.LibraryDataCount;
 import com.lms.utils.beans.PasswordConfirmationBean;
@@ -34,6 +36,7 @@ import com.lms.utils.beans.ResponseMessage;
 import com.lms.utils.beans.UserBean;
 import com.lms.utils.helper.LibraryUtil;
 import com.lms.utils.helper.NotificationUtil;
+import com.lms.utils.helper.SecurityUtil;
 import com.lms.utils.helper.StringUtil;
 import com.lms.utils.modelutil.MembershipStatus;
 
@@ -52,6 +55,8 @@ public class UserController {
     private MembershipService membershipService;
     @Autowired
     private IssueService issueService;
+    @Autowired
+    private MembershipPlanService membershipPlanService;
 
     @RequestMapping("/home")
     public ModelAndView home() {
@@ -59,17 +64,19 @@ public class UserController {
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         ModelAndView modelAndView = new ModelAndView("user/home");
-       /* if (LibraryUtil.isLibraryAdminOrLibrarian(memberShip) || memberShip.getUser().isSuperAdmin()) {*/
+        if (LibraryUtil.isLibraryAdminOrLibrarian(memberShip) || memberShip.getUser().isSuperAdmin()) {
             Library library = memberShip.getLibrary();
             LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
             modelAndView.addObject("dataCount", libraryDataCount);
             return modelAndView;
-        /*} else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
-
-            return null;
+        } else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
+            modelAndView = new ModelAndView("user/userplan");
+            List<MembershipPlan> plans = membershipPlanService.findByLibrary(memberShip.getLibrary());
+            modelAndView.addObject("plans", plans);
+            return modelAndView;
         } else {
             return null;
-        }*/
+        }
     }
 
     @RequestMapping("/create")

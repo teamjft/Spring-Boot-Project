@@ -53,9 +53,6 @@ public class User extends AbstractEntity implements Serializable {
     @NotEmpty
     private String password;
     @Type(type = "yes_no")
-    @Column(name = "is_enabled", nullable = false, columnDefinition = "char(1) default 'Y'")
-    private boolean enabled = true;
-    @Type(type = "yes_no")
     @Column(name = "is_accountExpired", nullable = false, columnDefinition = "char(1) default 'N'")
     private boolean accountExpired;
     @Type(type = "yes_no")

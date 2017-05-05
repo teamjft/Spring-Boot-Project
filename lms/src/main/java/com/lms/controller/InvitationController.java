@@ -30,6 +30,7 @@ import com.lms.services.membership.MembershipService;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.InvitationBean;
 import com.lms.utils.beans.UserBean;
+import com.lms.utils.customannotation.annotaion.XxsFilter;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.SecurityUtil;
 
@@ -127,6 +128,7 @@ public class InvitationController {
     }
 
     @PreAuthorize("permitAll")
+    @XxsFilter
     @RequestMapping(value = "/accept", method = RequestMethod.POST)
     public ModelAndView accept(@Valid @ModelAttribute("user") UserBean userBean, BindingResult result) {
         if(result.hasErrors()) {

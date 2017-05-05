@@ -14,5 +14,5 @@ import com.lms.models.MembershipPlan;
 public interface MembershipPlanRepository extends JpaRepository<MembershipPlan, Long> {
     MembershipPlan findByUuid(String uuid);
     MembershipPlan findByName(String name);
-    List<MembershipPlan> findByLibrary(Library library);
+    List<MembershipPlan> findByLibraryAndEnabledTrue(Library library);
 }

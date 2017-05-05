@@ -17,8 +17,12 @@
                     <div class="row">
                         <div class="container">
                             <div class="jumbotron">
+                                <div class="col-md-12">
+                                    <h3>
+                                        <a class="btn icon-btn btn-primary pull-right" href="/book/create"><span class="glyphicon btn-glyphicon glyphicon-plus img-circle"></span> <spring:message code="add.book"></spring:message></a>
+                                    </h3>
+                                </div>
                             <div class="well">
-
                                 <div class="container">
                                     <div class="row">
                                         <div class="form-group">

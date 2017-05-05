@@ -9,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -46,7 +48,7 @@ public class MembershipPlanController {
     private LibraryService libraryService;
 
     @RequestMapping("/index")
-    public ModelAndView index() {
+    public ModelAndView index(Model model) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         ModelAndView modelAndView = new ModelAndView("plan/index");
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
@@ -56,7 +58,7 @@ public class MembershipPlanController {
     }
 
     @RequestMapping("/create")
-    public ModelAndView create() {
+    public ModelAndView create(Model model) {
         ModelAndView modelAndView = getCreateModel(new MembershipPlanBean());
         return modelAndView;
     }
@@ -92,8 +94,35 @@ public class MembershipPlanController {
             modelAndView.addObject("error", String.format("Something went wrong during save plan, please try again or contact to our support: %s", supportEmail));
             return modelAndView;
         }
-        return new ModelAndView("plan/index");
+         ModelAndView modelAndView = getCreateModel(new MembershipPlanBean());
+        modelAndView.addObject("success","Successfully Added.");
+        return modelAndView;
     }
+
+    @RequestMapping("/delete/{uuid}")
+    public ModelAndView delete(@PathVariable(required = true) String uuid) {
+        MembershipPlan membershipPlan = membershipPlanService.findByUuid(uuid);
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        if (membershipPlan == null || !membershipPlan.getLibrary().getUuid().equals(secUser.getLibraryId())) {
+            return new ModelAndView("forward:/");
+        }
+        membershipPlan.setEnabled(false);
+        membershipPlanService.update(membershipPlan);
+        return  new ModelAndView("forward:/plan/index");
+    }
+
+  @RequestMapping("/view/{uuid}")
+    public ModelAndView view(@PathVariable(required = true) String uuid) {
+        MembershipPlan membershipPlan = membershipPlanService.findByUuid(uuid);
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        if (membershipPlan == null || !membershipPlan.getLibrary().getUuid().equals(secUser.getLibraryId())) {
+            return new ModelAndView("forward:/");
+        }
+       ModelAndView modelAndView = new ModelAndView("plan/view");
+       modelAndView.addObject("plan", membershipPlan);
+        return  modelAndView;
+    }
+
 
     private ModelAndView getCreateModel(MembershipPlanBean membershipPlanBean) {
         ModelAndView modelAndView = new ModelAndView("plan/create");
