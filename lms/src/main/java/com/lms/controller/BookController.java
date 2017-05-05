@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
@@ -36,12 +34,12 @@ import com.lms.models.Category;
 import com.lms.models.Library;
 import com.lms.services.book.BookService;
 import com.lms.services.category.CategoryService;
+import com.lms.utils.customannotation.annotaion.XxsFilter;
 import com.lms.utils.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.CategoryBean;
 import com.lms.utils.helper.SecurityUtil;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 
 /**
  * Created by bhushan on 17/4/17.
@@ -129,6 +127,7 @@ public class BookController {
         return getCreateModel(new BookBean());
     }
 
+    @XxsFilter
     @RequestMapping("/save")
     public ModelAndView save(@RequestParam(value = "image", required = false) MultipartFile image, @Valid @ModelAttribute("book")BookBean bookBean, BindingResult result, Map map) {
 

@@ -61,7 +61,7 @@ public class MembershipPlanServiceImpl implements MembershipPlanService {
 
     @Override
     public List<MembershipPlan> findByLibrary(Library library) {
-        return membershipPlanRepository.findByLibrary(library);
+        return membershipPlanRepository.findByLibraryAndEnabledTrue(library);
     }
 
     @Override

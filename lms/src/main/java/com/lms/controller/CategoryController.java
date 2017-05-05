@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.lms.models.Category;
 import com.lms.services.category.CategoryService;
 import com.lms.utils.beans.CategoryBean;
+import com.lms.utils.customannotation.annotaion.XxsFilter;
 
 /**
  * Created by bhushan on 18/4/17.
@@ -71,6 +72,7 @@ public class CategoryController {
         return getCreateOrEditModel(categoryBean, "create");
     }
 
+    @XxsFilter
     @RequestMapping("/save")
     public ModelAndView save(@Valid @ModelAttribute("category")CategoryBean categoryBean, BindingResult result, Map model) {
         if (result.hasErrors()) {
@@ -95,6 +97,7 @@ public class CategoryController {
 
     }
 
+    @XxsFilter
     @RequestMapping("/update")
     public ModelAndView update(@Valid @ModelAttribute("category")CategoryBean categoryBean, BindingResult result, Map model) {
         if (result.hasErrors()) {

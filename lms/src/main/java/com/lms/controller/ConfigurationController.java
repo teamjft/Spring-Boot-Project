@@ -1,9 +1,6 @@
 package com.lms.controller;
 
-import static com.lms.models.QEmailTemplate.emailTemplate;
-
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -12,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -21,30 +17,25 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lms.config.security.SecUser;
-import com.lms.models.Category;
 import com.lms.models.EmailTemplate;
 import com.lms.models.Library;
 import com.lms.services.emailtemplate.EmailTemplateService;
 import com.lms.services.library.LibraryService;
-import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.EmailTemplateBean;
 import com.lms.utils.beans.LibraryBean;
 import com.lms.utils.converter.NotificationTypeConverter;
 import com.lms.utils.converter.SaveImageServiceTypeConverter;
-import com.lms.utils.enums.NotificationServiceType;
+import com.lms.utils.customannotation.annotaion.XxsFilter;
 import com.lms.utils.enums.NotificationType;
 import com.lms.utils.enums.SaveImageServiceType;
 import com.lms.utils.factory.NotificationFactory;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.SecurityUtil;
-import com.lms.utils.notification.EmailNotification;
-import com.lms.utils.notification.Notification;
 
 /**
  * Created by bhushan on 20/4/17.
@@ -95,25 +86,6 @@ public class ConfigurationController {
     }
 
 
-  /*  @RequestMapping("/email")
-    public ModelAndView emailConfiguration() {
-        SecUser secUser = SecurityUtil.getCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("configuration/emailconfiguration");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ModelAndView saveEmailConfiguration(Map<String, Object> map) {
-        Notification<String, String, String> notification = EmailNotification.builder()
-                .notificationType(NotificationType.FORGETPASSWORD)
-                .to("bhushan@jellyfishtechnologies.com")
-                .content("Testing")
-                .subject("Testing email").build();
-
-        notificationFactory.getSendContentService(NotificationServiceType.EMAIL).sendNotification(notification);
-        return new ModelAndView("redirect:/configuration/email");
-    }*/
-
     @RequestMapping("/template")
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
         if (currentPageNumber == null) {
@@ -154,6 +126,7 @@ public class ConfigurationController {
         return new ModelAndView("redirect:/configuration/templateview");
     }
 
+    @XxsFilter
     @RequestMapping("/updateTemplate")
     public ModelAndView updateTemplate(@Valid @ModelAttribute("emailTemplate")EmailTemplateBean emailTemplateBean, BindingResult result, final RedirectAttributes redirectAttributes) {
         EmailTemplate emailTemplate = emailTemplateService.findByUuid(emailTemplateBean.getUuid());

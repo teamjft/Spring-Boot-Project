@@ -25,6 +25,9 @@
         <div class="jumbotron">
             <div class="container">
                 <div class="row">
+                    <c:if test="${success ne null}">
+                        <h3 class="panel-info">${success} </h3>
+                    </c:if>
                     <div class="col-md-6 col-md-offset-2">
                         <div class="panel panel-default">
                             <div class="panel-heading">

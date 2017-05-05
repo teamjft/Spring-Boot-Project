@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.hibernate.annotations.Type;
+
 /**
  * Created by bhushan on 8/4/17.
  */
@@ -37,6 +39,9 @@ public class AbstractEntity {
 
     @Column(name = "uuid", unique = true, updatable = false)
     private String uuid;
+    @Type(type = "yes_no")
+    @Column(name = "is_enabled", nullable = false, columnDefinition = "char(1) default 'Y'")
+    private boolean enabled = true;
 
     @PrePersist
     protected void onPrePersist() {

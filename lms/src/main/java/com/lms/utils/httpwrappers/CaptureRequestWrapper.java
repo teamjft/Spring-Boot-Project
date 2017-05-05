@@ -1,11 +1,10 @@
-package com.lms.config.interceptor;
+package com.lms.utils.httpwrappers;
 
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.owasp.esapi.ESAPI;
 
 /**
  * Created by bhushan on 4/5/17.
@@ -44,7 +43,7 @@ public class CaptureRequestWrapper extends HttpServletRequestWrapper {
         if (value != null) {
             // NOTE: It's highly recommended to use the ESAPI library and uncomment the following line to
             // avoid encoded attacks.
-             value = ESAPI.encoder().canonicalize(value);
+            // value = ESAPI.encoder().canonicalize(value);
             // Avoid anything between script tags
             Pattern scriptPattern = Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE);
             value = scriptPattern.matcher(value).replaceAll("");

@@ -29,7 +29,7 @@
                         <h4 class="panel-title"><a href="<c:url value="/logout"/>"> <span class="glyphicon glyphicon-off"></span><spring:message code="logout"></spring:message> </a> </h4>
                     </div>
                 </div>
-                <c:if test="${isLibraryAdminOrlibrarian ne null}">
+                <c:if test="${isLibraryAdminOrlibrarian ne false}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-book"> </span><spring:message code="book"></spring:message><span class="caret"></span></a> </h4>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${isLibraryAdmin ne null}">
+                <c:if test="${isLibraryAdmin ne false}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseX"><span class="glyphicon glyphicon-book"> </span><spring:message code="categories"></spring:message><span class="caret"></span></a> </h4>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${isSuperAdmin ne null}">
+                <c:if test="${isSuperAdmin ne false}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-calendar"> </span><spring:message code="configuration"></spring:message><span class="caret"></span></a> </h4>
