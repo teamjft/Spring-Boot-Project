@@ -20,11 +20,13 @@ import com.lms.config.security.SecUser;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
+import com.lms.models.PaymentInstrument;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.membershipplan.MembershipPlanService;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.MembershipPlanBean;
+import com.lms.utils.beans.OrderCartBean;
 import com.lms.utils.customannotation.annotaion.XxsFilter;
 import com.lms.utils.enums.PeriodType;
 import com.lms.utils.helper.SecurityUtil;
@@ -128,6 +130,21 @@ public class MembershipPlanController {
         ModelAndView modelAndView = new ModelAndView("plan/create");
         modelAndView.addObject("plan", membershipPlanBean);
         modelAndView.addObject("periodTypes", PeriodType.values());
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/purchase/{membershipPlanId}")
+    public ModelAndView paymentCreate(@PathVariable String membershipPlanId) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        MembershipPlan membershipPlan =  membershipPlanService.findByUuidAndLibrary(membershipPlanId, memberShip.getLibrary());
+        if (membershipPlan == null) {
+            return new ModelAndView("forward:/");
+        }
+        ModelAndView modelAndView = new ModelAndView("plan/purchase");
+        modelAndView.addObject("plan", membershipPlan);
+        OrderCartBean orderCartBean = OrderCartBean.builder().planUuid(membershipPlanId).quantity(1).build();
+        modelAndView.addObject("cart", orderCartBean);
         return modelAndView;
     }
 }

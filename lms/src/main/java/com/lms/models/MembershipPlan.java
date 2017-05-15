@@ -10,11 +10,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import com.lms.utils.enums.Currency;
 import com.lms.utils.enums.PeriodType;
 import com.lms.utils.modelutil.AbstractEntity;
 
@@ -22,7 +22,7 @@ import com.lms.utils.modelutil.AbstractEntity;
  * Created by bhushan on 2/5/17.
  */
 @Entity
-@Setter @Getter
+@Setter @Getter @AllArgsConstructor @NoArgsConstructor
 public class MembershipPlan extends AbstractEntity implements Serializable {
     private static final long serialVersionUID = 7273340727724676211L;
 
@@ -40,5 +40,8 @@ public class MembershipPlan extends AbstractEntity implements Serializable {
     private Integer unit = 1;
     @Column(nullable = false)
     private Integer maxNumberOfBookAllow;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Currency currency = Currency.USD;
 
 }

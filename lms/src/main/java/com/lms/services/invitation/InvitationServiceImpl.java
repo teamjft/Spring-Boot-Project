@@ -1,15 +1,12 @@
 package com.lms.services.invitation;
 
-import static com.lms.utils.Constant.PAGE_SIZE;
-
-import java.util.List;
+import static com.lms.utils.constants.Constant.PAGE_SIZE;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +20,7 @@ import com.lms.services.user.UserService;
 import com.lms.utils.beans.UserBean;
 import com.lms.utils.enums.NotificationServiceType;
 import com.lms.utils.enums.NotificationType;
-import com.lms.utils.factory.NotificationFactory;
+import com.lms.config.factory.NotificationFactory;
 import com.lms.utils.notification.EmailNotification;
 import com.lms.utils.notification.Notification;
 import com.lms.utils.notification.mapper.EmailMapMapper;

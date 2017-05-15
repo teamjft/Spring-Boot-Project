@@ -15,4 +15,5 @@ public interface MembershipPlanRepository extends JpaRepository<MembershipPlan, 
     MembershipPlan findByUuid(String uuid);
     MembershipPlan findByName(String name);
     List<MembershipPlan> findByLibraryAndEnabledTrue(Library library);
+    MembershipPlan findByUuidAndLibraryAndEnabledTrue(String uuid, Library library);
 }

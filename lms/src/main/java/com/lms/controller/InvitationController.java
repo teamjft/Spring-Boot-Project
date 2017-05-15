@@ -68,9 +68,7 @@ public class InvitationController {
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         User invitedBy = memberShip.getUser();
         if(result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
             ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "create");
-            modelAndView.addObject("errors", errors);
             modelAndView = addRoles(memberShip, modelAndView);
             return modelAndView;
         }

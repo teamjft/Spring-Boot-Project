@@ -29,6 +29,7 @@ import com.lms.services.issue.IssueService;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.membershipplan.MembershipPlanService;
+import com.lms.services.payment.PaypalCreditCardPaymentServiceImpl;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.LibraryDataCount;
 import com.lms.utils.beans.PasswordConfirmationBean;
@@ -36,7 +37,6 @@ import com.lms.utils.beans.ResponseMessage;
 import com.lms.utils.beans.UserBean;
 import com.lms.utils.helper.LibraryUtil;
 import com.lms.utils.helper.NotificationUtil;
-import com.lms.utils.helper.SecurityUtil;
 import com.lms.utils.helper.StringUtil;
 import com.lms.utils.modelutil.MembershipStatus;
 
@@ -57,6 +57,8 @@ public class UserController {
     private IssueService issueService;
     @Autowired
     private MembershipPlanService membershipPlanService;
+    @Autowired
+    private PaypalCreditCardPaymentServiceImpl paypalPaymentService;
 
     @RequestMapping("/home")
     public ModelAndView home() {
@@ -77,6 +79,18 @@ public class UserController {
         } else {
             return null;
         }
+    }
+
+
+    @RequestMapping("/userplan")
+    public ModelAndView userplan() {
+        SecUser secUser =
+                (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        ModelAndView modelAndView = new ModelAndView("user/userplan");
+        List<MembershipPlan> plans = membershipPlanService.findByLibrary(memberShip.getLibrary());
+        modelAndView.addObject("plans", plans);
+        return modelAndView;
     }
 
     @RequestMapping("/create")

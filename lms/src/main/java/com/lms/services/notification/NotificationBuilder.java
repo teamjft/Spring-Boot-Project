@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.lms.models.EmailTemplate;
 import com.lms.services.emailtemplate.EmailTemplateService;
 import com.lms.utils.enums.NotificationType;
-import com.lms.utils.factory.NotificationFactory;
+import com.lms.config.factory.NotificationFactory;
 import com.lms.utils.notification.mapper.EmailMapMapper;
 
 /**

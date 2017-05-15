@@ -35,7 +35,7 @@ import com.lms.models.Library;
 import com.lms.services.book.BookService;
 import com.lms.services.category.CategoryService;
 import com.lms.utils.customannotation.annotaion.XxsFilter;
-import com.lms.utils.factory.ImageFactory;
+import com.lms.config.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.CategoryBean;

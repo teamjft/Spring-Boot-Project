@@ -18,7 +18,7 @@ import com.lms.services.book.BookService;
 import com.lms.services.category.CategoryService;
 import com.lms.services.emailtemplate.EmailTemplateService;
 import com.lms.utils.enums.NotificationType;
-import com.lms.utils.factory.ImageFactory;
+import com.lms.config.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.user.UserService;

@@ -43,7 +43,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Value("${localstroge.path}")
     private String filePath;
 
-  /*  @Bean
+    /*  @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages");
@@ -80,6 +80,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         changeInterceptor.setParamName("ln");
         interceptorRegistry.addInterceptor(changeInterceptor);
     }
+
     @Bean
     protected ViewResolver InternalResourceViewResolver() {
         InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
@@ -104,8 +105,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-       super.addResourceHandlers(registry);
-       registry .addResourceHandler("/opt/img/*")
+        super.addResourceHandlers(registry);
+        registry .addResourceHandler("/opt/img/*")
                 .addResourceLocations("file:/opt/img/");
     }
 

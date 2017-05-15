@@ -1,15 +1,11 @@
 package com.lms.utils.beans;
 
 
-import javax.validation.constraints.Size;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.lms.utils.customannotation.annotaion.FieldSize;
 import com.lms.utils.customannotation.annotaion.ValidBoolean;

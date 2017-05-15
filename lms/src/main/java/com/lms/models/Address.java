@@ -37,4 +37,7 @@ public class Address extends AbstractEntity {
 
     @Column(name = "country")
     private String country;
+
+    private String line1;
+
 }

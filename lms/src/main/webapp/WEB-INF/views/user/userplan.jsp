@@ -17,7 +17,6 @@
 <head>
     <c:import url="../template/header.jsp"></c:import>
     <style>
-        ============================================================*/
         .db-bk-color-one {
             background-color: #f55039;
         }
@@ -33,9 +32,6 @@
         .db-bk-color-six {
             background-color: #F59B24;
         }
-        /*============================================================
-        PRICING STYLES
-        ==========================================================*/
         .db-padding-btm {
             padding-bottom: 50px;
         }
@@ -126,10 +122,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <c:forEach items="${plans}" var="item" varStatus="loop">
-                        <div class="col-md-3">
-                            <div class="db-wrapper">
-                                <c:if test="${loop.index%2 != 0}"><div class="db-pricing-eleven db-bk-color-three"></c:if>
-                                       <c:if test="${loop.index%2 == 0}"><div class="db-pricing-eleven db-bk-color-two"></c:if>
+                    <div class="col-md-3">
+                        <div class="db-wrapper">
+                            <c:if test="${loop.index%2 != 0}"><div class="db-pricing-eleven db-bk-color-three"></c:if>
+                                <c:if test="${loop.index%2 == 0}"><div class="db-pricing-eleven db-bk-color-two"></c:if>
                                     <div class="price">
                                         <sup>₹</sup>${item.price}
                                         <small>per ${item.unit} ${item.periodType}</small>
@@ -141,16 +137,17 @@
                                         <li><i class="glyphicon glyphicon-time"></i>Status: Available </li>
                                         <li><i class="glyphicon glyphicon-book"></i><spring:message code="max.book"></spring:message>:${item.maxNumberOfBookAllow} </li>
                                         <li><i class="glyphicon glyphicon-eye-open"></i>
-                                            <span class="btn btn-success" data-toggle="modal" onclick="openModalBox('${item.description}')"><spring:message code="description"></spring:message> </span>
+                                            <span class="btn btn-success" data-toggle="modal" onclick="openModalBox(`${item.description}`)"><spring:message code="description"></spring:message> </span>
                                         </li>
                                     </ul>
                                     <div class="pricing-footer">
-                                        <a href="#" class="btn db-button-color-square btn-lg"><spring:message code="buy"></spring:message></a>
+                                        <a href="<c:url value="/plan/purchase/${item.uuid}"/>" class="btn db-button-color-square btn-lg"><spring:message code="buy"></spring:message></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </c:forEach>
+                        </c:forEach>
+                    </div>
                 </div>
             </div>
         </div>
@@ -181,7 +178,6 @@
         $("#myModal").find("p.target").html(description);
         $("#myModal").modal('show');
     }
-
 </script>
 </body>
 
