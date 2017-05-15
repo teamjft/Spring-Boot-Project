@@ -1,11 +1,8 @@
-package com.lms.utils.factory;
+package com.lms.config.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.lms.dao.LibraryDao;
-import com.lms.dao.repository.LibraryRepository;
-import com.lms.models.Library;
 import com.lms.services.imageService.CloudinaryImageServiceImpl;
 import com.lms.services.imageService.ImageService;
 import com.lms.services.imageService.LocalStorageServiceImpl;

@@ -1,6 +1,6 @@
 package com.lms.services.membership;
 
-import static com.lms.utils.Constant.PAGE_SIZE;
+import static com.lms.utils.constants.Constant.PAGE_SIZE;
 
 import java.util.List;
 

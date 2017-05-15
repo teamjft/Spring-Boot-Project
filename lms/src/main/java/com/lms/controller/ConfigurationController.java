@@ -33,7 +33,7 @@ import com.lms.utils.converter.SaveImageServiceTypeConverter;
 import com.lms.utils.customannotation.annotaion.XxsFilter;
 import com.lms.utils.enums.NotificationType;
 import com.lms.utils.enums.SaveImageServiceType;
-import com.lms.utils.factory.NotificationFactory;
+import com.lms.config.factory.NotificationFactory;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.SecurityUtil;
 

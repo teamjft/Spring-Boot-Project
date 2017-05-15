@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.lms.models.Library;
-import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 
 /**
@@ -18,6 +17,7 @@ public interface MembershipPlanService {
     MembershipPlan update(MembershipPlan membershipPlan);
     void deleteUser(Long id);
     MembershipPlan findByUuid(String uuid);
+    MembershipPlan findByUuidAndLibrary(String uuid, Library library);
     MembershipPlan findByName(String name);
     List<MembershipPlan> findByLibrary(Library library);
     Page<MembershipPlan> getPageRequest(Integer pageNumber);

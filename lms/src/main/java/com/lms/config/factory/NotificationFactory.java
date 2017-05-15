@@ -1,4 +1,4 @@
-package com.lms.utils.factory;
+package com.lms.config.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

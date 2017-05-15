@@ -8,10 +8,23 @@
   Time: 2:57 PM
   To change this template use File | Settings | File Templates.
 --%>
-<sec:authorize access="hasAnyRole('LIBRARY_ADMIN','LIBRARIAN')" var="isLibraryAdminOrlibrarian"></sec:authorize>
+<%--<sec:authorize access="hasAnyRole('LIBRARY_ADMIN','LIBRARIAN')" var="isLibraryAdminOrlibrarian"></sec:authorize>
 <sec:authorize access="hasAnyRole('LIBRARY_ADMIN')" var="isLibraryAdmin"></sec:authorize>
-<sec:authorize access="hasAnyRole('LIBRARY_ADMIN')" var="isSuperAdmin"></sec:authorize>
-
+<sec:authorize access="hasRole('LIBRARY_ADMIN')" var="isSuperAdmin"></sec:authorize>--%>
+<sec:authentication property="principal.authorities" var="listOfRole"/>
+<c:set var="isLibrarian" value="false" />
+<c:set var="isLibraryAdmin" value="false" />
+<c:set var="isSuperAdmin" value="false" />
+<c:forEach var="item" items="${listOfRole}">
+    <c:if test="${item eq 'LIBRARY_ADMIN'}">
+        <c:set var="isLibraryAdmin" value="true" />
+    </c:if>
+    <c:if test="${item eq 'LIBRARIAN'}">
+        <c:set var="isLibrarian" value="true" />
+    </c:if> <c:if test="${item eq 'LIBRARY_ADMIN'}">
+        <c:set var="isSuperAdmin" value="true" />
+    </c:if>
+</c:forEach>
 <div class="col-md-3">
     <div id="sidenav1">
         <div class="navbar-header">
@@ -29,7 +42,7 @@
                         <h4 class="panel-title"><a href="<c:url value="/logout"/>"> <span class="glyphicon glyphicon-off"></span><spring:message code="logout"></spring:message> </a> </h4>
                     </div>
                 </div>
-                <c:if test="${isLibraryAdminOrlibrarian ne false}">
+                <c:if test="${isLibraryAdmin == true || isLibrarian == true}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-book"> </span><spring:message code="book"></spring:message><span class="caret"></span></a> </h4>
@@ -44,7 +57,7 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${isLibraryAdmin ne false}">
+                <c:if test="${isLibraryAdmin == true}">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseX"><span class="glyphicon glyphicon-book"> </span><spring:message code="categories"></spring:message><span class="caret"></span></a> </h4>

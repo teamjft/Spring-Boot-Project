@@ -1,6 +1,6 @@
 package com.lms.services.membershipplan;
 
-import static com.lms.utils.Constant.PAGE_SIZE;
+import static com.lms.utils.constants.Constant.PAGE_SIZE;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lms.dao.repository.MembershipPlanRepository;
 import com.lms.models.Library;
-import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 
 /**
@@ -75,5 +74,10 @@ public class MembershipPlanServiceImpl implements MembershipPlanService {
     @Override
     public MembershipPlan findByName(String name) {
         return membershipPlanRepository.findByName(name);
+    }
+
+    @Override
+    public MembershipPlan findByUuidAndLibrary(String uuid, Library library) {
+        return membershipPlanRepository.findByUuidAndLibraryAndEnabledTrue(uuid, library);
     }
 }
