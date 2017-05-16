@@ -2,11 +2,27 @@ package com.lms.controller;
 
 import java.util.List;
 
+import static com.lms.utils.constants.UrlMappingConstant.CONFIGURATION_EDIT_TEMPLATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CONFIGURATION_IMAGECONFIGURATION_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CONFIGURATION_TEMPLATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CONFIGURATION_UPDATE_STORAGE_TYPE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CONFIGURATION_UPDATE_TEMPLATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CONFIGURATION_VIEW_TEMPLATE_PATH;
+import static com.lms.utils.constants.ViewConstant.CONFIGURATION_EDIT_TEMPLATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.CONFIGURATION_REDIRECT_IMAGECONFIGURATION;
+import static com.lms.utils.constants.ViewConstant.CONFIGURATION_REDIRECT_TEMPLATE;
+import static com.lms.utils.constants.ViewConstant.CONFIGURATION_TEMPLATE_LIST_VIEW;
+import static com.lms.utils.constants.ViewConstant.CONFIGURATION_TEMPLATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.CONFIGURATION__IMAGECONFIGURATION_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -54,6 +70,8 @@ public class ConfigurationController {
     private LibraryService libraryService;
     @Autowired
     private EmailTemplateService emailTemplateService;
+    @Autowired
+    private MessageSource messageSource;
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
@@ -61,11 +79,11 @@ public class ConfigurationController {
         dataBinder.registerCustomEditor(NotificationType.class, new NotificationTypeConverter());
     }
 
-    @RequestMapping("/imageconfiguration")
+    @RequestMapping(CONFIGURATION_IMAGECONFIGURATION_PATH)
     public ModelAndView imageConfiguration() {
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
-        ModelAndView modelAndView = new ModelAndView("configuration/imageconfiguration");
+        ModelAndView modelAndView = new ModelAndView(CONFIGURATION__IMAGECONFIGURATION_VIEW);
         LibraryBean libraryBean = new LibraryBean();
         libraryBean.setSaveImageServiceType(library.getSaveImageServiceType());
         libraryBean.setUuid(library.getUuid());
@@ -76,17 +94,17 @@ public class ConfigurationController {
         return modelAndView;
     }
 
-    @RequestMapping("/updatestrogetype")
-    public ModelAndView updateStrogeType(@RequestParam(value = "saveImageServiceType") SaveImageServiceType saveImageServiceType, Object command) {
+    @RequestMapping(CONFIGURATION_UPDATE_STORAGE_TYPE_PATH)
+    public ModelAndView updateStrogeType(@RequestParam(value = "saveImageServiceType") SaveImageServiceType saveImageServiceType) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
         library.setSaveImageServiceType(saveImageServiceType);
         libraryService.update(library);
-        return new ModelAndView("redirect:/configuration/imageconfiguration");
+        return new ModelAndView(CONFIGURATION_REDIRECT_IMAGECONFIGURATION);
     }
 
 
-    @RequestMapping("/template")
+    @RequestMapping(CONFIGURATION_TEMPLATE_PATH)
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
         if (currentPageNumber == null) {
             currentPageNumber =1;
@@ -95,7 +113,7 @@ public class ConfigurationController {
         int current = page.getNumber() + 1;
         int begin = Math.max(1, current - 5);
         int end = Math.min(begin + 10, page.getTotalPages());
-        ModelAndView modelAndView = new ModelAndView("configuration/templatelist");
+        ModelAndView modelAndView = new ModelAndView(CONFIGURATION_TEMPLATE_LIST_VIEW);
         modelAndView.addObject("templates",  page.getContent());
         modelAndView.addObject("beginIndex", begin);
         modelAndView.addObject("endIndex", end);
@@ -103,40 +121,40 @@ public class ConfigurationController {
         return modelAndView;
     }
 
-    @RequestMapping("/editTemplate/{id}")
+    @RequestMapping(CONFIGURATION_EDIT_TEMPLATE_PATH)
     public ModelAndView editTemplate(@PathVariable(value="id", required = true) String id) {
         EmailTemplate emailTemplate = emailTemplateService.findByUuid(id);
         if(emailTemplate != null) {
             EmailTemplateBean emailTemplateBean = buildEmailTemplateBean(emailTemplate);
-            ModelAndView modelAndView = getEmailTemplateModelAndView("edittemplate", emailTemplateBean);
+            ModelAndView modelAndView = getEmailTemplateModelAndView(CONFIGURATION_EDIT_TEMPLATE_VIEW, emailTemplateBean);
             emailTemplateBean.setAvailableField(NotificationUtil.getParametersListByNotificationType(emailTemplate.getNotificationType()));
             return modelAndView;
         }
-        return new ModelAndView("redirect:/configuration/template");
+        return new ModelAndView(CONFIGURATION_REDIRECT_TEMPLATE);
     }
 
-    @RequestMapping("/viewTemplate/{id}")
+    @RequestMapping(CONFIGURATION_VIEW_TEMPLATE_PATH)
     public ModelAndView viewTemplate(@PathVariable(value="id", required = true) String id) {
         EmailTemplate emailTemplate = emailTemplateService.findByUuid(id);
         if(emailTemplate != null) {
             EmailTemplateBean emailTemplateBean = buildEmailTemplateBean(emailTemplate);
-            ModelAndView modelAndView = getEmailTemplateModelAndView("templateview", emailTemplateBean);
+            ModelAndView modelAndView = getEmailTemplateModelAndView(CONFIGURATION_TEMPLATE_VIEW, emailTemplateBean);
             return modelAndView;
         }
-        return new ModelAndView("redirect:/configuration/templateview");
+        return new ModelAndView(CONFIGURATION_REDIRECT_TEMPLATE);
     }
 
     @XxsFilter
-    @RequestMapping("/updateTemplate")
+    @RequestMapping(CONFIGURATION_UPDATE_TEMPLATE_PATH)
     public ModelAndView updateTemplate(@Valid @ModelAttribute("emailTemplate")EmailTemplateBean emailTemplateBean, BindingResult result, final RedirectAttributes redirectAttributes) {
         EmailTemplate emailTemplate = emailTemplateService.findByUuid(emailTemplateBean.getUuid());
         if (emailTemplate == null) {
-            return new ModelAndView("redirect:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             emailTemplateBean.setAvailableField(NotificationUtil.getParametersListByNotificationType(emailTemplate.getNotificationType()));
-            ModelAndView modelAndView = getEmailTemplateModelAndView("edittemplate", emailTemplateBean);
+            ModelAndView modelAndView = getEmailTemplateModelAndView(CONFIGURATION_EDIT_TEMPLATE_VIEW, emailTemplateBean);
             modelAndView.addObject("errors", errors);
             return modelAndView;
         }
@@ -144,8 +162,8 @@ public class ConfigurationController {
         emailTemplate.setSubject(emailTemplateBean.getSubject());
         emailTemplateService.update(emailTemplate);
         emailTemplateBean = buildEmailTemplateBean(emailTemplate);
-        ModelAndView modelAndView = getEmailTemplateModelAndView("templateview", emailTemplateBean);
-        redirectAttributes.addFlashAttribute("success", "Successfully edited.");
+        ModelAndView modelAndView = getEmailTemplateModelAndView(CONFIGURATION_TEMPLATE_VIEW, emailTemplateBean);
+        redirectAttributes.addFlashAttribute("success", messageSource.getMessage("configuration.successfully.edited", null, LocaleContextHolder.getLocale()));
         return modelAndView;
     }
 
@@ -160,7 +178,7 @@ public class ConfigurationController {
     }
 
     private ModelAndView getEmailTemplateModelAndView(String view, EmailTemplateBean emailTemplateBean) {
-        ModelAndView modelAndView = new ModelAndView(String.format("configuration/%s", view));
+        ModelAndView modelAndView = new ModelAndView(view);
         modelAndView.addObject("emailTemplate", emailTemplateBean);
         return modelAndView;
     }

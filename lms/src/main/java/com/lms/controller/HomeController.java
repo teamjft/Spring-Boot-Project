@@ -2,6 +2,15 @@ package com.lms.controller;
 
 import java.util.Map;
 
+import static com.lms.utils.constants.UrlMappingConstant.ERROR_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.HOME_PATH;
+import static com.lms.utils.constants.ViewConstant.ERROR_VIEW;
+import static com.lms.utils.constants.ViewConstant.INDEX_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_USER_HOME;
+import static com.lms.utils.constants.ViewConstant._403_VIEW;
+import static com.lms.utils.constants.ViewConstant._404_VIEW;
+import static com.lms.utils.constants.ViewConstant._500_VIEW;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,32 +36,30 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @PreAuthorize("isAuthenticated()")
 public class HomeController implements ErrorController {
 
-    private static final String ERROR_PATH = "/error";
-
     @Autowired
     private ErrorAttributes errorAttributes;
 
-    @RequestMapping("/")
+    @RequestMapping(HOME_PATH)
     public String index() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)) {
-            return "redirect:/user/home";
+            return REDIRECT_USER_HOME;
         }
-        return "index";
+        return INDEX_VIEW;
     }
 
-    @RequestMapping(value = "/error")
+    @RequestMapping(value = ERROR_PATH)
     public String error(HttpServletRequest request, HttpServletResponse response) {
         log.error("Something going wrong status: {} ", response.getStatus());
         getErrorAttributes(request, true);
         if(response.getStatus() == 404 ) {
-            return "404";
+            return _404_VIEW;
         } else if (response.getStatus() == 500) {
-            return "500";
+            return _500_VIEW;
         } else if (response.getStatus() == 403) {
-            return "403";
+            return _403_VIEW;
         }
-        return "error";
+        return ERROR_VIEW;
     }
 
     @Override

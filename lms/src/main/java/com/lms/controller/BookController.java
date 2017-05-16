@@ -1,8 +1,18 @@
 package com.lms.controller;
 
+import static com.lms.utils.constants.UrlMappingConstant.BOOK_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INDEX_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.SAVE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.BOOK_VIEW_BY_ID_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
+import static com.lms.utils.constants.ViewConstant.BOOK_INDEX_VIEW;
+import static com.lms.utils.constants.ViewConstant.BOOK_VIEW;
+import static com.lms.utils.constants.ViewConstant.BOOK_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_BOOK_INDEX;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,11 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -45,7 +56,7 @@ import com.lms.utils.helper.SecurityUtil;
  * Created by bhushan on 17/4/17.
  */
 @Controller
-@RequestMapping(value = "/book")
+@RequestMapping(value = BOOK_PATH)
 @PreAuthorize("isAuthenticated()")
 @Slf4j
 public class BookController {
@@ -57,6 +68,9 @@ public class BookController {
     private LibraryService libraryService;
     @Autowired
     private ImageFactory imageFactory;
+    @Autowired
+    private MessageSource messageSource;
+
     @Value("${lcm.customer.support.email}")
     private String supportEmail;
     @Value("${localstroge.path}")
@@ -91,9 +105,9 @@ public class BookController {
         });
     }
 
-    @RequestMapping("/index")
+    @RequestMapping(INDEX_PATH)
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
-        ModelAndView modelAndView = new ModelAndView("book/index");
+        ModelAndView modelAndView = new ModelAndView(BOOK_INDEX_VIEW);
         if (currentPageNumber == null) {
             currentPageNumber =1;
         }
@@ -108,40 +122,39 @@ public class BookController {
         return modelAndView;
     }
 
-    @RequestMapping("/view/{id}")
+    @RequestMapping(BOOK_VIEW_BY_ID_PATH)
     public ModelAndView view(@PathVariable String id) {
         Book book = bookService.findByUuid(id);
         Library library = book.getLibrary();
         if(book.getImageUrl() != null) {
             book.setImageUrl(imageFactory.getSendContentService(library.getSaveImageServiceType()).resourceUrl(book.getImageUrl()));
         }
-        ModelAndView modelAndView = new ModelAndView("book/view");
+        ModelAndView modelAndView = new ModelAndView(BOOK_VIEW);
         modelAndView.addObject("book", book);
         modelAndView.addObject("categories", book.getCategories());
         return modelAndView;
     }
 
 
-    @RequestMapping("/create")
+    @RequestMapping(CREATE_PATH)
     public ModelAndView create() {
         return getCreateModel(new BookBean());
     }
 
     @XxsFilter
-    @RequestMapping("/save")
+    @RequestMapping(SAVE_PATH)
     public ModelAndView save(@RequestParam(value = "image", required = false) MultipartFile image, @Valid @ModelAttribute("book")BookBean bookBean, BindingResult result, Map map) {
 
         if (result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
             ModelAndView modelAndView = getCreateModel(bookBean);
-            modelAndView.addObject("errors", errors);
             return modelAndView;
         }
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
         ModelAndView createViewModel = getCreateModel(bookBean);
+        Locale locale = LocaleContextHolder.getLocale();
         if (bookService.countBYLibraryAndIsbn(library, bookBean.getIsbn()) != 0) {
-            createViewModel.addObject("error", String.format("book already exist with isbn: %s", bookBean.getIsbn()));
+            createViewModel.addObject("error", messageSource.getMessage("book.already.exist", new Object[] {bookBean.getIsbn()}, locale));
             return createViewModel;
         }
         if(image != null && !image.isEmpty()) {
@@ -150,8 +163,8 @@ public class BookController {
                 bookBean.setImageUrl(cloudinaryURL);
 
             } catch (Exception e) {
-                log.error("Exception during upload image:"+e);
-                createViewModel.addObject("error", String.format("Something went wrong during upload image, please try again or contact to our support: %s", supportEmail));
+                log.error("Exception during upload image: {}", e);
+                createViewModel.addObject("error",  messageSource.getMessage("something.went.wrong.during.upload.image", new Object[] {supportEmail}, locale));
             }
         }
         try {
@@ -171,11 +184,11 @@ public class BookController {
             createViewModel.addObject("error", e.getMessage());
             return createViewModel;
         }
-        return new ModelAndView("redirect:/book/index");
+        return new ModelAndView(REDIRECT_BOOK_INDEX);
     }
 
     private ModelAndView getCreateModel(BookBean bookBean) {
-        ModelAndView modelAndView = new  ModelAndView("book/create");
+        ModelAndView modelAndView = new  ModelAndView(BOOK_CREATE_VIEW);
         modelAndView.addObject("book", bookBean);
         List<Category> categories = categoryService.getAll();
         modelAndView.addObject("categories", categories);

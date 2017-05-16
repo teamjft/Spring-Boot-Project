@@ -1,6 +1,17 @@
 package com.lms.controller;
 
-import java.util.List;
+import static com.lms.utils.constants.UrlMappingConstant.INVITATION_ACCEPT_INVITATION_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INVITATION_ACCEPT_INVITATION_BY_TOKEN_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INVITATION_BASE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INVITATION_INVITE_USER_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INVITATION_URL;
+import static com.lms.utils.constants.ViewConstant.INDEX_VIEW;
+import static com.lms.utils.constants.ViewConstant.INVITATION_ACCEPT_VIEW;
+import static com.lms.utils.constants.ViewConstant.INVITATION_CREATE_INVITE_VIEW;
+import static com.lms.utils.constants.ViewConstant.INVITATION_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
+
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,10 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +51,7 @@ import com.lms.utils.helper.SecurityUtil;
  */
 @Controller
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("invite")
+@RequestMapping(INVITATION_BASE_PATH)
 @Slf4j
 public class InvitationController {
     @Autowired
@@ -48,39 +60,42 @@ public class InvitationController {
     private MembershipService membershipService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageSource messageSource;
+
     @Value("${lcm.customer.support.email}")
     private String supportEmail;
 
-    @RequestMapping(value = "/inviteUser", method = RequestMethod.GET)
+    @RequestMapping(value = INVITATION_INVITE_USER_PATH, method = RequestMethod.GET)
     public ModelAndView inviteUser() {
         InvitationBean invitationBean = new InvitationBean();
         SecUser secUser = SecurityUtil.getCurrentUser();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
-        ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "create");
+        ModelAndView modelAndView = getCreateOrEditModel(invitationBean, INVITATION_CREATE_VIEW);
         modelAndView = addRoles(memberShip, modelAndView);
         return modelAndView;
     }
 
 
-    @RequestMapping(value = "/inviteUser", method = RequestMethod.POST)
+    @RequestMapping(value = INVITATION_INVITE_USER_PATH, method = RequestMethod.POST)
     public ModelAndView invitation(@Valid @ModelAttribute("invitation") InvitationBean invitationBean, BindingResult result, HttpServletRequest httpServletRequest) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         User invitedBy = memberShip.getUser();
         if(result.hasErrors()) {
-            ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "create");
+            ModelAndView modelAndView = getCreateOrEditModel(invitationBean, INVITATION_CREATE_VIEW);
             modelAndView = addRoles(memberShip, modelAndView);
             return modelAndView;
         }
 
         Library library = memberShip.getLibrary();
-
+        Locale locale = LocaleContextHolder.getLocale();
         User inviteUser  = userService.findByEmail(invitationBean.getEmail());
         if(inviteUser != null) {
             MemberShip inviteUserMemberShip = membershipService.findByLibraryAndUser(library, inviteUser);
             if (inviteUserMemberShip != null) {
-                ModelAndView modelAndView = getCreateOrEditModel(invitationBean, "createinvite");
-                modelAndView.addObject("error", String.format("User is already registered with email %s", invitationBean.getEmail()));
+                ModelAndView modelAndView = getCreateOrEditModel(invitationBean, INVITATION_CREATE_INVITE_VIEW);
+                modelAndView.addObject("error", messageSource.getMessage("user.already.exist", new Object[] {invitationBean.getEmail()}, locale));
                 return modelAndView;
             }
         }
@@ -103,20 +118,20 @@ public class InvitationController {
                 .inviteLibrary(memberShip.getLibrary())
                 .token(UUID.randomUUID().toString())
                 .build();
-        String invitationUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "invite/accept", invitation.getToken());
+        String invitationUrl = String.format("%s/%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), INVITATION_URL , invitation.getToken());
         invitationService.inviteUser(invitation, invitationUrl);
-        ModelAndView modelAndView = getCreateOrEditModel(new InvitationBean(), "create");
-        modelAndView.addObject("success", "Successfully send invitations");
+        ModelAndView modelAndView = getCreateOrEditModel(new InvitationBean(), INVITATION_CREATE_VIEW);
+        modelAndView.addObject("success",  messageSource.getMessage("successfully.send.invitation", null, locale));
         modelAndView = addRoles(memberShip, modelAndView);
         return  modelAndView;
     }
 
     @PreAuthorize("permitAll")
-    @RequestMapping(value = "/accept/{token}")
+    @RequestMapping(value = INVITATION_ACCEPT_INVITATION_BY_TOKEN_PATH)
     public ModelAndView accept(@PathVariable String token) {
         Invitation invitation = invitationService.findByTokenAndNotDeleted(token);
         if(invitation == null) {
-            return new ModelAndView("redirect:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         UserBean userBean = new UserBean();
         userBean.setToken(invitation.getToken());
@@ -127,44 +142,45 @@ public class InvitationController {
 
     @PreAuthorize("permitAll")
     @XxsFilter
-    @RequestMapping(value = "/accept", method = RequestMethod.POST)
+    @RequestMapping(value = INVITATION_ACCEPT_INVITATION_PATH, method = RequestMethod.POST)
     public ModelAndView accept(@Valid @ModelAttribute("user") UserBean userBean, BindingResult result) {
         if(result.hasErrors()) {
             ModelAndView modelAndView =  getAcceptModel(userBean);
             return modelAndView;
         }
+        Locale locale = LocaleContextHolder.getLocale();
         User userInstanceByEmail = userService.findByEmail(userBean.getEmail());
         if(userInstanceByEmail != null) {
-            ModelAndView modelAndView = new ModelAndView("index");
-            modelAndView.addObject("info", "Please account is registered with system, please login and accept the invitation");
+            ModelAndView modelAndView = new ModelAndView(INDEX_VIEW);
+            modelAndView.addObject("info", messageSource.getMessage("account.already.exist", null, locale));
             return modelAndView;
         }
         User userInstanceByUserName = userService.loadByUsername(userBean.getUsername());
         if(userInstanceByUserName != null) {
             ModelAndView modelAndView =  getAcceptModel(userBean);
-            modelAndView.addObject("error", "username is already register please choose another user name.");
+            modelAndView.addObject("error", messageSource.getMessage("username.already.register", null, locale));
             return modelAndView;
         }
         Invitation invitation = invitationService.findByTokenAndNotDeleted(userBean.getToken());
         if(invitation == null) {
-            return new ModelAndView("redirect:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         try {
             invitationService.createUser(invitation, userBean);
         } catch (Exception e) {
             log.error("Error occur during save the invitation, invitation token: {}", invitation.getToken());
             ModelAndView modelAndView =  getAcceptModel(userBean);
-            modelAndView.addObject("error", String.format("Something went wrong please try again or contact to application provider, email: {}", supportEmail));
+            modelAndView.addObject("error", messageSource.getMessage("some.thing.going.wrong", new Object[] {supportEmail} , locale));
             return modelAndView;
         }
 
-        ModelAndView modelAndView = new ModelAndView("invitation/accept");
-        modelAndView.addObject("success", "successfully created account, please login with account. Thanks");
+        ModelAndView modelAndView = new ModelAndView(INVITATION_ACCEPT_VIEW);
+        modelAndView.addObject("success", messageSource.getMessage("successfully.created.account", null, locale));
         return  modelAndView;
     }
 
     private ModelAndView getCreateOrEditModel(InvitationBean invitationBean, String action) {
-        ModelAndView modelAndView = new ModelAndView(String.format("invitation/%s", action));
+        ModelAndView modelAndView = new ModelAndView(action);
         modelAndView.addObject("invitation", invitationBean );
         return modelAndView;
     }
@@ -183,7 +199,7 @@ public class InvitationController {
     }
 
     private ModelAndView getAcceptModel(UserBean userBean) {
-        ModelAndView modelAndView =  new ModelAndView("invitation/accept");
+        ModelAndView modelAndView =  new ModelAndView(INVITATION_ACCEPT_VIEW);
         modelAndView.addObject("user", userBean);
         return modelAndView;
     }

@@ -1,5 +1,11 @@
 package com.lms.controller;
 
+import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.PAYMENT_BASE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.PAYMENT_PAY_PATH;
+import static com.lms.utils.constants.ViewConstant.MEMBERSHIP_PLAN_PURCHASE_VIEW;
+import static com.lms.utils.constants.ViewConstant.PAYMENT_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -40,7 +46,7 @@ import com.paypal.base.rest.PayPalRESTException;
  * Created by bhushan on 11/5/17.
  */
 @Controller
-@RequestMapping(value = "/payment")
+@RequestMapping(value = PAYMENT_BASE_PATH)
 @PreAuthorize("isAuthenticated()")
 @Slf4j
 public class PaymentController {
@@ -55,10 +61,10 @@ public class PaymentController {
 
 
 
-    @RequestMapping(value = "/create")
+    @RequestMapping(value = CREATE_PATH)
     public ModelAndView paymentCreate(@Valid @ModelAttribute("cart") OrderCartBean cartBean, BindingResult result) {
         if (cartBean.getPlanUuid() == null) {
-            return new ModelAndView("redirect:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         SecUser secUser = SecurityUtil.getCurrentUser();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
@@ -66,10 +72,10 @@ public class PaymentController {
         if(result.hasErrors()) {
 
             if (membershipPlan == null) {
-                return new ModelAndView("forward:/");
+                return new ModelAndView(REDIRECT_HOME_VIEW);
             }
             List<ObjectError> errors = result.getAllErrors();
-            ModelAndView modelAndView = new ModelAndView("plan/purchase");
+            ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_PURCHASE_VIEW);
             modelAndView.addObject("plan", membershipPlan);
             OrderCartBean orderCartBean = OrderCartBean.builder().planUuid(membershipPlan.getUuid()).quantity(1).build();
             modelAndView.addObject("cart", orderCartBean);
@@ -87,15 +93,15 @@ public class PaymentController {
         paymentInstrumentBean.setMembershipPlanId(membershipPlan.getUuid());
         paymentInstrumentBean.setOrderCart(cartBean);
         paymentInstrumentBean.setMembershipPlanId(membershipPlan.getUuid());
-        ModelAndView modelAndView = new ModelAndView("payment/create");
+        ModelAndView modelAndView = new ModelAndView(PAYMENT_CREATE_VIEW);
         modelAndView.addObject("paymentDetails", paymentInstrumentBean);
         return modelAndView;
     }
 
-    @RequestMapping(value = "/pay")
+    @RequestMapping(value = PAYMENT_PAY_PATH)
     public ModelAndView pay( @Valid @ModelAttribute("paymentDetails")PaymentInstrumentBean paymentInstrumentBean, BindingResult result) {
         if(result.hasErrors()) {
-            ModelAndView modelAndView = new ModelAndView("payment/create");
+            ModelAndView modelAndView = new ModelAndView(PAYMENT_CREATE_VIEW);
             modelAndView.addObject("paymentDetails", paymentInstrumentBean);
             return modelAndView;
         }
@@ -117,7 +123,7 @@ public class PaymentController {
             log.error("Error occur during payment for user uuid: {} membership uuid {} subscription {}");
             if (e instanceof PayPalRESTException) {
                 Error error = ((PayPalRESTException) e).getDetails();
-                ModelAndView modelAndView = new ModelAndView("payment/create");
+                ModelAndView modelAndView = new ModelAndView(PAYMENT_CREATE_VIEW);
                 modelAndView.addObject("errorDetails", error.getDetails());
                 modelAndView.addObject("paymentDetails", paymentInstrumentBean);
                 return modelAndView;
@@ -125,8 +131,6 @@ public class PaymentController {
         }
 
 
-        return new ModelAndView("payment/create", "paymentDetails", paymentInstrumentBean);
+        return new ModelAndView(PAYMENT_CREATE_VIEW, "paymentDetails", paymentInstrumentBean);
     }
-
-
 }

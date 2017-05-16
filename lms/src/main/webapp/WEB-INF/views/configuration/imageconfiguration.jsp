@@ -62,7 +62,7 @@
                                         </c:if>
                                     </div>
                                     <spring:message code="update.storage" var="uploadStroge"></spring:message>
-                                    <form  role="form" action="/configuration/updatestrogetype">
+                                    <form  role="form" action="/configuration/updatestoragetype">
                                         <fieldset>
                                             <div class="form-group">
                                                 <c:forEach items="${storageType}" var="value">

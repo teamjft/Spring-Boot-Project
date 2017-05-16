@@ -1,6 +1,20 @@
 package com.lms.controller;
 
+import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.DELETE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.MEMBERSHIP_PLAN_BASE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.MEMBERSHIP_PLAN_PURCHASE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.SAVE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.VIEW_PATH;
+import static com.lms.utils.constants.ViewConstant.MEMBERSHIP_PLAN_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.MEMBERSHIP_PLAN_INDEX_VIEW;
+import static com.lms.utils.constants.ViewConstant.MEMBERSHIP_PLAN_PURCHASE_VIEW;
+import static com.lms.utils.constants.ViewConstant.MEMBERSHIP_PLAN_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_MEMBERSHIP_PLAN_INDEX;
+
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -8,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +36,6 @@ import com.lms.config.security.SecUser;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
-import com.lms.models.PaymentInstrument;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.membershipplan.MembershipPlanService;
@@ -35,7 +50,7 @@ import com.lms.utils.helper.SecurityUtil;
  * Created by bhushan on 3/5/17.
  */
 @Controller
-@RequestMapping("/plan")
+@RequestMapping(MEMBERSHIP_PLAN_BASE_PATH)
 @Slf4j
 public class MembershipPlanController {
     @Value("${lcm.customer.support.email}")
@@ -48,100 +63,96 @@ public class MembershipPlanController {
     private UserService userService;
     @Autowired
     private LibraryService libraryService;
+    @Autowired
+    private MessageSource messageSource;
 
-    @RequestMapping("/index")
+    @RequestMapping(MEMBERSHIP_PLAN_BASE_PATH)
     public ModelAndView index(Model model) {
         SecUser secUser = SecurityUtil.getCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("plan/index");
+        ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_INDEX_VIEW);
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         List<MembershipPlan> plans = membershipPlanService.findByLibrary(memberShip.getLibrary());
         modelAndView.addObject("plans", plans);
         return modelAndView;
     }
 
-    @RequestMapping("/create")
+    @RequestMapping(CREATE_PATH)
     public ModelAndView create(Model model) {
         ModelAndView modelAndView = getCreateModel(new MembershipPlanBean());
         return modelAndView;
     }
 
     @XxsFilter
-    @RequestMapping("/save")
+    @RequestMapping(SAVE_PATH)
         public ModelAndView save(@Valid @ModelAttribute("plan") MembershipPlanBean membershipPlanBean, BindingResult result) {
         if (result.hasErrors()) {
             ModelAndView modelAndView = getCreateModel(membershipPlanBean);
             return modelAndView;
         }
         MembershipPlan membershipPlan = membershipPlanService.findByName(membershipPlanBean.getName());
+        Locale locale = LocaleContextHolder.getLocale();
         if (membershipPlan != null) {
             ModelAndView modelAndView = getCreateModel(membershipPlanBean);
-            modelAndView.addObject("error", "Plane name already exist, please enter new plane name");
+            modelAndView.addObject("error", messageSource.getMessage("plan.name.already.exist", null, locale));
             return modelAndView;
         }
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
-        membershipPlan = new MembershipPlan();
-        membershipPlan.setMaxNumberOfBookAllow(membershipPlanBean.getMaxNumberOfBookAllow());
-        membershipPlan.setName(membershipPlanBean.getName());
+        membershipPlan = MembershipPlanBean.buildBeanToEntity(membershipPlanBean);
         membershipPlan.setLibrary(library);
-        membershipPlan.setDescription(membershipPlanBean.getDescription());
-        membershipPlan.setPrice(membershipPlanBean.getPrice());
-        membershipPlan.setUnit(membershipPlanBean.getUnit());
-        membershipPlan.setPeriodType(membershipPlanBean.getPeriodType());
         try {
             membershipPlanService.create(membershipPlan);
         } catch (Exception e) {
             log.error("Exception occur during save membership plan user name: {} , membership id {}, error:", secUser.getUsername(), secUser.getMemberShipId(), e);
             ModelAndView modelAndView = getCreateModel(membershipPlanBean);
-            modelAndView.addObject("error", String.format("Something went wrong during save plan, please try again or contact to our support: %s", supportEmail));
-            return modelAndView;
+            modelAndView.addObject("error", messageSource.getMessage("some.thing.going.wrong", new Object[]{ supportEmail }, locale));
         }
          ModelAndView modelAndView = getCreateModel(new MembershipPlanBean());
-        modelAndView.addObject("success","Successfully Added.");
+        modelAndView.addObject("success", messageSource.getMessage("plan.successfully.saved", null, locale));
         return modelAndView;
     }
 
-    @RequestMapping("/delete/{uuid}")
+    @RequestMapping(DELETE_PATH)
     public ModelAndView delete(@PathVariable(required = true) String uuid) {
         MembershipPlan membershipPlan = membershipPlanService.findByUuid(uuid);
         SecUser secUser = SecurityUtil.getCurrentUser();
         if (membershipPlan == null || !membershipPlan.getLibrary().getUuid().equals(secUser.getLibraryId())) {
-            return new ModelAndView("forward:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         membershipPlan.setEnabled(false);
         membershipPlanService.update(membershipPlan);
-        return  new ModelAndView("forward:/plan/index");
+        return  new ModelAndView(REDIRECT_MEMBERSHIP_PLAN_INDEX);
     }
 
-  @RequestMapping("/view/{uuid}")
-    public ModelAndView view(@PathVariable(required = true) String uuid) {
+  @RequestMapping(VIEW_PATH)
+    public ModelAndView view(@PathVariable String uuid) {
         MembershipPlan membershipPlan = membershipPlanService.findByUuid(uuid);
         SecUser secUser = SecurityUtil.getCurrentUser();
         if (membershipPlan == null || !membershipPlan.getLibrary().getUuid().equals(secUser.getLibraryId())) {
-            return new ModelAndView("forward:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
-       ModelAndView modelAndView = new ModelAndView("plan/view");
+       ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_VIEW);
        modelAndView.addObject("plan", membershipPlan);
         return  modelAndView;
     }
 
 
     private ModelAndView getCreateModel(MembershipPlanBean membershipPlanBean) {
-        ModelAndView modelAndView = new ModelAndView("plan/create");
+        ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_CREATE_VIEW);
         modelAndView.addObject("plan", membershipPlanBean);
         modelAndView.addObject("periodTypes", PeriodType.values());
         return modelAndView;
     }
 
-    @RequestMapping(value = "/purchase/{membershipPlanId}")
+    @RequestMapping(value = MEMBERSHIP_PLAN_PURCHASE_PATH)
     public ModelAndView paymentCreate(@PathVariable String membershipPlanId) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
         MembershipPlan membershipPlan =  membershipPlanService.findByUuidAndLibrary(membershipPlanId, memberShip.getLibrary());
         if (membershipPlan == null) {
-            return new ModelAndView("forward:/");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
-        ModelAndView modelAndView = new ModelAndView("plan/purchase");
+        ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_PURCHASE_VIEW);
         modelAndView.addObject("plan", membershipPlan);
         OrderCartBean orderCartBean = OrderCartBean.builder().planUuid(membershipPlanId).quantity(1).build();
         modelAndView.addObject("cart", orderCartBean);
