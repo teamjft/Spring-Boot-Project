@@ -48,4 +48,16 @@ public class MembershipPlanBean {
                 .currency(plan.getCurrency())
                 .build();
     }
+
+    public static MembershipPlan buildBeanToEntity(MembershipPlanBean membershipPlanBean) {
+        MembershipPlan membershipPlan = new MembershipPlan();
+        membershipPlan.setMaxNumberOfBookAllow(membershipPlanBean.getMaxNumberOfBookAllow());
+        membershipPlan.setName(membershipPlanBean.getName());
+        membershipPlan.setDescription(membershipPlanBean.getDescription());
+        membershipPlan.setPrice(membershipPlanBean.getPrice());
+        membershipPlan.setUnit(membershipPlanBean.getUnit());
+        membershipPlan.setPeriodType(membershipPlanBean.getPeriodType());
+        return membershipPlan;
+
+    }
 }

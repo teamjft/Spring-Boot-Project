@@ -127,7 +127,7 @@
                             <c:if test="${loop.index%2 != 0}"><div class="db-pricing-eleven db-bk-color-three"></c:if>
                                 <c:if test="${loop.index%2 == 0}"><div class="db-pricing-eleven db-bk-color-two"></c:if>
                                     <div class="price">
-                                        <sup>₹</sup>${item.price}
+                                        ${item.price}<small>${item.currency}</small>
                                         <small>per ${item.unit} ${item.periodType}</small>
                                     </div>
                                     <div class="type">

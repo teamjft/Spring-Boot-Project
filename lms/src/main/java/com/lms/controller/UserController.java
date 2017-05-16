@@ -1,12 +1,24 @@
 package com.lms.controller;
 
+import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
+import static com.lms.utils.constants.ViewConstant.USER_PLAN_VIEW;
+import static com.lms.utils.constants.ViewConstant.RESET_PASSWORD_VIEW;
+import static com.lms.utils.constants.UrlMappingConstant.RESET_PASSWORD_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.USER_HOME_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.USER_PLAN;
+import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.FORGET_PASSWORD_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.RESET_PASSWORD_BY_UUID_PATH;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,16 +37,15 @@ import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 import com.lms.models.User;
-import com.lms.services.issue.IssueService;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.membershipplan.MembershipPlanService;
-import com.lms.services.payment.PaypalCreditCardPaymentServiceImpl;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.LibraryDataCount;
 import com.lms.utils.beans.PasswordConfirmationBean;
 import com.lms.utils.beans.ResponseMessage;
-import com.lms.utils.beans.UserBean;
+import com.lms.utils.constants.UrlMappingConstant;
+import com.lms.utils.constants.ViewConstant;
 import com.lms.utils.helper.LibraryUtil;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.StringUtil;
@@ -45,7 +56,7 @@ import com.lms.utils.modelutil.MembershipStatus;
  */
 @Controller
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/user")
+@RequestMapping(UrlMappingConstant.USER_PATH)
 public class UserController {
     @Autowired
     private LibraryService libraryService;
@@ -54,109 +65,112 @@ public class UserController {
     @Autowired
     private MembershipService membershipService;
     @Autowired
-    private IssueService issueService;
-    @Autowired
     private MembershipPlanService membershipPlanService;
     @Autowired
-    private PaypalCreditCardPaymentServiceImpl paypalPaymentService;
+    private MessageSource messageSource;
 
-    @RequestMapping("/home")
+
+
+    @RequestMapping(USER_HOME_PATH)
     public ModelAndView home() {
         SecUser secUser =
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
-        ModelAndView modelAndView = new ModelAndView("user/home");
+        ModelAndView modelAndView = new ModelAndView(ViewConstant.USER_HOME_VIEW);
         if (LibraryUtil.isLibraryAdminOrLibrarian(memberShip) || memberShip.getUser().isSuperAdmin()) {
             Library library = memberShip.getLibrary();
             LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
             modelAndView.addObject("dataCount", libraryDataCount);
             return modelAndView;
         } else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
-            modelAndView = new ModelAndView("user/userplan");
-            List<MembershipPlan> plans = membershipPlanService.findByLibrary(memberShip.getLibrary());
-            modelAndView.addObject("plans", plans);
-            return modelAndView;
+            return getUserPlansView((memberShip.getLibrary()));
         } else {
-            return null;
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
     }
 
 
-    @RequestMapping("/userplan")
-    public ModelAndView userplan() {
+    @RequestMapping(USER_PLAN)
+    public ModelAndView userMembershipPlans() {
         SecUser secUser =
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
-        ModelAndView modelAndView = new ModelAndView("user/userplan");
-        List<MembershipPlan> plans = membershipPlanService.findByLibrary(memberShip.getLibrary());
-        modelAndView.addObject("plans", plans);
-        return modelAndView;
+        return getUserPlansView(memberShip.getLibrary());
     }
 
-    @RequestMapping("/create")
+    @RequestMapping(CREATE_PATH)
     public ModelAndView create() {
-        UserBean userBean = new UserBean();
         SecUser secUser =
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
-        ModelAndView modelAndView = new ModelAndView("user/home");
+        ModelAndView modelAndView = new ModelAndView(ViewConstant.USER_HOME_VIEW);
         LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
         modelAndView.addObject("dataCount", libraryDataCount);
         return modelAndView;
     }
 
     @PreAuthorize("permitAll")
-    @RequestMapping("/forgetPassword/{email:.+}")
+    @RequestMapping(FORGET_PASSWORD_PATH)
     public  @ResponseBody
     ResponseMessage forgetPassword(@PathVariable String email, HttpServletRequest httpServletRequest ) {
         String token = UUID.randomUUID().toString();
         User user = userService.findByEmail(email);
+        Locale locale = LocaleContextHolder.getLocale();
         if(user == null) {
-            return new ResponseMessage("Not a valid email register with system", ResponseMessage.MessageType.ERROR, "email");
+
+            return new ResponseMessage(messageSource.getMessage("invalid.email.exist", null, locale), ResponseMessage.MessageType.ERROR, "email");
         }
-        String forgetPasswordUrl = String.format("%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), "user/resetpassword");
+        String forgetPasswordUrl = String.format("%s/%s", NotificationUtil.getBaseUrl(httpServletRequest), RESET_PASSWORD_VIEW);
         if (!StringUtil.isValidEmail(email)) {
-            return new ResponseMessage("invalid email", ResponseMessage.MessageType.ERROR, "email");
+            return new ResponseMessage(messageSource.getMessage("invalid.email", null, locale), ResponseMessage.MessageType.ERROR, "email");
         }
         userService.requestForgetPassword(forgetPasswordUrl, user);
-        return new ResponseMessage("Please verify your forget password link.", ResponseMessage.MessageType.SUCCESS, "email");
+        return new ResponseMessage(messageSource.getMessage("verify.forget.password", null, locale), ResponseMessage.MessageType.SUCCESS, "email");
     }
 
     @PreAuthorize("permitAll")
-    @RequestMapping("/resetpassword/{uuid}")
+    @RequestMapping(RESET_PASSWORD_BY_UUID_PATH)
     public ModelAndView forgetPassword(@PathVariable(value = "uuid") String uuid) {
         User user = userService.findByToken(uuid);
         if(user == null) {
-            return new ModelAndView("redirect:/book/index");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         PasswordConfirmationBean passwordConfirmationBean =  PasswordConfirmationBean.builder()
                 .token(user.getToken()).build();
-        ModelAndView modelAndView = new  ModelAndView("user/resetpassword");
+        ModelAndView modelAndView = new  ModelAndView(RESET_PASSWORD_VIEW);
         modelAndView.addObject("passwordConfirmation", passwordConfirmationBean);
         return  modelAndView;
     }
 
     @PreAuthorize("permitAll")
-    @RequestMapping(value = "/resetpassword", method = RequestMethod.POST)
+    @RequestMapping(value = RESET_PASSWORD_PATH, method = RequestMethod.POST)
     public ModelAndView forgetPassword(@Valid @ModelAttribute("passwordConfirmation")PasswordConfirmationBean passwordConfirmationBean, BindingResult result) {
-        ModelAndView modelAndView = new  ModelAndView("user/resetpassword");
+        ModelAndView modelAndView = new  ModelAndView(RESET_PASSWORD_VIEW);
         modelAndView.addObject("passwordConfirmation", passwordConfirmationBean);
+        Locale locale = LocaleContextHolder.getLocale();
         if (result.hasErrors()) {
             List<ObjectError> errors = result.getAllErrors();
             modelAndView.addObject("errors", errors);
             return modelAndView;
         } else if(!passwordConfirmationBean.getConfirmPassword().equals(passwordConfirmationBean.getPassword())) {
-            modelAndView.addObject("error","new password and confirm password must be same");
+            modelAndView.addObject("error",messageSource.getMessage("password.mismatch", null, locale));
             return modelAndView;
         }
         User user = userService.findByToken(passwordConfirmationBean.getToken());
         if(user == null) {
-            return new ModelAndView("redirect:/book/index");
+            return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         user.setPassword(new BCryptPasswordEncoder().encode(passwordConfirmationBean.getPassword()) );
         user.setToken(null);
         userService.updateUser(user);
-        modelAndView.addObject("success", "Successfully updated password, please login with new password, Thank you!");
+        modelAndView.addObject("success", messageSource.getMessage("successfully.updated.password", null, locale));
+        return modelAndView;
+    }
+
+    private ModelAndView getUserPlansView(Library library) {
+        ModelAndView modelAndView = new ModelAndView(USER_PLAN_VIEW);
+        List<MembershipPlan> plans = membershipPlanService.findByLibrary(library);
+        modelAndView.addObject("plans", plans);
         return modelAndView;
     }
 

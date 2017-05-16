@@ -51,7 +51,7 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
    /* @Autowired
     private ConversionService conversionService;*/
     /**
-     * Create a default users with ADMIN and USER role(if require) at the time of onApplicationEvent.
+     * Create a default users with ADMIN and USER_PATH role(if require) at the time of onApplicationEvent.
      * */
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {

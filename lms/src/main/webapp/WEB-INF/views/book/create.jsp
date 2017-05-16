@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="com.lms.utils.constants.UrlMappingConstant" %>
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
@@ -45,7 +47,7 @@
                                     <spring:message code="publication.year" var="publisherYear"></spring:message>
                                     <spring:message code="total.number.of.copies" var="totalNumberOfCopies"></spring:message>
                                     <spring:message code="add.book" var="addBook"></spring:message>
-                                    <form:form  role="form" commandName="book" method="post" action="/book/save" enctype="multipart/form-data">
+                                    <form:form  role="form" commandName="book" method="post" action="${UrlMappingConstant.BOOK_PATH.concat(UrlMappingConstant.SAVE_PATH)}" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <input type="file" class="form-control" name="image"/>
                                         </div>

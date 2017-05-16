@@ -1,17 +1,28 @@
 package com.lms.controller;
 
-import java.util.List;
+import static com.lms.utils.constants.UrlMappingConstant.CATEGORY_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.EDIT_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INDEX_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.SAVE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.UPDATE_PATH;
+import static com.lms.utils.constants.ViewConstant.CATEGORY_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.CATEGORY_EDIT_VIEW;
+import static com.lms.utils.constants.ViewConstant.CATEGORY_INDEX_VIEW;
+import static com.lms.utils.constants.ViewConstant.REDIRECT_CATEGORY_INDEX;
+
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +39,14 @@ import com.lms.utils.customannotation.annotaion.XxsFilter;
  */
 @Controller
 @PreAuthorize("isAuthenticated()")
-@RequestMapping(value = "/category")
+@RequestMapping(value = CATEGORY_PATH)
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private MessageSource messageSource;
 
-    @RequestMapping("/index")
+    @RequestMapping(INDEX_PATH)
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
         if (currentPageNumber == null) {
             currentPageNumber =1;
@@ -42,7 +55,7 @@ public class CategoryController {
         int current = page.getNumber() + 1;
         int begin = Math.max(1, current - 5);
         int end = Math.min(begin + 10, page.getTotalPages());
-        ModelAndView modelAndView = new ModelAndView("category/index");
+        ModelAndView modelAndView = new ModelAndView(CATEGORY_INDEX_VIEW);
         modelAndView.addObject("categories",  page.getContent());
         modelAndView.addObject("beginIndex", begin);
         modelAndView.addObject("endIndex", end);
@@ -50,7 +63,7 @@ public class CategoryController {
         return modelAndView;
     }
 
-    @RequestMapping("/edit/{id}")
+    @RequestMapping(EDIT_PATH)
     public ModelAndView edit(@PathVariable(value="id", required = false) String id) {
         Category category = categoryService.findByUuid(id);
         if(category != null) {
@@ -59,72 +72,69 @@ public class CategoryController {
                     .name(category.getName())
                     .uuid(category.getUuid())
                     .build();
-            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, "edit");
+            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, CATEGORY_EDIT_VIEW);
             return modelAndView;
         }
-        return new ModelAndView("redirect:/category/index");
+        return new ModelAndView(REDIRECT_CATEGORY_INDEX);
     }
 
 
-    @RequestMapping("/create")
+    @RequestMapping(CREATE_PATH)
     public ModelAndView create() {
         CategoryBean categoryBean = new CategoryBean();
-        return getCreateOrEditModel(categoryBean, "create");
+        return getCreateOrEditModel(categoryBean, CATEGORY_CREATE_VIEW);
     }
 
     @XxsFilter
-    @RequestMapping("/save")
+    @RequestMapping(SAVE_PATH)
     public ModelAndView save(@Valid @ModelAttribute("category")CategoryBean categoryBean, BindingResult result, Map model) {
         if (result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, "create");
-            modelAndView.addObject("errors", errors);
+            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, CATEGORY_CREATE_VIEW);
             return modelAndView;
         }
-
+        Locale locale = LocaleContextHolder.getLocale();
         long count = categoryService.getCountByName(categoryBean.getName());
         if(count == 0) {
             Category category = new Category();
             category.setName(categoryBean.getName());
             categoryService.create(category);
-            ModelAndView modelAndView = new ModelAndView("redirect:/category/index");
-            return modelAndView.addObject("success", String.format("Successfully create category %s", category.getName()));
+            ModelAndView modelAndView = new ModelAndView(REDIRECT_CATEGORY_INDEX);
+            return modelAndView.addObject("success",  messageSource.getMessage("category.successfully.created", new Object[] {category.getName()}, locale));
         } else {
-            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, "create");
-            modelAndView.addObject("error", "Duplicate category name, please use another name.");
+            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, CATEGORY_CREATE_VIEW);
+            modelAndView.addObject("error", messageSource.getMessage("category.duplicate.name",null, locale));
             return modelAndView;
         }
 
     }
 
     @XxsFilter
-    @RequestMapping("/update")
-    public ModelAndView update(@Valid @ModelAttribute("category")CategoryBean categoryBean, BindingResult result, Map model) {
+    @RequestMapping(UPDATE_PATH)
+    public ModelAndView update(@Valid @ModelAttribute("category")CategoryBean categoryBean, BindingResult result) {
         if (result.hasErrors()) {
-            List<ObjectError> errors = result.getAllErrors();
-            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, "edit");
-            modelAndView.addObject("errors", errors);
+            ModelAndView modelAndView = getCreateOrEditModel(categoryBean, CATEGORY_EDIT_VIEW);
             return modelAndView;
         }
-        ModelAndView modelAndView = new ModelAndView("redirect:/category/index");
+        Locale locale = LocaleContextHolder.getLocale();
+        ModelAndView modelAndView = new ModelAndView(REDIRECT_CATEGORY_INDEX);
         Category category = categoryService.findByUuid(categoryBean.getUuid());
         if(category != null) {
             long count = categoryService.getCountByName(categoryBean.getName());
             if( count != 0) {
-                ModelAndView mode = getCreateOrEditModel(categoryBean, "edit");
-                mode.addObject("error", "Duplicate category name, please use another name.");
+                ModelAndView mode = getCreateOrEditModel(categoryBean, CATEGORY_EDIT_VIEW);
+                mode.addObject("error", messageSource.getMessage("category.duplicate.name",null, locale));
                 return mode;
             }
             category.setName(categoryBean.getName());
             categoryService.update(category);
-            return modelAndView.addObject("success", String.format("Successfully updated category %s", category.getName()));
+            return modelAndView.addObject("success", messageSource.getMessage("category.successfully.updated",null, locale));
         }
-        modelAndView.addObject("error", "Invalid edit category");
+        modelAndView.addObject("error",  messageSource.getMessage("category.invalid",null, locale));
         return modelAndView;
     }
 
     private ModelAndView getCreateOrEditModel(CategoryBean categoryBean, String action) {
-        ModelAndView modelAndView = new ModelAndView(String.format("category/%s", action));
+        ModelAndView modelAndView = new ModelAndView(action);
         modelAndView.addObject("category", categoryBean );
         return modelAndView;
     }
