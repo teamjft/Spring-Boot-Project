@@ -21,6 +21,7 @@ import javax.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
@@ -85,7 +86,7 @@ public class BookController {
             {
                 Long id = null;
 
-                if(element instanceof String && !((String)element).equals("")){
+                if(element instanceof String && !((String)element).equals(StringUtils.EMPTY)){
                     try{
                         id = Long.parseLong((String) element);
                     }

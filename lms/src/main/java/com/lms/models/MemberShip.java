@@ -41,6 +41,8 @@ public class MemberShip extends AbstractEntity implements Serializable {
     @Type(type = "yes_no")
     @Column(nullable = false, columnDefinition = "char(1) default 'N'")
     private boolean admin;
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "char(1) default 'N'")
     private boolean librarian;
     @Type(type = "yes_no")
     @Column(nullable = false, columnDefinition = "char(1) default 'N'")

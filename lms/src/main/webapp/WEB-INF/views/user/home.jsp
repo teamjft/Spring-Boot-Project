@@ -21,10 +21,8 @@
     <div class="row" >
         <c:import url="../template/sidebar.jsp"></c:import>
 
-        <div class="col-md-9">
-            <div class="jumbotron">
-
-
+        <div class="col-md-9 jumbotron">
+            <div >
                         <div class="col-xs-3">
                             <div class="project project-default">
                                 <div class="shape">

@@ -6,6 +6,7 @@ import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.lms.models.PaymentInstrument;
+import com.lms.models.User;
 import com.lms.utils.beans.MembershipPlanBean;
 import com.lms.utils.enums.PeriodType;
 import com.lms.utils.helper.DateHelper;
@@ -14,7 +15,9 @@ import com.lms.utils.helper.DateHelper;
  * Created by bhushan on 12/5/17.
  */
 public interface PaymentInstrumentService {
-    PaymentInstrument findFirstEnableTrue();
+    PaymentInstrument findFirstEnableTrue(User user);
+    PaymentInstrument findByUUid(String uuid);
+    PaymentInstrument update(PaymentInstrument paymentInstrument);
 
     default BigDecimal calculateTotalPrice(MembershipPlanBean membershipPlanBean, int quantity) {
         if (quantity == 0) {

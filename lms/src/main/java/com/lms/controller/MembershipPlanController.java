@@ -2,6 +2,7 @@ package com.lms.controller;
 
 import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.DELETE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INDEX_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.MEMBERSHIP_PLAN_BASE_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.MEMBERSHIP_PLAN_PURCHASE_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.SAVE_PATH;
@@ -66,7 +67,7 @@ public class MembershipPlanController {
     @Autowired
     private MessageSource messageSource;
 
-    @RequestMapping(MEMBERSHIP_PLAN_BASE_PATH)
+    @RequestMapping(INDEX_PATH)
     public ModelAndView index(Model model) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_INDEX_VIEW);

@@ -7,12 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import com.lms.utils.enums.PaymentMethod;
+import com.lms.utils.enums.PaymentStatus;
 
 /**
  * Created by bhushan on 15/5/17.
  */
 @Getter @Setter @Builder @AllArgsConstructor @NoArgsConstructor
 public class Response {
-    PaymentMethod paymentMethod;
-    String transactionId;
+    private PaymentMethod paymentMethod;
+    private String transactionId;
+    private PaymentStatus paymentStatus;
+    private Integer quantity;
 }

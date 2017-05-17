@@ -1,8 +1,11 @@
-package com.lms.services.payment;
+package com.lms.services.transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.jasper.tagplugins.jstl.core.If;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +13,7 @@ import com.lms.utils.beans.MembershipPlanBean;
 import com.lms.utils.beans.PaymentInstrumentBean;
 import com.lms.utils.constants.Constant;
 import com.lms.utils.enums.PaymentMethod;
+import com.lms.utils.enums.PaymentStatus;
 import com.lms.utils.paymentbuilder.PaymentRequest;
 import com.lms.utils.paymentbuilder.Response;
 import com.lms.utils.paymentbuilder.paypalcreditcard.PapalCreditRequest;
@@ -28,7 +32,8 @@ import com.paypal.base.rest.APIContext;
  * Created by bhushan on 10/5/17.
  */
 @Service
-public class PaypalCreditCardPaymentServiceImpl implements PaymentService {
+@Slf4j
+public class PaypalCreditCardPaymentTransactionServiceImpl implements PaymentTransactionService {
     @Value("${paypal.clientID}")
     private String clientId;
     @Value("${paypal.clientSecret}")
@@ -43,7 +48,7 @@ public class PaypalCreditCardPaymentServiceImpl implements PaymentService {
         Item item = new Item();
         item.setName(membershipPlanBean.getName());
         item.setCurrency(membershipPlanBean.getCurrency().toString());
-        item.setPrice(membershipPlanBean.getPrice().toString());
+        item.setPrice(papalCreditRequest.getAmount().toString());
         item.setQuantity("1");
 
         List<Item> itms = new ArrayList<>();
@@ -96,9 +101,15 @@ public class PaypalCreditCardPaymentServiceImpl implements PaymentService {
         payment.setPayer(payer);
         payment.setTransactions(transactions);
 
-
         payment = payment.create(context);
-        Response response = Response.builder().paymentMethod(PaymentMethod.PAYPAL_CREDIT_CARD).transactionId(payment.getId()).build();
+        log.info("Payment response from paypal : {} for user id {}", payment.toJSON(), paymentInstrumentBean.getUserId());
+        PaymentStatus paymentStatus = payment.getState().equals("approved") ?  PaymentStatus.SUCCESSFUL : PaymentStatus.FAIL;
+        Response response = Response.builder()
+                .paymentMethod(PaymentMethod.PAYPAL_CREDIT_CARD)
+                .transactionId(payment.getId())
+                .paymentStatus(paymentStatus)
+                .quantity(paymentInstrumentBean.getOrderCart().getQuantity())
+                .build();
         return response;
     }
 }

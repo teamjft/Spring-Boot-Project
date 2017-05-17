@@ -19,7 +19,7 @@ import com.cloudinary.utils.ObjectUtils;
  */
 @Service
 @Slf4j
-public class CloudinaryImageServiceImpl implements ImageService{
+public class CloudinaryImageServiceImpl implements ImageService {
     @Value("${cloud_name}")
     private String CLOUDNAME;
     @Value("${api_key}")
