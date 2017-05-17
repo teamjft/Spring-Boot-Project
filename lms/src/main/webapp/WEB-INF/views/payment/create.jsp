@@ -185,7 +185,7 @@
 
                                     <div class="form-group">
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <button type="submit" class="btn btn-primary btn-submit-fix"><spring:message code="place.order"/> </button>
+                                            <button type="submit" id="submit" class="btn btn-primary btn-submit-fix"><spring:message code="place.order"/> </button>
                                         </div>
                                     </div>
                             </div>
@@ -199,5 +199,13 @@
 </div>
 </body>
 </body>
+<script>
+    $(document).ready(function(){
+        $(".animationload").hide();
+        $("#submit").click(function(){
+            $(".animationload").show();
+        });
+    });
+</script>
 <c:import url="../template/footer.jsp"></c:import>
 </html>

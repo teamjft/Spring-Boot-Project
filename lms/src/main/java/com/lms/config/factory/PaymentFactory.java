@@ -3,8 +3,8 @@ package com.lms.config.factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.lms.services.payment.PaymentService;
-import com.lms.services.payment.PaypalCreditCardPaymentServiceImpl;
+import com.lms.services.transaction.PaymentTransactionService;
+import com.lms.services.transaction.PaypalCreditCardPaymentTransactionServiceImpl;
 import com.lms.utils.enums.PaymentMethod;
 
 /**
@@ -13,9 +13,9 @@ import com.lms.utils.enums.PaymentMethod;
 @Component
 public class PaymentFactory {
     @Autowired
-    private PaypalCreditCardPaymentServiceImpl paypalCreditCardPaymentService;
+    private PaypalCreditCardPaymentTransactionServiceImpl paypalCreditCardPaymentService;
 
-    public PaymentService getPaymentService(PaymentMethod paymentMethod) {
+    public PaymentTransactionService getPaymentService(PaymentMethod paymentMethod) {
         if (paymentMethod == PaymentMethod.PAYPAL_CREDIT_CARD) {
             return paypalCreditCardPaymentService;
         }

@@ -8,12 +8,17 @@ import static com.lms.utils.constants.ViewConstant.PAYMENT_CREATE_VIEW;
 import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -27,9 +32,10 @@ import com.lms.config.security.SecUser;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 import com.lms.models.PaymentInstrument;
+import com.lms.services.invoice.InvoiceService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.membershipplan.MembershipPlanService;
-import com.lms.services.payment.PaymentService;
+import com.lms.services.transaction.PaymentTransactionService;
 import com.lms.services.paymentinstrument.PaymentInstrumentService;
 import com.lms.utils.beans.MembershipPlanBean;
 import com.lms.utils.beans.OrderCartBean;
@@ -58,10 +64,17 @@ public class PaymentController {
     private PaymentFactory paymentFactory;
     @Autowired
     private MembershipService membershipService;
+    @Autowired
+    private InvoiceService invoiceService;
+    @Autowired
+    private MessageSource messageSource;
 
+    @Value("${lcm.customer.support.email}")
+    private String supportEmail;
 
 
     @RequestMapping(value = CREATE_PATH)
+    @PreAuthorize("@userMembershipSecurityServiceImpl.canUserBuyPlan()")
     public ModelAndView paymentCreate(@Valid @ModelAttribute("cart") OrderCartBean cartBean, BindingResult result) {
         if (cartBean.getPlanUuid() == null) {
             return new ModelAndView(REDIRECT_HOME_VIEW);
@@ -83,7 +96,7 @@ public class PaymentController {
             return modelAndView;
         }
 
-        PaymentInstrument paymentInstrument = paymentInstrumentService.findFirstEnableTrue();
+        PaymentInstrument paymentInstrument = paymentInstrumentService.findFirstEnableTrue(memberShip.getUser());
         PaymentInstrumentBean paymentInstrumentBean;
         if (paymentInstrument != null) {
             paymentInstrumentBean = PaymentInstrumentBean.buildEntityToBean(paymentInstrument);
@@ -98,39 +111,56 @@ public class PaymentController {
         return modelAndView;
     }
 
+    /*TODO : Break this mapping logic per payment strategy*/
     @RequestMapping(value = PAYMENT_PAY_PATH)
+    @PreAuthorize("@userMembershipSecurityServiceImpl.canUserBuyPlan()")
     public ModelAndView pay( @Valid @ModelAttribute("paymentDetails")PaymentInstrumentBean paymentInstrumentBean, BindingResult result) {
         if(result.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView(PAYMENT_CREATE_VIEW);
             modelAndView.addObject("paymentDetails", paymentInstrumentBean);
             return modelAndView;
         }
-        PaymentInstrument paymentInstrument =  PaymentInstrumentBean.buildBeanToEntity(paymentInstrumentBean);
+        PaymentInstrument paymentInstrument = null;
         SecUser secUser = SecurityUtil.getCurrentUser();
         MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
-        paymentInstrument.setUser(memberShip.getUser());
+        if(!StringUtils.isEmpty(paymentInstrumentBean.getUuid())) {
+            paymentInstrument = paymentInstrumentService.findByUUid(paymentInstrumentBean.getUuid());
+            paymentInstrument.setCreditCardType(paymentInstrumentBean.getCreditCardType());
+            paymentInstrument.setCvv2(paymentInstrumentBean.getCvv2());
+            paymentInstrument.setExpirationMonth(paymentInstrument.getExpirationMonth());
+            paymentInstrument.setExpirationYear(paymentInstrument.getExpirationYear());
+            paymentInstrument.setNumber(paymentInstrument.getNumber());
+
+        } else {
+            paymentInstrument =  PaymentInstrumentBean.buildBeanToEntity(paymentInstrumentBean);
+            paymentInstrument.setUser(memberShip.getUser());
+        }
         MembershipPlan membershipPlan = membershipPlanService.findByUuid(paymentInstrumentBean.getMembershipPlanId());
         MembershipPlanBean membershipPlanBean = MembershipPlanBean.buildEntityToBean(membershipPlan);
-        PaymentService paymentService = paymentFactory.getPaymentService(paymentInstrumentBean.getPaymentMethod());
-        BigDecimal ammount = paymentInstrumentService.calculateTotalPrice(membershipPlanBean, paymentInstrumentBean.getOrderCart().getQuantity());
-        /*TODO move it with factory*/
+        PaymentTransactionService paymentTransactionService = paymentFactory.getPaymentService(paymentInstrumentBean.getPaymentMethod());
+        BigDecimal amount = paymentInstrumentService.calculateTotalPrice(membershipPlanBean, paymentInstrumentBean.getOrderCart().getQuantity());
         PaymentRequest<PapalCreditRequest> paymentRequest
-                = new PapalCreditCardBuilder(paymentInstrumentBean, membershipPlanBean, ammount);
+                = new PapalCreditCardBuilder(paymentInstrumentBean, membershipPlanBean, amount);
 
         try {
-            Response response = paymentService.pay(paymentRequest);
+            Response response = paymentTransactionService.pay(paymentRequest);
+            invoiceService.createInvoice(membershipPlanBean, paymentInstrument, memberShip, response);
+
         } catch (Exception e) {
-            log.error("Error occur during payment for user uuid: {} membership uuid {} subscription {}");
+            log.error("Error occur during payment for user name: {} membership uuid {}", secUser.getUsername(), memberShip.getUuid());
+            Locale locale = LocaleContextHolder.getLocale();
+            ModelAndView modelAndView = new ModelAndView(PAYMENT_CREATE_VIEW);
             if (e instanceof PayPalRESTException) {
                 Error error = ((PayPalRESTException) e).getDetails();
-                ModelAndView modelAndView = new ModelAndView(PAYMENT_CREATE_VIEW);
                 modelAndView.addObject("errorDetails", error.getDetails());
                 modelAndView.addObject("paymentDetails", paymentInstrumentBean);
-                return modelAndView;
+
+            } else {
+                modelAndView.addObject("error", messageSource.getMessage("some.thing.going.wrong", new Object[] {supportEmail} , locale));
             }
+            return modelAndView;
         }
 
-
-        return new ModelAndView(PAYMENT_CREATE_VIEW, "paymentDetails", paymentInstrumentBean);
+        return new ModelAndView(REDIRECT_HOME_VIEW);
     }
 }

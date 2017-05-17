@@ -12,8 +12,8 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.lms.utils.enums.PaymentMethod;
 import com.lms.utils.enums.PaymentStatus;
-import com.lms.utils.enums.PaymentType;
 import com.lms.utils.modelutil.AbstractEntity;
 
 /**
@@ -24,11 +24,12 @@ import com.lms.utils.modelutil.AbstractEntity;
 public class Payment extends AbstractEntity implements Serializable {
     private static final long serialVersionUID = -582990260043830142L;
     private Date paymentDate;
+    private String transactionId;
     private BigDecimal payAmount;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
+    private PaymentMethod paymentMethod;
     @ManyToOne
     private Invoice invoice;
 

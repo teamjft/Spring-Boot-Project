@@ -85,7 +85,10 @@ public class UserController {
         } else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
             return getUserPlansView((memberShip.getLibrary()));
         } else {
-            return new ModelAndView(REDIRECT_HOME_VIEW);
+            Library library = memberShip.getLibrary();
+            LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
+            modelAndView.addObject("dataCount", libraryDataCount);
+            return modelAndView;
         }
     }
 

@@ -1,11 +1,16 @@
 package com.lms.services.payment;
 
-import com.lms.utils.paymentbuilder.PaymentRequest;
-import com.lms.utils.paymentbuilder.Response;
+import java.util.List;
+
+import com.lms.models.Payment;
 
 /**
- * Created by bhushan on 10/5/17.
+ * Created by bhushan on 17/5/17.
  */
 public interface PaymentService {
-    Response pay(PaymentRequest paymentRequest) throws Exception;
+    Payment get(Long id);
+    List<Payment> getAll();
+    Payment create(Payment payment);
+    void delete(Long id);
+    void update(Payment payment);
 }

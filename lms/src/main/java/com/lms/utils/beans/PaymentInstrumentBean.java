@@ -75,25 +75,23 @@ public class PaymentInstrumentBean {
     public static PaymentInstrument buildBeanToEntity(PaymentInstrumentBean paymentInstrumentBean) {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        paymentInstrument.setId(paymentInstrument.getId());
-        paymentInstrument.setUuid(paymentInstrument.getUuid());
-        paymentInstrument.setFirstName(paymentInstrument.getFirstName());
-        paymentInstrument.setLastName(paymentInstrument.getLastName());
-        paymentInstrument.setExpirationMonth(paymentInstrument.getExpirationMonth());
-        paymentInstrument.setExpirationYear(paymentInstrument.getExpirationYear());
-        paymentInstrument.setCreditCardType(paymentInstrument.getCreditCardType());
-        paymentInstrument.setNumber(paymentInstrument.getNumber());
+        paymentInstrument.setFirstName(paymentInstrumentBean.getFirstName());
+        paymentInstrument.setLastName(paymentInstrumentBean.getLastName());
+        paymentInstrument.setExpirationMonth(paymentInstrumentBean.getExpirationMonth());
+        paymentInstrument.setExpirationYear(paymentInstrumentBean.getExpirationYear());
+        paymentInstrument.setCreditCardType(paymentInstrumentBean.getCreditCardType());
+        paymentInstrument.setNumber(paymentInstrumentBean.getNumber());
 
         BillingAddress address = new BillingAddress();
         if(paymentInstrumentBean.getCountry() != null) {
-            address.setCity(address.getCity());
-            address.setLine1(address.getLine1());
-            address.setState(address.getState());
+            address.setCity(paymentInstrumentBean.getCity());
+            address.setLine1(paymentInstrumentBean.getLine1());
+            address.setState(paymentInstrumentBean.getState());
             address.setCountryCode(paymentInstrumentBean.getCountryCode());
             address.setPostalCode(paymentInstrumentBean.getPostalCode());
+            paymentInstrument.setBillingAddress(address);
         }
 
-        paymentInstrument.setBillingAddress(address);
         return paymentInstrument;
     }
 }

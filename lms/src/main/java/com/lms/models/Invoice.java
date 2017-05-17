@@ -29,13 +29,18 @@ public class Invoice extends AbstractEntity implements Serializable {
     private Date endDate;
     @Column(nullable = false)
     private BigDecimal totalAmount;
+    @ManyToOne
     private User user;
     private BigDecimal balanceAmount;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2024)
     private String description;
     @ManyToOne
     private MembershipSubscription membershipSubscription;
     @OneToMany(mappedBy = "invoice")
     private Set<Payment> payments = new HashSet<>();
+
+    public String buildDescription(MembershipPlan membershipPlan) {
+        return String.format("Membership plan : %s activated from %s  to %s", membershipPlan.getName(), startDate, endDate);
+    }
 
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,7 +36,7 @@ public class MembershipSubscription extends AbstractEntity implements Serializab
     private Date endDate;
     @Enumerated(EnumType.STRING)
     MembershipSubscriptionStatus membershipSubscriptionStatus;
-    @OneToMany(mappedBy = "membershipSubscription")
+    @OneToMany(mappedBy = "membershipSubscription", cascade = CascadeType.ALL)
     private Set<Invoice> invoices = new HashSet<>();
 
 }
