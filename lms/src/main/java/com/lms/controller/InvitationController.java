@@ -168,7 +168,7 @@ public class InvitationController {
         try {
             invitationService.createUser(invitation, userBean);
         } catch (Exception e) {
-            log.error("Error occur during save the invitation, invitation token: {}", invitation.getToken());
+            log.error("Error occur during save the invitation, invitation token: {}, error : {}", invitation.getToken(), e);
             ModelAndView modelAndView =  getAcceptModel(userBean);
             modelAndView.addObject("error", messageSource.getMessage("some.thing.going.wrong", new Object[] {supportEmail} , locale));
             return modelAndView;

@@ -50,5 +50,6 @@ public class ViewConstant {
     public static final String REDIRECT_MEMBERSHIP_PLAN_INDEX = "forward:/plan/index";
     /*Payment Controller*/
     public static final String PAYMENT_CREATE_VIEW  = "payment/create";
+    public static final String PAYMENT_SUCCESS_VIEW  = "payment/success";
 
 }

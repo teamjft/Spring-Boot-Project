@@ -57,6 +57,9 @@ public class UrlMappingConstant {
     public static final String PAYMENT_BASE_PATH = "/payment";
     public static final String PAYMENT_PAY_PATH = "/pay";
 
+    /*Issue Book Controller*/
+    public static final String ISSUE_BOOK__BASE_PATH = "/issuebook";
+
 
 
 

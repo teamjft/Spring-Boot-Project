@@ -105,7 +105,7 @@
                         </div>
                         <div class="panel panel-info">
 
-                            <div class="panel-heading"><span><i class="glyphicon glyphicon-lock"></i></span> <spring:message code="secure.paymet"/> </div>s
+                            <div class="panel-heading"><span><i class="glyphicon glyphicon-lock"></i></span> <spring:message code="secure.paymet"/> </div>
                             <div class="panel-body">
                                 <form:form class="form-horizontal" commandName="paymentDetails" method="post" action="/payment/pay">
                                 <div class="form-group">
