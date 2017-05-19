@@ -4,18 +4,22 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import com.lms.utils.modelutil.AbstractEntity;
@@ -30,6 +34,12 @@ public class MemberShip extends AbstractEntity implements Serializable {
     public MemberShip() {
         super();
     }
+
+    @GeneratedValue(generator = "custom_id")
+    @GenericGenerator(name = "custom_id",
+            strategy = "com.lms.utils.hibernateutil.CustomMembershipGenerator")
+    @Column(unique = true, updatable = false)
+    private String memberShipId;
     @ManyToOne
     @JoinColumn(name = "library_id", nullable = false)
     private Library library;

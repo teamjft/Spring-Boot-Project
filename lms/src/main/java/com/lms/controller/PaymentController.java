@@ -5,6 +5,7 @@ import static com.lms.utils.constants.UrlMappingConstant.PAYMENT_BASE_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.PAYMENT_PAY_PATH;
 import static com.lms.utils.constants.ViewConstant.MEMBERSHIP_PLAN_PURCHASE_VIEW;
 import static com.lms.utils.constants.ViewConstant.PAYMENT_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.PAYMENT_SUCCESS_VIEW;
 import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.lms.config.factory.PaymentFactory;
 import com.lms.config.security.SecUser;
+import com.lms.config.security.SecurityService;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 import com.lms.models.PaymentInstrument;
@@ -68,6 +71,8 @@ public class PaymentController {
     private InvoiceService invoiceService;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private SecurityService securityService;
 
     @Value("${lcm.customer.support.email}")
     private String supportEmail;
@@ -160,7 +165,10 @@ public class PaymentController {
             }
             return modelAndView;
         }
-
-        return new ModelAndView(REDIRECT_HOME_VIEW);
+        securityService.reauthenticate(secUser.getUsername());
+        ModelAndView modelAndView = new ModelAndView(PAYMENT_SUCCESS_VIEW);
+        modelAndView.addObject("paymentDetails", paymentInstrumentBean);
+        modelAndView.addObject("plan", membershipPlan);
+        return modelAndView;
     }
 }
