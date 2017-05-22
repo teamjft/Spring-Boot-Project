@@ -43,5 +43,6 @@ public class MembershipPlan extends AbstractEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Currency currency = Currency.USD;
+    private Integer maxNumberOfAllowDays;
 
 }

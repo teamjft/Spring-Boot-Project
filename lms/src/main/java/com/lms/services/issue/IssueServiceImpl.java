@@ -18,4 +18,9 @@ public class IssueServiceImpl implements IssueService {
     public Issue findByUuid(String uuid) {
         return issueRepository.findByUuid(uuid);
     }
+
+    @Override
+    public Issue save(Issue issue) {
+        return issueRepository.save(issue);
+    }
 }

@@ -51,5 +51,8 @@ public class ViewConstant {
     /*Payment Controller*/
     public static final String PAYMENT_CREATE_VIEW  = "payment/create";
     public static final String PAYMENT_SUCCESS_VIEW  = "payment/success";
+    /*Issue Book Controller*/
+    public static final String ISSUE_BOOK_CREATE_VIEW  = "issuebook/create";
+    public static final String ISSUE_BOOK_ASSIGN_VIEW  = "issuebook/assign";
 
 }

@@ -59,9 +59,8 @@ public class UrlMappingConstant {
 
     /*Issue Book Controller*/
     public static final String ISSUE_BOOK__BASE_PATH = "/issuebook";
-
-
-
+    public static final String VALIDATE_USER_FOR_ASSIGN_BOOK_PATH = "/validateUser";
+    public static final String ASSIGN_BOOK_PATH = "/assign";
 
 
 }

@@ -11,13 +11,16 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.lms.utils.modelutil.AbstractEntity;
 import com.lms.utils.modelutil.IssueBookStatus;
 
 /**
  * Created by bhushan on 8/4/17.
  */
-@Entity
+@Entity @Setter @Getter
 public class IssueBook extends AbstractEntity implements Serializable {
     public IssueBook() {
         super();

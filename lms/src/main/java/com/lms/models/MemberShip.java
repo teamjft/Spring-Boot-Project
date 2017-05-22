@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 
 import lombok.Getter;
@@ -35,11 +36,6 @@ public class MemberShip extends AbstractEntity implements Serializable {
         super();
     }
 
-    @GeneratedValue(generator = "custom_id")
-    @GenericGenerator(name = "custom_id",
-            strategy = "com.lms.utils.hibernateutil.CustomMembershipGenerator")
-    @Column(unique = true, updatable = false)
-    private String memberShipId;
     @ManyToOne
     @JoinColumn(name = "library_id", nullable = false)
     private Library library;
@@ -60,5 +56,7 @@ public class MemberShip extends AbstractEntity implements Serializable {
     private Date expiredDate;
     @OneToMany(mappedBy = "memberShip")
     private Set<MembershipSubscription> membershipSubscriptions = new HashSet<>();
+    @OneToOne
+    private MembershipSubscription currentSubscription;
 
 }
