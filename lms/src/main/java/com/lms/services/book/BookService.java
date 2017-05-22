@@ -1,6 +1,7 @@
 package com.lms.services.book;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 
@@ -12,6 +13,7 @@ import com.lms.models.Library;
  */
 public interface BookService {
     Book get(Long id);
+    List<Book> findByLibraryAndIsbnIn(Set<String> isbns);
     List<Book> getAll();
     Book create(Book book);
     void delete(Long id);

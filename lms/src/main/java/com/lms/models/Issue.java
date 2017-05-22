@@ -5,16 +5,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import com.lms.utils.modelutil.AbstractEntity;
 
 /**
  * Created by bhushan on 8/4/17.
  */
-@Entity
+@Entity @Getter @Setter
 public class Issue extends AbstractEntity implements Serializable {
     public Issue(){
         super();
@@ -25,7 +29,7 @@ public class Issue extends AbstractEntity implements Serializable {
     private Date returnDate;
     private Integer numberOfBookAssigned;
 
-    @OneToMany(mappedBy = "issue")
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private List<IssueBook> issueBooks = new ArrayList<>();
     @ManyToOne
     private User user;

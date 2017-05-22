@@ -77,6 +77,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         payment.setTransactionId(response.getTransactionId());
         paymentService.create(payment);
         memberShip.setMembershipStatus(MembershipStatus.ACTIVE);
+        memberShip.setCurrentSubscription(membershipSubscription);
         paymentInstrumentService.update(paymentInstrument);
 
     }
