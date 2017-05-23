@@ -44,8 +44,7 @@ public class Library extends AbstractEntity implements Serializable {
     private Address address;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "library")
     private Set<Book> books = new HashSet<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "library")
-    private List<Issue> issues = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private SaveImageServiceType saveImageServiceType = LOCALSTROGE;
     @Enumerated(EnumType.STRING)

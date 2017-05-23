@@ -16,6 +16,7 @@ public class ViewConstant {
     public static final String REDIRECT_HOME_VIEW = "redirect:/";
     public static final String RESET_PASSWORD_VIEW = "user/resetpassword";
     public static final String USER_HOME_VIEW = "user/home";
+    public static final String USER_MEMBER_VIEW = "user/member";
     public static final String REDIRECT_USER_HOME = "redirect:/user/home";
     /*Book controller*/
     public static final String BOOK_INDEX_VIEW = "book/index";

@@ -48,6 +48,7 @@
                                 <spring:message code="period.type" var="periodType"></spring:message>
                                 <spring:message code="max.book" var="maxBook"></spring:message>
                                 <spring:message code="description" var="description"></spring:message>
+                                <spring:message code="max.number.of.book.allow" var="maxNumberOfAllowDays"></spring:message>
 
 
                                 <form:form  role="form" commandName="plan" method="post" action="/plan/save">
@@ -77,6 +78,10 @@
                                            <div class="form-group">
                                             <form:input path="maxNumberOfBookAllow" class="form-control" placeholder="${maxBook}" type="number"/>
                                             <form:errors path="maxNumberOfBookAllow" cssClass="alert-danger"/>
+                                        </div>
+                                           <div class="form-group">
+                                            <form:input path="maxNumberOfAllowDays" class="form-control" placeholder="${maxNumberOfAllowDays}" type="number"/>
+                                            <form:errors path="maxNumberOfAllowDays" cssClass="alert-danger"/>
                                         </div>
 
                                         <input class="btn btn-lg btn-success btn-block" type="submit" value="${add}">

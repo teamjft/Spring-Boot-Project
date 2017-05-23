@@ -43,7 +43,7 @@ public class UrlMappingConstant {
     public static final String INVITATION_INVITE_USER_PATH = "/inviteUser";
     public static final String INVITATION_ACCEPT_INVITATION_BY_TOKEN_PATH = "/accept/{token}";
     public static final String INVITATION_ACCEPT_INVITATION_PATH = "/accept";
-    public static final String INVITATION_URL = String.format("%s/%s", INVITATION_BASE_PATH, INVITATION_ACCEPT_INVITATION_PATH);
+    public static final String INVITATION_URL = String.format("%s%s", INVITATION_BASE_PATH, INVITATION_ACCEPT_INVITATION_PATH);
 
     /*Membership Controller*/
     public static final String MEMBERSHIP_BASE_PATH = "membership";

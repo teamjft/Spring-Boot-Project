@@ -50,7 +50,7 @@
                                             </tr>
                                             <tr>
                                                 <td><spring:message code="price"></spring:message> </td>
-                                                <td><c:out value="${plan.price}"></c:out></td>
+                                                <td>${plan.price} / ${plan.currency}</td>
                                             </tr>
                                             </tbody>
                                         </table>

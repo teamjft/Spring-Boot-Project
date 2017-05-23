@@ -29,11 +29,11 @@ public class LibraryDao {
         return query.from(library)
                 .leftJoin(library.books, book)
                 .leftJoin(library.memberShips, memberShip).on(memberShip.membershipStatus.eq(MembershipStatus.ACTIVE))
-                .leftJoin(library.issues, issue)
+                .leftJoin(memberShip.issues, issue)
                 .leftJoin(issue.issueBooks, issueBook).on(issueBook.issueBookStatus.eq(IssueBookStatus.ASSIGNED))
                 .where(library.uuid.eq(uuid))
                 .list(ConstructorExpression.create(LibraryDataCount.class, book.id.count(),
-                        memberShip.id.count(), book.totalNumberOfCopies.coalesce(0).asNumber().sum(), issueBook.id.count())).get(0);
+                        memberShip.id.countDistinct(), book.totalNumberOfCopies.coalesce(0).asNumber().sum(), issueBook.id.countDistinct())).get(0);
 
 
     }

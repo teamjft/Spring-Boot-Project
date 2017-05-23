@@ -3,6 +3,7 @@ package com.lms.services.book;
 import static com.lms.utils.constants.Constant.PAGE_SIZE;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -70,5 +71,10 @@ public class BookServiceService implements BookService {
     @Transactional(readOnly = true)
     public Book findByUuid(String uuid) {
         return bookRepository.findByUuid(uuid);
+    }
+
+    @Override
+    public List<Book> findByLibraryAndIsbnIn(Library library, Set<String> isbns) {
+        return bookRepository.findByLibraryAndIsbnIn(library, isbns);
     }
 }
