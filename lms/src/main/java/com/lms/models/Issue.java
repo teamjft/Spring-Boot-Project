@@ -32,8 +32,6 @@ public class Issue extends AbstractEntity implements Serializable {
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
     private List<IssueBook> issueBooks = new ArrayList<>();
     @ManyToOne
-    private User user;
-    @ManyToOne
-    private Library library;
+    private MemberShip memberShip;
 
 }

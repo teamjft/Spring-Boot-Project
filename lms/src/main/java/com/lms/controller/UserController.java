@@ -1,6 +1,7 @@
 package com.lms.controller;
 
 import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
+import static com.lms.utils.constants.ViewConstant.USER_MEMBER_VIEW;
 import static com.lms.utils.constants.ViewConstant.USER_PLAN_VIEW;
 import static com.lms.utils.constants.ViewConstant.RESET_PASSWORD_VIEW;
 import static com.lms.utils.constants.UrlMappingConstant.RESET_PASSWORD_PATH;
@@ -11,7 +12,10 @@ import static com.lms.utils.constants.UrlMappingConstant.FORGET_PASSWORD_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.RESET_PASSWORD_BY_UUID_PATH;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -33,14 +37,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.lms.config.security.SecUser;
+import com.lms.models.Issue;
+import com.lms.models.IssueBook;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.MembershipPlan;
 import com.lms.models.User;
+import com.lms.services.issue.IssueService;
 import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.membershipplan.MembershipPlanService;
 import com.lms.services.user.UserService;
+import com.lms.utils.beans.IssueDataCount;
 import com.lms.utils.beans.LibraryDataCount;
 import com.lms.utils.beans.PasswordConfirmationBean;
 import com.lms.utils.beans.ResponseMessage;
@@ -49,6 +57,7 @@ import com.lms.utils.constants.ViewConstant;
 import com.lms.utils.helper.LibraryUtil;
 import com.lms.utils.helper.NotificationUtil;
 import com.lms.utils.helper.StringUtil;
+import com.lms.utils.modelutil.IssueBookStatus;
 import com.lms.utils.modelutil.MembershipStatus;
 
 /**
@@ -68,6 +77,8 @@ public class UserController {
     private MembershipPlanService membershipPlanService;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private IssueService issueService;
 
 
 
@@ -85,10 +96,15 @@ public class UserController {
         } else if(memberShip.getMembershipStatus().equals(MembershipStatus.SUSPENDED)) {
             return getUserPlansView((memberShip.getLibrary()));
         } else {
-            Library library = memberShip.getLibrary();
-            LibraryDataCount libraryDataCount = libraryService.basicCountInfoOfLibrary(library.getUuid());
-            modelAndView.addObject("dataCount", libraryDataCount);
-            return modelAndView;
+            List<Issue> issues = issueService.findByMembership(memberShip);
+            Long numberOFIssuedBook = 0l, numberOFReturnedBook = 0l;
+            for(Issue issue: issues) {
+                Map<IssueBookStatus, Long> map = issue.getIssueBooks().stream().collect(Collectors.groupingBy(IssueBook:: getIssueBookStatus, Collectors.counting()));
+                numberOFIssuedBook += map.get(IssueBookStatus.ASSIGNED) == null ? 0 : map.get(IssueBookStatus.ASSIGNED);
+                numberOFReturnedBook += map.get(IssueBookStatus.RETURNED) == null ? 0 : map.get(IssueBookStatus.RETURNED);
+            }
+            IssueDataCount issueDataCount = new IssueDataCount(numberOFIssuedBook, numberOFReturnedBook);
+            return new ModelAndView(USER_MEMBER_VIEW, "issueDataCount", issueDataCount);
         }
     }
 

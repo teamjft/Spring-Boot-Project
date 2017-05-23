@@ -67,7 +67,7 @@ public class IssueBookController {
         String username = request.getParameter("username");
         Locale locale = LocaleContextHolder.getLocale();
         if (username == null || username.equals(StringUtils.EMPTY)) {
-            return new ModelAndView(ISSUE_BOOK_CREATE_VIEW, "error", messageSource.getMessage("filed.cant.be.empty",null , locale));
+            return new ModelAndView(ISSUE_BOOK_CREATE_VIEW, "error", messageSource.getMessage("filed.cant.be.empty",new Object[] {"username"}, locale));
         }
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
@@ -104,13 +104,17 @@ public class IssueBookController {
             return new ModelAndView(REDIRECT_HOME_VIEW);
         }
         int currentBookSize = issueBookBean.getIsbns().size();
-        if (currentBookSize == 0) {
-            return null;
+        Locale locale = LocaleContextHolder.getLocale();
+        List<Book> books = bookService.findByLibraryAndIsbnIn(memberShip.getLibrary(), issueBookBean.getIsbns());
+        if (currentBookSize == 0 || books == null || books.size() == 0) {
+            ModelAndView modelAndView = new ModelAndView(ISSUE_BOOK_ASSIGN_VIEW, "error",  messageSource.getMessage("enter.isbn.for.assign.book",null, locale));
+            modelAndView.addObject("issueBook", issueBookBean);
+            return modelAndView;
         }
-        List<Book> books = bookService.findByLibraryAndIsbnIn(issueBookBean.getIsbns());
-        if (books != null || books.size() != currentBookSize)
+
         issueBookService.save(memberShip, Sets.newHashSet(books));
-        return null;
+
+        return new ModelAndView(ISSUE_BOOK_CREATE_VIEW, "success",  messageSource.getMessage("successfully.assigned.book",new Object[] {memberShip.getUser().getUsername()}, locale));
     }
 
 

@@ -1,11 +1,14 @@
 package com.lms.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -58,5 +61,8 @@ public class MemberShip extends AbstractEntity implements Serializable {
     private Set<MembershipSubscription> membershipSubscriptions = new HashSet<>();
     @OneToOne
     private MembershipSubscription currentSubscription;
+
+    @OneToMany(mappedBy = "memberShip", cascade = CascadeType.ALL)
+    private List<Issue>  issues = new ArrayList<>();
 
 }

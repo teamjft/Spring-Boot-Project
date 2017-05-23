@@ -71,7 +71,19 @@
                             </ul>
                         </div>
                     </div>
-
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseR"><span class="glyphicon glyphicon-book"> </span><spring:message code="issued.book"/> <span class="caret"></span></a> </h4>
+                        </div>
+                        <!-- Note: By adding "in" after "collapse", it starts with that particular panel open by default; remove if you want them all collapsed by default -->
+                            <%-- in in class--%>
+                        <div id="collapseR" class="panel-collapse collapse">
+                            <ul class="list-group">
+                                <li><a href="<c:url value="/issuebook/create"/>" class="navlink"><spring:message code="issue.book"/> </a></li>
+                                <%--<li><a href="<c:url value="/category/create"/>" class="navlink">Issued Book</a></li>--%>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseZ"><span class="glyphicon glyphicon-book"> </span><spring:message code="membership.plan"></spring:message><span class="caret"></span></a> </h4>

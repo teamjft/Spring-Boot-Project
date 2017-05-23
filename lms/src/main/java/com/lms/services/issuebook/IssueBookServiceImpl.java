@@ -42,25 +42,21 @@ public class IssueBookServiceImpl implements IssueBookService {
     public void save(MemberShip memberShip, Set<Book> bookSet) {
         List<IssueBook> issueBooks = new ArrayList<>();
         User user = memberShip.getUser();
-        Library library = memberShip.getLibrary();
         MembershipPlan membershipPlan = memberShip.getCurrentSubscription().getMembershipPlan();
-
+        Issue issue = new Issue();
+        issue.setMemberShip(memberShip);
+        issue.setIssueDate(new Date());
+        issue.setNumberOfBookAssigned(bookSet.size());
+        issue.setReturnDate(DateHelper.addDays(new Date(), membershipPlan.getMaxNumberOfAllowDays()));
         for (Book book : bookSet) {
             IssueBook issueBook = new IssueBook();
             issueBook.setUser(user);
             issueBook.setBook(book);
             issueBook.setIssueBookStatus(IssueBookStatus.ASSIGNED);
+            issueBook.setIssue(issue);
             issueBooks.add(issueBook);
         }
-
-        Issue issue = new Issue();
-        issue.setUser(user);
         issue.setIssueBooks(issueBooks);
-        issue.setIssueDate(new Date());
-        issue.setLibrary(library);
-        issue.setNumberOfBookAssigned(bookSet.size());
-        issue.setReturnDate(DateHelper.addDays(new Date(), membershipPlan.getMaxNumberOfAllowDays()));
-
         issueService.save(issue);
     }
 }

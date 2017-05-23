@@ -22,7 +22,6 @@
 <div class="container col-md-12">
     <div class="row" >
         <c:import url="../template/sidebar.jsp"></c:import>
-
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-12">
@@ -44,6 +43,7 @@ ${success}
                                     <p><spring:message code="price"></spring:message>: ${item.price}</p>
                                     <p><spring:message code="description"></spring:message>: <w:wrap text="${item.description}" characterLimit="30"></w:wrap></p>
                                     <p class="text-muted"><spring:message code="max.book"></spring:message>: ${item.maxNumberOfBookAllow}</p>
+                                    <p class="text-muted"><spring:message code="max.number.of.book.allow"/>: ${item.maxNumberOfAllowDays}</p>
                                 </div>
                                 <a type="button" class="btn btn-primary btn-xs btn-update btn-add-card" href="/plan/view/${item.uuid}"><spring:message code="view"></spring:message></a>
                             </div>

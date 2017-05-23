@@ -33,10 +33,13 @@ public class MembershipPlanBean {
     @FieldSize(fieldName = "Max number of book allow",max =100000, nullable = false)
     private Integer maxNumberOfBookAllow;
     private Currency currency = Currency.INR;
+    @FieldSize(fieldName = "Max number of allow days",max =100000, nullable = false)
+    private Integer maxNumberOfAllowDays;
 
     public static MembershipPlanBean buildEntityToBean(MembershipPlan plan) {
         return   MembershipPlanBean.builder()
                 .name(plan.getName())
+                .maxNumberOfAllowDays(plan.getMaxNumberOfBookAllow())
                 .id(plan.getId())
                 .uuid(plan.getUuid())
                 .libraryId(plan.getLibrary().getId())
@@ -51,6 +54,7 @@ public class MembershipPlanBean {
 
     public static MembershipPlan buildBeanToEntity(MembershipPlanBean membershipPlanBean) {
         MembershipPlan membershipPlan = new MembershipPlan();
+        membershipPlan.setMaxNumberOfAllowDays(membershipPlanBean.getMaxNumberOfBookAllow());
         membershipPlan.setMaxNumberOfBookAllow(membershipPlanBean.getMaxNumberOfBookAllow());
         membershipPlan.setName(membershipPlanBean.getName());
         membershipPlan.setDescription(membershipPlanBean.getDescription());
