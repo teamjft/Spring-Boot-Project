@@ -18,7 +18,7 @@ public interface BookService {
     Book create(Book book);
     void delete(Long id);
     void update(Book books);
-    Page<Book> getPageRequest(Integer pageNumber);
+    Page<Book> getPageRequest(Library library, Integer pageNumber);
     Long countBYLibraryAndIsbn(Library library, String isbn);
     Book findByUuid(String uuid);
 }

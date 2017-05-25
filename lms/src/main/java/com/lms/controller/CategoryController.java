@@ -33,13 +33,14 @@ import com.lms.models.Category;
 import com.lms.services.category.CategoryService;
 import com.lms.utils.beans.CategoryBean;
 import com.lms.utils.customannotation.annotaion.XxsFilter;
+import com.lms.utils.helper.PaginationHelper;
 
 /**
  * Created by bhushan on 18/4/17.
  */
 @Controller
-@PreAuthorize("isAuthenticated()")
 @RequestMapping(value = CATEGORY_PATH)
+@PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_LIBRARY_ADMIN')")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -48,19 +49,8 @@ public class CategoryController {
 
     @RequestMapping(INDEX_PATH)
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
-        if (currentPageNumber == null) {
-            currentPageNumber =1;
-        }
         Page<Category> page = categoryService.getPageRequest(currentPageNumber);
-        int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
-        int end = Math.min(begin + 10, page.getTotalPages());
-        ModelAndView modelAndView = new ModelAndView(CATEGORY_INDEX_VIEW);
-        modelAndView.addObject("categories",  page.getContent());
-        modelAndView.addObject("beginIndex", begin);
-        modelAndView.addObject("endIndex", end);
-        modelAndView.addObject("currentIndex", current);
-        return modelAndView;
+        return PaginationHelper.getModelAndView(CATEGORY_INDEX_VIEW, page, "categories");
     }
 
     @RequestMapping(EDIT_PATH)

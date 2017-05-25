@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: bhushan
-  Date: 18/4/17
-  Time: 3:30 PM
+  Date: 25/5/17
+  Time: 2:33 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -41,7 +41,7 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                    <h4><spring:message code="categories"></spring:message> :</h4>
+                                    <h4><spring:message code="membership"></spring:message>: </h4>
                                     <div class="table-responsive">
 
 
@@ -49,17 +49,20 @@
 
                                             <thead>
 
-                                            <th><spring:message code="category"></spring:message> </th>
-                                            <th><spring:message code="created.on"></spring:message></th>
-                                            <th><spring:message code="edit"></spring:message></th>
+                                            <th><spring:message code="plan"></spring:message> </th>
+                                            <th><spring:message code="created.on"></spring:message> </th>
+                                            <th><spring:message code="status"></spring:message> </th>
+
+                                            <th><spring:message code="view"></spring:message> </th>
 
                                             </thead>
                                             <tbody>
-                                            <c:forEach items="${categories}" var="categoty">
+                                            <c:forEach items="${subscriptions}" var="subscription">
                                                 <tr>
-                                                    <td><c:out value="${categoty.name}"></c:out></td>
-                                                    <td>${categoty.createdOn}</td>
-                                                    <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" href="/category/edit/${categoty.uuid}" ><span class="glyphicon glyphicon-pencil"></span></a></p></td>
+                                                    <td><c:out value="${subscription.membershipPlan.name}"></c:out></td>
+                                                    <td>${subscription.createdOn}</td>
+                                                    <td>${subscription.membershipSubscriptionStatus}</td>
+                                                    <td><p data-placement="top" data-toggle="tooltip" title="View"><a class="btn btn-primary btn-xs" data-title="View" data-toggle="modal" href="/subscription/view/${subscription.uuid}" ><span class="glyphicon glyphicon-eye-open"></span></a></p></td>
                                                 </tr>
                                             </c:forEach>
                                             </tbody>
@@ -70,10 +73,10 @@
                                                 <c:forEach var="i" begin="${beginIndex}" end="${endIndex}">
                                                     <c:choose>
                                                         <c:when test="${currentIndex == i}">
-                                                            <li class="active"><a href="/category/index?currentPageNumber=${i}">${i}</a></li>
+                                                            <li class="active"><a href="/subscription/index?currentPageNumber=${i}">${i}</a></li>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <li><a href="/category/index?currentPageNumber=${i}">${i}</a></li>
+                                                            <li><a href="/subscription/index?currentPageNumber=${i}">${i}</a></li>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </c:forEach>
@@ -87,8 +90,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 </body>
 <c:import url="../template/footer.jsp"></c:import>
 </html>

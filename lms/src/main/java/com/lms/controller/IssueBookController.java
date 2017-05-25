@@ -2,10 +2,16 @@ package com.lms.controller;
 
 import static com.lms.utils.constants.UrlMappingConstant.ASSIGN_BOOK_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.INDEX_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.ISSUED_BOOK_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.ISSUE_BOOK__BASE_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.VALIDATE_USER_FOR_ASSIGN_BOOK_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.VIEW_PATH;
 import static com.lms.utils.constants.ViewConstant.ISSUE_BOOK_ASSIGN_VIEW;
 import static com.lms.utils.constants.ViewConstant.ISSUE_BOOK_CREATE_VIEW;
+import static com.lms.utils.constants.ViewConstant.ISSUE_BOOK_VIEW;
+import static com.lms.utils.constants.ViewConstant.ISSUE_INDEX_VIEW;
+import static com.lms.utils.constants.ViewConstant.ISSUE_MEMBERSHIP_VIEW;
 import static com.lms.utils.constants.ViewConstant.REDIRECT_HOME_VIEW;
 
 import java.util.List;
@@ -17,14 +23,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.collect.Sets;
 import com.lms.config.security.SecUser;
 import com.lms.models.Book;
+import com.lms.models.IssueBook;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.User;
@@ -34,6 +45,7 @@ import com.lms.services.library.LibraryService;
 import com.lms.services.membership.MembershipService;
 import com.lms.services.user.UserService;
 import com.lms.utils.beans.IssueBookBean;
+import com.lms.utils.helper.PaginationHelper;
 import com.lms.utils.helper.SecurityUtil;
 import com.lms.utils.modelutil.IssueBookStatus;
 
@@ -42,6 +54,7 @@ import com.lms.utils.modelutil.IssueBookStatus;
  */
 @Controller
 @RequestMapping(value = ISSUE_BOOK__BASE_PATH)
+@PreAuthorize("isAuthenticated()")
 public class IssueBookController {
 
     @Autowired
@@ -61,6 +74,34 @@ public class IssueBookController {
     public ModelAndView create() {
         return new ModelAndView(ISSUE_BOOK_CREATE_VIEW);
     }
+
+    @RequestMapping(INDEX_PATH)
+    public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        Page<IssueBook> page = issueBookService.getPageRequest(memberShip.getLibrary(), currentPageNumber);
+        return PaginationHelper.getModelAndView(ISSUE_INDEX_VIEW, page, "issues");
+    }
+
+    @RequestMapping(value = VIEW_PATH)
+    public ModelAndView view(@PathVariable String uuid) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        Library library = libraryService.findByUuid(secUser.getLibraryId());
+        IssueBook issueBook = issueBookService.findByUuid(library, uuid);
+        if (issueBook == null) {
+            return new ModelAndView(REDIRECT_HOME_VIEW);
+        }
+        return new ModelAndView(ISSUE_BOOK_VIEW, "issueBook", issueBook);
+    }
+
+    @RequestMapping(ISSUED_BOOK_PATH)
+    public ModelAndView userIssuedBooks(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        Page<IssueBook> page = issueBookService.getPageRequestForCurrentUser(memberShip.getUser(), currentPageNumber);
+        return PaginationHelper.getModelAndView(ISSUE_MEMBERSHIP_VIEW, page, "issues");
+    }
+
 
     @RequestMapping(value = VALIDATE_USER_FOR_ASSIGN_BOOK_PATH)
     public ModelAndView validateUserForAssignBook(HttpServletRequest request) {
@@ -116,6 +157,5 @@ public class IssueBookController {
 
         return new ModelAndView(ISSUE_BOOK_CREATE_VIEW, "success",  messageSource.getMessage("successfully.assigned.book",new Object[] {memberShip.getUser().getUsername()}, locale));
     }
-
 
 }

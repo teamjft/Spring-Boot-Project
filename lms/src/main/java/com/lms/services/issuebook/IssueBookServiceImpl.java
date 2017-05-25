@@ -1,11 +1,16 @@
 package com.lms.services.issuebook;
 
+import static com.lms.utils.constants.Constant.PAGE_SIZE;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +24,7 @@ import com.lms.models.MembershipPlan;
 import com.lms.models.User;
 import com.lms.services.issue.IssueService;
 import com.lms.utils.helper.DateHelper;
+import com.lms.utils.helper.PaginationHelper;
 import com.lms.utils.modelutil.IssueBookStatus;
 
 /**
@@ -54,9 +60,25 @@ public class IssueBookServiceImpl implements IssueBookService {
             issueBook.setBook(book);
             issueBook.setIssueBookStatus(IssueBookStatus.ASSIGNED);
             issueBook.setIssue(issue);
+            issueBook.setLibrary(memberShip.getLibrary());
             issueBooks.add(issueBook);
         }
         issue.setIssueBooks(issueBooks);
         issueService.save(issue);
+    }
+
+    @Override
+    public Page<IssueBook> getPageRequest(Library library, Integer pageNumber) {
+        return issueBookRepository.findByLibrary(library,  PaginationHelper.getPageRequest(pageNumber));
+    }
+
+    @Override
+    public Page<IssueBook> getPageRequestForCurrentUser(User user, Integer pageNumber) {
+        return issueBookRepository.findByUser(user, PaginationHelper.getPageRequest(pageNumber));
+    }
+
+    @Override
+    public IssueBook findByUuid(Library library, String uuid) {
+        return issueBookRepository.findByUuidAndLibrary(uuid, library);
     }
 }

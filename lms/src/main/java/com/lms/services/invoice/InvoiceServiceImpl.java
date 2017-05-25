@@ -57,6 +57,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setTotalAmount(totalAmount);
         invoice.setStartDate(new Date());
         invoice.setEndDate(endDate);
+        invoice.setCurrency(membershipPlan.getCurrency());
         invoice.setDescription(invoice.buildDescription(membershipPlan));
         invoice.setUser(memberShip.getUser());
 
@@ -75,6 +76,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         payment.setInvoice(invoice);
         payment.setPaymentStatus(response.getPaymentStatus());
         payment.setTransactionId(response.getTransactionId());
+        payment.setCurrency(membershipPlan.getCurrency());
         paymentService.create(payment);
         memberShip.setMembershipStatus(MembershipStatus.ACTIVE);
         memberShip.setCurrentSubscription(membershipSubscription);

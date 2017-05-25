@@ -21,6 +21,7 @@ import com.lms.utils.beans.UserBean;
 import com.lms.utils.enums.NotificationServiceType;
 import com.lms.utils.enums.NotificationType;
 import com.lms.config.factory.NotificationFactory;
+import com.lms.utils.modelutil.MembershipStatus;
 import com.lms.utils.notification.EmailNotification;
 import com.lms.utils.notification.Notification;
 import com.lms.utils.notification.mapper.EmailMapMapper;
@@ -93,7 +94,7 @@ public class InvitationServiceImpl implements InvitationService {
                 .content(pair.getRight())
                 .to(invitation.getEmail()).build();
 
-        notificationFactory.getSendContentService(NotificationServiceType.EMAIL). sendNotification(notification);
+        notificationFactory.getSendContentService(NotificationServiceType.EMAIL).sendNotification(notification);
     }
 
     @Override
@@ -119,6 +120,9 @@ public class InvitationServiceImpl implements InvitationService {
         memberShip.setLibrarian(invitation.isLibrarian());
         memberShip.setAdmin(invitation.isAdmin());
         memberShip.setLastUsed(true);
+        if (user.isSuperAdmin() || memberShip.isAdmin() || memberShip.isLibrarian()) {
+            memberShip.setMembershipStatus(MembershipStatus.ACTIVE);
+        }
         membershipService.create(memberShip);
         invitation.setToken(null);
     }
