@@ -57,8 +57,8 @@ import com.lms.utils.helper.SecurityUtil;
  * Created by bhushan on 20/4/17.
  */
 @Controller
-@PreAuthorize("isAuthenticated()")
 @RequestMapping("configuration")
+@PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN')")
 public class ConfigurationController {
     @Autowired
     private NotificationFactory notificationFactory;

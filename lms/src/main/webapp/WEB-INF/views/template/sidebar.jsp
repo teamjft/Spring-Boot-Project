@@ -16,12 +16,12 @@
 <c:set var="isLibraryAdmin" value="false" />
 <c:set var="isSuperAdmin" value="false" />
 <c:forEach var="item" items="${listOfRole}">
-    <c:if test="${item eq 'LIBRARY_ADMIN'}">
+    <c:if test="${item eq 'ROLE_LIBRARY_ADMIN'}">
         <c:set var="isLibraryAdmin" value="true" />
     </c:if>
-    <c:if test="${item eq 'LIBRARIAN'}">
+    <c:if test="${item eq 'ROLE_LIBRARIAN'}">
         <c:set var="isLibrarian" value="true" />
-    </c:if> <c:if test="${item eq 'LIBRARY_ADMIN'}">
+    </c:if> <c:if test="${item eq 'ROLE_LIBRARY_ADMIN'}">
         <c:set var="isSuperAdmin" value="true" />
     </c:if>
 </c:forEach>
@@ -80,7 +80,19 @@
                         <div id="collapseR" class="panel-collapse collapse">
                             <ul class="list-group">
                                 <li><a href="<c:url value="/issuebook/create"/>" class="navlink"><spring:message code="issue.book"/> </a></li>
-                                <%--<li><a href="<c:url value="/category/create"/>" class="navlink">Issued Book</a></li>--%>
+                                <li><a href="<c:url value="/issuebook/index"/>" class="navlink"><spring:message code="issued.books"/> </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseRX"><span class="glyphicon glyphicon-book"> </span><spring:message code="subscription"/> <span class="caret"></span></a> </h4>
+                        </div>
+                        <!-- Note: By adding "in" after "collapse", it starts with that particular panel open by default; remove if you want them all collapsed by default -->
+                            <%-- in in class--%>
+                        <div id="collapseRX" class="panel-collapse collapse">
+                            <ul class="list-group">
+                                <li><a href="<c:url value="/subscription/index"/>" class="navlink"><spring:message code="subscriptions"/> </a></li>
                             </ul>
                         </div>
                     </div>

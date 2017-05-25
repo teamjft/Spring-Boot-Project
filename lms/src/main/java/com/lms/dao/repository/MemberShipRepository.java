@@ -2,8 +2,11 @@ package com.lms.dao.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.lms.models.IssueBook;
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.User;
@@ -16,6 +19,5 @@ public interface MemberShipRepository extends JpaRepository<MemberShip, Long> {
        MemberShip findByUuid(String uuid);
        MemberShip findByLibraryAndUser(Library library, User user);
        MemberShip findFirstByOrderByIdDesc();
-
-
+       Page<MemberShip> findByLibrary(Library library, Pageable pageable);
 }

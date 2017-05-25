@@ -33,6 +33,7 @@ public class IssueBook extends AbstractEntity implements Serializable {
     @ManyToOne
     private User user;
     @ManyToOne
+    private Library library;
+    @ManyToOne
     private Issue issue;
-
 }

@@ -55,5 +55,12 @@ public class ViewConstant {
     /*Issue Book Controller*/
     public static final String ISSUE_BOOK_CREATE_VIEW  = "issuebook/create";
     public static final String ISSUE_BOOK_ASSIGN_VIEW  = "issuebook/assign";
+    public static final String ISSUE_MEMBERSHIP_VIEW  = "issuebook/memberisssuebooks";
+    public static final String ISSUE_INDEX_VIEW  = "issuebook/index";
+    public static final String ISSUE_BOOK_VIEW  = "issuebook/view";
+
+    /* Subscription Controller*/
+    public static final String SUBSCRIPTION_INDEX = "/subscription/index";
+    public static final String SUBSCRIPTION_VIEW = "/subscription/view";
 
 }

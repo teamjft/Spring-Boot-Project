@@ -1,19 +1,17 @@
 package com.lms.services.membership;
 
-import static com.lms.utils.constants.Constant.PAGE_SIZE;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lms.models.Library;
 import com.lms.models.MemberShip;
 import com.lms.models.User;
 import com.lms.dao.repository.MemberShipRepository;
+import com.lms.utils.helper.PaginationHelper;
 
 /**
  * Created by bhushan on 9/4/17.
@@ -62,11 +60,10 @@ public class MembershipServiceImpl implements MembershipService {
         return memberShipRepository.findByUuid(uuid);
     }
 
+
     @Override
-    public Page<MemberShip> getPageRequest(Integer pageNumber) {
-        PageRequest request =
-                new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "id");
-        return memberShipRepository.findAll(request);
+    public Page<MemberShip> getPageRequest(Library library, Integer pageNumber) {
+        return memberShipRepository.findByLibrary(library, PaginationHelper.getPageRequest(pageNumber));
     }
 
     @Override

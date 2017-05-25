@@ -55,6 +55,11 @@
                         </div>
                     </div>
                 </div><!--/row-->
+                <div class="panel-footer">
+                    <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" href="/category/indexs" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-backward"></i></a>
+                    <span class="pull-right">
+                                </span>
+                </div>
             </div><!--/container -->
         </div>
     </div>

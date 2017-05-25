@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.lms.models.Category;
 import com.lms.dao.repository.CategoryRepository;
+import com.lms.utils.helper.PaginationHelper;
 
 /**
  * Created by bhushan on 17/4/17.
@@ -58,9 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public Page<Category> getPageRequest(Integer pageNumber) {
-        PageRequest request =
-                new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "id");
-        return categoryRepository.findAll(request);
+        return categoryRepository.findAll(PaginationHelper.getPageRequest(pageNumber));
     }
 
     public Long getCountByName(String name) {

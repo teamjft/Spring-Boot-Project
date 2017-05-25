@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.lms.config.security.SecUser;
 import com.lms.models.MemberShip;
 import com.lms.services.membership.MembershipService;
+import com.lms.utils.helper.PaginationHelper;
+import com.lms.utils.helper.SecurityUtil;
 
 /**
  * Created by bhushan on 25/4/17.
@@ -30,19 +33,10 @@ public class MembershipController {
     private MembershipService membershipService;
     @RequestMapping(INDEX_PATH)
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
-        if (currentPageNumber == null) {
-            currentPageNumber =1;
-        }
-        Page<MemberShip> page = membershipService.getPageRequest(currentPageNumber);
-        int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
-        int end = Math.min(begin + 10, page.getTotalPages());
-        ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_INDEX_VIEW);
-        modelAndView.addObject("memberships",  page.getContent());
-        modelAndView.addObject("beginIndex", begin);
-        modelAndView.addObject("endIndex", end);
-        modelAndView.addObject("currentIndex", current);
-        return modelAndView;
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        Page<MemberShip> page = membershipService.getPageRequest(memberShip.getLibrary(), currentPageNumber);
+        return PaginationHelper.getModelAndView(MEMBERSHIP_INDEX_VIEW, page, "memberships");
     }
 
     @RequestMapping(MEMBERSHIP_VIEW_PATH)

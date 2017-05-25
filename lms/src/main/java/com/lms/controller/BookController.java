@@ -51,6 +51,7 @@ import com.lms.config.factory.ImageFactory;
 import com.lms.services.library.LibraryService;
 import com.lms.utils.beans.BookBean;
 import com.lms.utils.beans.CategoryBean;
+import com.lms.utils.helper.PaginationHelper;
 import com.lms.utils.helper.SecurityUtil;
 
 /**
@@ -58,7 +59,7 @@ import com.lms.utils.helper.SecurityUtil;
  */
 @Controller
 @RequestMapping(value = BOOK_PATH)
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
 @Slf4j
 public class BookController {
     @Autowired
@@ -108,22 +109,14 @@ public class BookController {
 
     @RequestMapping(INDEX_PATH)
     public ModelAndView index(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
-        ModelAndView modelAndView = new ModelAndView(BOOK_INDEX_VIEW);
-        if (currentPageNumber == null) {
-            currentPageNumber =1;
-        }
-        Page<Book> page = bookService.getPageRequest(currentPageNumber);
-        int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
-        int end = Math.min(begin + 10, page.getTotalPages());
-        modelAndView.addObject("books",  page.getContent());
-        modelAndView.addObject("beginIndex", begin);
-        modelAndView.addObject("endIndex", end);
-        modelAndView.addObject("currentIndex", current);
-        return modelAndView;
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        Library library = libraryService.findByUuid(secUser.getLibraryId());
+        Page<Book> page = bookService.getPageRequest(library, currentPageNumber);
+        return PaginationHelper.getModelAndView(BOOK_INDEX_VIEW, page, "books");
     }
 
     @RequestMapping(BOOK_VIEW_BY_ID_PATH)
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_LIBRARY_ADMIN','ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     public ModelAndView view(@PathVariable String id) {
         Book book = bookService.findByUuid(id);
         Library library = book.getLibrary();
@@ -135,7 +128,6 @@ public class BookController {
         modelAndView.addObject("categories", book.getCategories());
         return modelAndView;
     }
-
 
     @RequestMapping(CREATE_PATH)
     public ModelAndView create() {

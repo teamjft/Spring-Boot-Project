@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lms.models.Book;
 import com.lms.dao.repository.BookRepository;
 import com.lms.models.Library;
+import com.lms.utils.helper.PaginationHelper;
 
 /**
  * Created by bhushan on 17/4/17.
@@ -55,10 +56,8 @@ public class BookServiceService implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Book> getPageRequest(Integer pageNumber) {
-        PageRequest request =
-                new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.DESC, "id");
-        return bookRepository.findAll(request);
+    public Page<Book> getPageRequest(Library library, Integer pageNumber) {
+        return bookRepository.findByLibrary(library, PaginationHelper.getPageRequest(pageNumber));
     }
 
     @Override

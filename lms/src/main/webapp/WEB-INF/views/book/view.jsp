@@ -58,6 +58,11 @@
                                 </ul>
                             </div>
                         </div>
+                        <div class="panel-footer">
+                            <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" href="/book/index" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-backward"></i></a>
+                            <span class="pull-right">
+                                </span>
+                        </div>
                     </div>
                 </div>
             </div>
