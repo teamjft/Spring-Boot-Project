@@ -26,7 +26,7 @@ import com.lms.utils.helper.SecurityUtil;
  * Created by bhushan on 25/4/17.
  */
 @Controller
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
 @RequestMapping(value = MEMBERSHIP_BASE_PATH)
 public class MembershipController {
     @Autowired

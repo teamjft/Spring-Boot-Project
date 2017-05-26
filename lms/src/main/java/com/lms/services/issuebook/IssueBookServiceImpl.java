@@ -81,4 +81,9 @@ public class IssueBookServiceImpl implements IssueBookService {
     public IssueBook findByUuid(Library library, String uuid) {
         return issueBookRepository.findByUuidAndLibrary(uuid, library);
     }
+
+    @Override
+    public Page<IssueBook> getPageRequest(Library library, User user, IssueBookStatus issueBookStatus, Integer pageNumber) {
+        return issueBookRepository.findByLibraryAndUserAndIssueBookStatus(library, user, issueBookStatus, PaginationHelper.getPageRequest(pageNumber));
+    }
 }

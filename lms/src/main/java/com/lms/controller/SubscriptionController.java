@@ -2,6 +2,7 @@ package com.lms.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import com.lms.utils.helper.SecurityUtil;
  */
 @Controller
 @RequestMapping(value = SUBSCRIPTION_BASE_PATH)
+@PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN')")
 public class SubscriptionController {
     @Autowired
     private MembershipSubscriptionService membershipSubscriptionService;

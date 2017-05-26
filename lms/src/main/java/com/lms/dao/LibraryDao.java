@@ -32,7 +32,7 @@ public class LibraryDao {
                 .leftJoin(memberShip.issues, issue)
                 .leftJoin(issue.issueBooks, issueBook).on(issueBook.issueBookStatus.eq(IssueBookStatus.ASSIGNED))
                 .where(library.uuid.eq(uuid))
-                .list(ConstructorExpression.create(LibraryDataCount.class, book.id.count(),
+                .list(ConstructorExpression.create(LibraryDataCount.class, book.id.countDistinct(),
                         memberShip.id.countDistinct(), book.totalNumberOfCopies.coalesce(0).asNumber().sum(), issueBook.id.countDistinct())).get(0);
 
 

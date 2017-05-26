@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 
 import com.lms.models.Book;
 import com.lms.models.Library;
+import com.lms.models.User;
 
 /**
  * Created by bhushan on 9/4/17.

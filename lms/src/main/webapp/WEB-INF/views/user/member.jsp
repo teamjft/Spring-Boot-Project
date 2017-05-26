@@ -36,7 +36,7 @@
                             </h3>
                             <p>
                                 <spring:message code="total.number.assign"></spring:message>
-                                <br> <button class="btn btn-block btn-success"> ${issueDataCount.numberOFIssuedBook}</button>
+                                <br> <a href="/issuebook/assigned"> <button class="btn btn-block btn-success">${issueDataCount.numberOFIssuedBook}</button></a>
                             </p>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                             </h3>
                             <p>
                                 <spring:message code="total.number.returned"></spring:message>
-                                <br>  <button class="btn btn-block btn-success"> ${issueDataCount.numberOFReturnedBook}</button>
+                                <br>   <a href="/issuebook/returned"><button class="btn btn-block btn-success">${issueDataCount.numberOFReturnedBook}</button></a>
                             </p>
                         </div>
                     </div>

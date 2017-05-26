@@ -40,7 +40,7 @@ import com.lms.utils.helper.PaginationHelper;
  */
 @Controller
 @RequestMapping(value = CATEGORY_PATH)
-@PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_LIBRARY_ADMIN')")
+@PreAuthorize("hasAnyRole('ROLE_LIBRARIAN', 'ROLE_LIBRARY_ADMIN')")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

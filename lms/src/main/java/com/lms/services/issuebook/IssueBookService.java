@@ -21,4 +21,5 @@ public interface IssueBookService {
     Page<IssueBook> getPageRequest(Library library, Integer pageNumber);
     Page<IssueBook> getPageRequestForCurrentUser(User user, Integer pageNumber);
     IssueBook findByUuid(Library library, String uuid);
+    Page<IssueBook> getPageRequest(Library library, User user, IssueBookStatus issueBookStatus, Integer pageNumber);
 }

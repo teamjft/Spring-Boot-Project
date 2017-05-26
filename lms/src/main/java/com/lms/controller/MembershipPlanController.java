@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -68,6 +69,7 @@ public class MembershipPlanController {
     private MessageSource messageSource;
 
     @RequestMapping(INDEX_PATH)
+    @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     public ModelAndView index(Model model) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         ModelAndView modelAndView = new ModelAndView(MEMBERSHIP_PLAN_INDEX_VIEW);
@@ -78,6 +80,7 @@ public class MembershipPlanController {
     }
 
     @RequestMapping(CREATE_PATH)
+    @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     public ModelAndView create(Model model) {
         ModelAndView modelAndView = getCreateModel(new MembershipPlanBean());
         return modelAndView;
@@ -85,6 +88,7 @@ public class MembershipPlanController {
 
     @XxsFilter
     @RequestMapping(SAVE_PATH)
+    @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
         public ModelAndView save(@Valid @ModelAttribute("plan") MembershipPlanBean membershipPlanBean, BindingResult result) {
         if (result.hasErrors()) {
             ModelAndView modelAndView = getCreateModel(membershipPlanBean);
@@ -114,6 +118,7 @@ public class MembershipPlanController {
     }
 
     @RequestMapping(DELETE_PATH)
+    @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     public ModelAndView delete(@PathVariable(required = true) String uuid) {
         MembershipPlan membershipPlan = membershipPlanService.findByUuid(uuid);
         SecUser secUser = SecurityUtil.getCurrentUser();
@@ -126,6 +131,7 @@ public class MembershipPlanController {
     }
 
   @RequestMapping(VIEW_PATH)
+  @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     public ModelAndView view(@PathVariable String uuid) {
         MembershipPlan membershipPlan = membershipPlanService.findByUuid(uuid);
         SecUser secUser = SecurityUtil.getCurrentUser();
@@ -145,6 +151,7 @@ public class MembershipPlanController {
         return modelAndView;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_INACTIVE_USER')")
     @RequestMapping(value = MEMBERSHIP_PLAN_PURCHASE_PATH)
     public ModelAndView paymentCreate(@PathVariable String membershipPlanId) {
         SecUser secUser = SecurityUtil.getCurrentUser();
