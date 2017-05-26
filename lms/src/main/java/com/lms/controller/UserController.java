@@ -110,6 +110,7 @@ public class UserController {
 
 
     @RequestMapping(USER_PLAN)
+    @PreAuthorize("hasAnyRole('ROLE_INACTIVE_USER')")
     public ModelAndView userMembershipPlans() {
         SecUser secUser =
                 (SecUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

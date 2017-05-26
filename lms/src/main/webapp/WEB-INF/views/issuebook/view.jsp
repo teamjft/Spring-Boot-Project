@@ -10,6 +10,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
@@ -19,7 +20,7 @@
 <div class="container col-md-12">
     <div class="row" >
         <c:import url="../template/sidebar.jsp"></c:import>
-
+        <sec:authorize access="hasAnyRole('ROLE_LIBRARY_ADMIN','ROLE_LIBRARIAN')" var="isLibraryAdminOrlibrarian"></sec:authorize>
         <div class="col-md-9">
             <div class="jumbotron">
                 <div class="container">
@@ -67,10 +68,16 @@
                                 </div>
                             </div>
                             <div class="panel-footer">
+
+                                <c:if test="${isLibraryAdminOrlibrarian == true}">
                                 <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" href="/issuebook/index" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-backward"></i></a>
                                 <span class="pull-right">
                                     <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" href="/issuebook/create" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
                                 </span>
+                                </c:if>
+                                <c:if test="${isLibraryAdminOrlibrarian == false}">
+                                    <a data-original-title="Broadcast Message" data-toggle="tooltip" type="button" href="javascript:void goBack()" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-backward"></i></a>
+                                </c:if>
                             </div>
 
                         </div>
@@ -80,6 +87,11 @@
         </div>
     </div>
 </div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </div>
 </body>
 <c:import url="../template/footer.jsp"></c:import>

@@ -10,12 +10,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <c:import url="../template/header.jsp"></c:import>
     <link href="<c:url value="../../../static/bootstrap/css/font-awesome.min.css" />" rel="stylesheet">
 </head>
 <body>
+<sec:authorize access="hasAnyRole('ROLE_LIBRARY_ADMIN','ROLE_LIBRARIAN')" var="isLibraryAdminOrlibrarian"></sec:authorize>
 <div class="container col-md-12">
     <div class="row" >
         <c:import url="../template/sidebar.jsp"></c:import>
@@ -26,8 +28,8 @@
                     <div class="well">
 
                         <div class="container">
-                            <h3><spring:message code="categories"></spring:message> <a class="btn icon-btn btn-primary pull-right" href="/issuebook/create">
-                                <span class="glyphicon btn-glyphicon glyphicon-plus img-circle"></span> <spring:message code="issue.book"></spring:message></a></h3></div>
+                            <h3><spring:message code="issue.book"></spring:message><c:if test="${isLibraryAdminOrlibrarian == true}"><a class="btn icon-btn btn-primary pull-right" href="/issuebook/create">
+                                <span class="glyphicon btn-glyphicon glyphicon-plus img-circle"></span> <spring:message code="issue.book"></spring:message></a></c:if> </h3></div>
                             <div class="row">
                                 <div class="form-group">
                                     <c:if test="${error ne null}">

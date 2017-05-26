@@ -27,6 +27,7 @@ public class UrlMappingConstant {
     public static final String BOOK_PATH = "/book";
     public static final String BOOK_VIEW_BY_ID_PATH = "/view/{id}";
 
+
     /*CATEGORY_PATH CONTROLLER*/
     public static final String CATEGORY_PATH = "/category";
 
@@ -62,6 +63,8 @@ public class UrlMappingConstant {
     public static final String VALIDATE_USER_FOR_ASSIGN_BOOK_PATH = "/validateUser";
     public static final String ASSIGN_BOOK_PATH = "/assign";
     public static final String ISSUED_BOOK_PATH = "/issuedbooks";
+    public static final String ISSUE_BOOK__RETURNED_PATH = "/returned";
+    public static final String ISSUE_BOOK_ASSIGN_PATH = "/assigned";
 
    /* Subscription Controller*/
    public static final String SUBSCRIPTION_BASE_PATH = "/subscription";

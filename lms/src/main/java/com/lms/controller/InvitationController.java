@@ -66,6 +66,7 @@ public class InvitationController {
     @Value("${lcm.customer.support.email}")
     private String supportEmail;
 
+    @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     @RequestMapping(value = INVITATION_INVITE_USER_PATH, method = RequestMethod.GET)
     public ModelAndView inviteUser() {
         InvitationBean invitationBean = new InvitationBean();
@@ -76,7 +77,7 @@ public class InvitationController {
         return modelAndView;
     }
 
-
+    @PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
     @RequestMapping(value = INVITATION_INVITE_USER_PATH, method = RequestMethod.POST)
     public ModelAndView invitation(@Valid @ModelAttribute("invitation") InvitationBean invitationBean, BindingResult result, HttpServletRequest httpServletRequest) {
         SecUser secUser = SecurityUtil.getCurrentUser();

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.lms.models.Book;
 import com.lms.models.Issue;
 import com.lms.models.IssueBook;
 import com.lms.models.Library;
@@ -24,6 +25,7 @@ public interface IssueBookRepository extends JpaRepository<IssueBook, Long> {
     Page<IssueBook> findByLibrary(Library library, Pageable pageable);
     Page<IssueBook> findByUser(User user, Pageable pageable);
     IssueBook findByUuidAndLibrary(String uuid, Library library);
+    Page<IssueBook> findByLibraryAndUserAndIssueBookStatus(Library library, User user, IssueBookStatus issueBookStatus, Pageable pageable);
 
     }
 

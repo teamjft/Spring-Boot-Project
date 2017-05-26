@@ -4,9 +4,12 @@ import static com.lms.utils.constants.UrlMappingConstant.ASSIGN_BOOK_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.CREATE_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.INDEX_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.ISSUED_BOOK_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.ISSUE_BOOK_ASSIGN_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.ISSUE_BOOK__BASE_PATH;
+import static com.lms.utils.constants.UrlMappingConstant.ISSUE_BOOK__RETURNED_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.VALIDATE_USER_FOR_ASSIGN_BOOK_PATH;
 import static com.lms.utils.constants.UrlMappingConstant.VIEW_PATH;
+import static com.lms.utils.constants.ViewConstant.BOOK_INDEX_VIEW;
 import static com.lms.utils.constants.ViewConstant.ISSUE_BOOK_ASSIGN_VIEW;
 import static com.lms.utils.constants.ViewConstant.ISSUE_BOOK_CREATE_VIEW;
 import static com.lms.utils.constants.ViewConstant.ISSUE_BOOK_VIEW;
@@ -54,7 +57,7 @@ import com.lms.utils.modelutil.IssueBookStatus;
  */
 @Controller
 @RequestMapping(value = ISSUE_BOOK__BASE_PATH)
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAnyRole('ROLE_LIBRARY_ADMIN', 'ROLE_LIBRARIAN')")
 public class IssueBookController {
 
     @Autowired
@@ -84,6 +87,7 @@ public class IssueBookController {
     }
 
     @RequestMapping(value = VIEW_PATH)
+    @PreAuthorize("hasAnyRole('USER')")
     public ModelAndView view(@PathVariable String uuid) {
         SecUser secUser = SecurityUtil.getCurrentUser();
         Library library = libraryService.findByUuid(secUser.getLibraryId());
@@ -156,6 +160,24 @@ public class IssueBookController {
         issueBookService.save(memberShip, Sets.newHashSet(books));
 
         return new ModelAndView(ISSUE_BOOK_CREATE_VIEW, "success",  messageSource.getMessage("successfully.assigned.book",new Object[] {memberShip.getUser().getUsername()}, locale));
+    }
+
+    @RequestMapping(ISSUE_BOOK_ASSIGN_PATH)
+    @PreAuthorize("hasAnyRole('USER')")
+    public ModelAndView assignedBooks(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        Page<IssueBook> page = issueBookService.getPageRequest(memberShip.getLibrary(), memberShip.getUser(), IssueBookStatus.ASSIGNED, currentPageNumber);
+        return PaginationHelper.getModelAndView(ISSUE_INDEX_VIEW, page, "issues");
+    }
+
+    @RequestMapping(ISSUE_BOOK__RETURNED_PATH)
+    @PreAuthorize("hasAnyRole('USER')")
+    public ModelAndView returnedBooks(@RequestParam(value="currentPageNumber", required = false) Integer currentPageNumber) {
+        SecUser secUser = SecurityUtil.getCurrentUser();
+        MemberShip memberShip = membershipService.findByUuid(secUser.getMemberShipId());
+        Page<IssueBook> page = issueBookService.getPageRequest(memberShip.getLibrary(), memberShip.getUser(), IssueBookStatus.RETURNED, currentPageNumber);
+        return PaginationHelper.getModelAndView(ISSUE_INDEX_VIEW, page, "issues");
     }
 
 }
